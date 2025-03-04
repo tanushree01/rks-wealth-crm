@@ -1,7 +1,6 @@
-// app.js
 const express = require('express');
-const mongoose = require('mongoose');
 const dotenv = require('dotenv');
+const sequelize = require('./config/database');
 const authRoutes = require('./routes/auth');
 
 // Load environment variables
@@ -11,20 +10,15 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 
-// Use the routes
+// Use authentication routes
 app.use('/api/auth', authRoutes);
 
-// Connect to the MongoDB database (no need for useNewUrlParser and useUnifiedTopology)
-mongoose.connect(process.env.MONGODB_URI)
-  .then(() => console.log('MongoDB Connected'))
-  .catch((err) => console.log('MongoDB Connection Error:', err));
+// Sync Database
+sequelize.sync({ force: false }) // Set to true to reset tables on restart
+  .then(() => console.log('Database Connected'))
+  .catch(err => console.error('Database sync error:', err));
 
-// Define a basic route to check if the server is running
-app.get('/', (req, res) => {
-  res.send('Welcome to your Node.js project!');
-});
-
-// Start the server
+// Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
