@@ -3,15 +3,19 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
-// **Register Controller**
-exports.register = async (req, res) => {
+exports.register = async (req, res) => { 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
 
   try {
-    const { firstName, lastName, email, phone, password, gender, address, maritalStatus, userType } = req.body;
+    const { firstName, lastName, email, phone, password, confirmPassword, gender, address, maritalStatus, userType } = req.body;
+
+    // Check if passwords match
+    if (password !== confirmPassword) {
+      return res.status(400).json({ errors: [{ msg: "Passwords do not match", path: "confirmPassword", location: "body" }] });
+    }
 
     // Check if user exists
     const existingUser = await User.findOne({ where: { email } });
@@ -19,8 +23,8 @@ exports.register = async (req, res) => {
       return res.status(400).json({ message: 'Email already exists' });
     }
 
-    // Generate salt and hash password
-    const salt = await bcrypt.genSalt(12); // 12 rounds of salting
+    // Hash password
+    const salt = await bcrypt.genSalt(12);
     const hashedPassword = await bcrypt.hash(password, salt);
 
     const newUser = await User.create({
@@ -41,6 +45,7 @@ exports.register = async (req, res) => {
     res.status(500).json({ message: 'Server error', error });
   }
 };
+
 
 // **Login Controller**
 exports.login = async (req, res) => {

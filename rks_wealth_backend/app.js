@@ -1,5 +1,6 @@
 const express = require('express');
 const dotenv = require('dotenv');
+const cors = require('cors'); // Import cors
 const sequelize = require('./config/database');
 const authRoutes = require('./routes/auth');
 
@@ -8,11 +9,20 @@ dotenv.config();
 
 // Initialize app
 const app = express();
+
+// Enable CORS
+app.use(cors({
+  origin: "*", // Allow frontend requests
+  methods: "GET,POST,PUT,DELETE",
+  credentials: true // Allow cookies (if needed)
+}));
+
 app.use(express.json());
 
 app.get('/', (req, res) => {
   res.send('✅ Server is running!');
 });
+
 // Use authentication routes
 app.use('/api/auth', authRoutes);
 
