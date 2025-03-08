@@ -19,10 +19,10 @@ exports.register = async (req, res) => {
       return res.status(400).json({ message: 'Email already exists' });
     }
 
-    // Hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // Generate salt and hash password
+    const salt = await bcrypt.genSalt(12); // 12 rounds of salting
+    const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Create new user
     const newUser = await User.create({
       firstName,
       lastName,
