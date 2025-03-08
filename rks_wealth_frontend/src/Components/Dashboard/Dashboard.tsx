@@ -1,22 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
-import Link from "next/link";
-import { motion } from "framer-motion";
 import { Button } from "@/Components/ui/button";
-import { cn } from "@/lib/utils";
-import {
-  Menu,
-  Home,
-  BarChart,
-  Settings,
-  LogOut,
-  Clock,
-  FileText,
-  Folder,
-  TrendingUp,
-} from "lucide-react";
+import { Menu } from "lucide-react";
 import Sidebar from "../Sidebar/Sidebar";
 
 const Dashboard = () => {
