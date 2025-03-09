@@ -7,6 +7,7 @@ import { Label } from "@/Components/ui/label";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useState } from "react";
+import axios from "axios";
 
 interface FormData {
   firstName: string;
@@ -54,49 +55,32 @@ export default function Register() {
     }));
   };
 
-  // const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-  //   e.preventDefault();
-  //   setLoading(true);
-  //   setTimeout(() => {
-  //     setLoading(false);
-  //   }, 2000);
-  // };
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:5000/api/auth/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
+      const { data } = await axios.post(
+        "http://localhost:5000/api/auth/register",
+        formData
+      );
+
+      alert("Registration successful!");
+      setFormData({
+        firstName: "",
+        lastName: "",
+        email: "",
+        phone: "",
+        password: "",
+        confirmPassword: "",
+        gender: "",
+        address: "",
+        maritalStatus: "",
+        userType: "",
       });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        alert("Registration successful!");
-        setFormData({
-          firstName: "",
-          lastName: "",
-          email: "",
-          phone: "",
-          password: "",
-          confirmPassword: "",
-          gender: "",
-          address: "",
-          maritalStatus: "",
-          userType: "",
-        });
-      } else {
-        alert(data.message || "Registration failed!");
-      }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error:", error);
-      alert("Something went wrong. Please try again later.");
+      alert(error.response?.data?.message || "Registration failed!");
     } finally {
       setLoading(false);
     }

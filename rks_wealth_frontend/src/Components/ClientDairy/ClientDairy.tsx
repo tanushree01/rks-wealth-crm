@@ -1,15 +1,34 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Sidebar from "../Sidebar/Sidebar";
 import { Menu } from "lucide-react";
 import { Button } from "../ui/button";
+import axios from "axios";
 
 const ClientDairy = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [clientData, setClientData] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchClientData = async () => {
+      try {
+        const { data } = await axios.get(
+          "http://localhost:5000/api/client/diary"
+        );
+        if (data?.data) {
+          setClientData([data.data]);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchClientData();
+  }, []);
+
   return (
     <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
       <Sidebar isSidebarOpen={isSidebarOpen} />
       <div className="flex-1 flex flex-col">
-        {/* Top Navbar */}
         <header className="bg-white dark:bg-gray-800 p-4 px-6 flex justify-between items-center shadow-md">
           <Button
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -25,115 +44,121 @@ const ClientDairy = () => {
         </header>
 
         <main className="p-6 bg-gray-50 dark:bg-gray-900 min-h-screen">
-          <div className="flex-1 p-6">
-            {/* Scrollable Table Container */}
-            <div className="w-290 overflow-x-auto">
-              <div className="max-w-screen overflow-x-auto">
-                <table className="w-full min-w-max border-collapse border border-gray-200">
-                  <thead>
-                    <tr className="bg-[#74A82E] text-white">
-                      <th className="p-2 border">RM</th>
-                      <th className="p-2 border">SUB BROKER</th>
-                      <th className="p-2 border">FAMILY HEAD</th>
-                      <th className="p-2 border">NAME</th>
-                      <th className="p-2 border">PAN</th>
-                      <th className="p-2 border">IW_AUM</th>
-                      <th className="p-2 border">Referred By</th>
-                      <th className="p-2 border">EMAIL</th>
-                      <th className="p-2 border">MOBILE</th>
-                      <th className="p-2 border">DATE OF BIRTH</th>
-                      <th className="p-2 border">IW_CREATION DATE</th>
-                      <th className="p-2 border">IW_LAST LOGIN</th>
-                      <th className="p-2 border">IW_USERNAME</th>
-                      <th className="p-2 border">IWELL CODE</th>
-                      <th className="p-2 border">CITY_STATE</th>
-                      <th className="p-2 border">FULL_ADDRESS</th>
-                      <th className="p-2 border">AGE</th>
-                      <th className="p-2 border">EQUITY</th>
-                      <th className="p-2 border">HYBRID</th>
-                      <th className="p-2 border">Debt</th>
-                      <th className="p-2 border">RKS_AUM</th>
-                      <th className="p-2 border">Debt %</th>
-                      <th className="p-2 border">Equity %</th>
-                      <th className="p-2 border">Hybrid %</th>
-                      <th className="p-2 border">RKS_M1</th>
-                      <th className="p-2 border">RKS_M2</th>
-                      <th className="p-2 border">RKS_M3</th>
-                      <th className="p-2 border">RKS_M4</th>
-                      <th className="p-2 border">OTHER_M1</th>
-                      <th className="p-2 border">OTHER_M2</th>
-                      <th className="p-2 border">OTHER_M3</th>
-                      <th className="p-2 border">OTHER_M4</th>
-                      <th className="p-2 border">INVESTMENT</th>
-                      <th className="p-2 border">SWITCH IN</th>
-                      <th className="p-2 border">REDEMPTION</th>
-                      <th className="p-2 border">SWITCH OUT</th>
-                      <th className="p-2 border">DIVIDEND PAYOUT</th>
-                      <th className="p-2 border">NET INVESTMENT</th>
-                      <th className="p-2 border">PURCHASE VALUE</th>
-                      <th className="p-2 border">CURRENT VALUE</th>
-                      <th className="p-2 border">AVG HOLDING DAYS</th>
-                      <th className="p-2 border">GAIN</th>
-                      <th className="p-2 border">ABSOLUTE RETURN</th>
-                      <th className="p-2 border">CAGR</th>
-                      <th className="p-2 border">SIP_Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr className="bg-white text-black">
-                      <td className="p-2 border">TARUN JAIN</td>
-                      <td className="p-2 border">XYZ Broker</td>
-                      <td className="p-2 border">AAKANKSHA JAIN</td>
-                      <td className="p-2 border">aakanksha jain</td>
-                      <td className="p-2 border">AZLPJ0165D</td>
-                      <td className="p-2 border">258019</td>
-                      <td className="p-2 border">Referral 1</td>
-                      <td className="p-2 border">aakankshajain560@gmail.com</td>
-                      <td className="p-2 border">9713062290</td>
-                      <td className="p-2 border">14/02/1992</td>
-                      <td className="p-2 border">04/06/2024</td>
-                      <td className="p-2 border">20/02/2025</td>
-                      <td className="p-2 border">AAKANKSHA</td>
-                      <td className="p-2 border">327223113</td>
-                      <td className="p-2 border">GWALIOR, MADHYAPRADESH</td>
-                      <td className="p-2 border">
-                        men 56 shinde ki chawani Lashkar Gwalior Ajaypur Gwalior
-                        Madhya Pradesh
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-max border-collapse border border-gray-200">
+              <thead>
+                <tr className="bg-[#74A82E] text-white">
+                  {[
+                    "RM",
+                    "SUB BROKER",
+                    "FAMILY HEAD",
+                    "NAME",
+                    "PAN",
+                    "IW_AUM",
+                    "Referred By",
+                    "EMAIL",
+                    "MOBILE",
+                    "DATE OF BIRTH",
+                    "IW_CREATION DATE",
+                    "IW_LAST LOGIN",
+                    "IW_USERNAME",
+                    "IWELL CODE",
+                    "CITY_STATE",
+                    "FULL_ADDRESS",
+                    "AGE",
+                    "EQUITY",
+                    "HYBRID",
+                    "Debt",
+                    "RKS_AUM",
+                    "Debt percentage",
+                    "Equity percentage",
+                    "Hybrid percentage",
+                    "RKS_M1",
+                    "RKS_M2",
+                    "RKS_M3",
+                    "RKS_M4",
+                    "OTHER_M1",
+                    "OTHER_M2",
+                    "OTHER_M3",
+                    "OTHER_M4",
+                    "INVESTMENT",
+                    "SWITCH IN",
+                    "REDEMPTION",
+                    "SWITCH OUT",
+                    "DIVIDEND PAYOUT",
+                    "NET INVESTMENT",
+                    "PURCHASE VALUE",
+                    "CURRENT VALUE",
+                    "AVG HOLDING DAYS",
+                    "GAIN",
+                    "ABSOLUTE RETURN",
+                    "CAGR",
+                    "SIP_Status",
+                  ].map((header) => (
+                    <th key={header} className="p-2 border">
+                      {header}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {clientData.map((client, index) => (
+                  <tr key={index} className="bg-white text-black">
+                    {[
+                      "RM",
+                      "SUB BROKER",
+                      "FAMILY HEAD",
+                      "NAME",
+                      "PAN",
+                      "IW_AUM",
+                      "Referred By",
+                      "EMAIL",
+                      "MOBILE",
+                      "DATE OF BIRTH",
+                      "IW_CREATION DATE",
+                      "IW_LAST LOGIN",
+                      "IW_USERNAME",
+                      "IWELL CODE",
+                      "CITY_STATE",
+                      "FULL_ADDRESS",
+                      "AGE",
+                      "EQUITY",
+                      "HYBRID",
+                      "Debt",
+                      "RKS_AUM",
+                      "Debt percentage",
+                      "Equity percentage",
+                      "Hybrid percentage",
+                      "RKS_M1",
+                      "RKS_M2",
+                      "RKS_M3",
+                      "RKS_M4",
+                      "OTHER_M1",
+                      "OTHER_M2",
+                      "OTHER_M3",
+                      "OTHER_M4",
+                      "INVESTMENT",
+                      "SWITCH IN",
+                      "REDEMPTION",
+                      "SWITCH OUT",
+                      "DIVIDEND PAYOUT",
+                      "NET INVESTMENT",
+                      "PURCHASE VALUE",
+                      "CURRENT VALUE",
+                      "AVG HOLDING DAYS",
+                      "GAIN",
+                      "ABSOLUTE RETURN",
+                      "CAGR",
+                      "SIP_Status",
+                    ].map((field) => (
+                      <td key={field} className="p-2 border">
+                        {client[field] || "-"}
                       </td>
-                      <td className="p-2 border">33</td>
-                      <td className="p-2 border">258019</td>
-                      <td className="p-2 border">0</td>
-                      <td className="p-2 border">0</td>
-                      <td className="p-2 border">258019</td>
-                      <td className="p-2 border">0</td>
-                      <td className="p-2 border">100</td>
-                      <td className="p-2 border">0</td>
-                      <td className="p-2 border">4000</td>
-                      <td className="p-2 border">4000</td>
-                      <td className="p-2 border">4000</td>
-                      <td className="p-2 border">2000</td>
-                      <td className="p-2 border">-</td>
-                      <td className="p-2 border">-</td>
-                      <td className="p-2 border">-</td>
-                      <td className="p-2 border">-</td>
-                      <td className="p-2 border">47998</td>
-                      <td className="p-2 border">0</td>
-                      <td className="p-2 border">0</td>
-                      <td className="p-2 border">0</td>
-                      <td className="p-2 border">0</td>
-                      <td className="p-2 border">47998</td>
-                      <td className="p-2 border">190000</td>
-                      <td className="p-2 border">258019</td>
-                      <td className="p-2 border">710</td>
-                      <td className="p-2 border">68019</td>
-                      <td className="p-2 border">36</td>
-                      <td className="p-2 border">17</td>
-                      <td className="p-2 border">same</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </main>
       </div>
