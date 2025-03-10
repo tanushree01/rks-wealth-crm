@@ -15,34 +15,32 @@ import Link from "next/link";
 import axios from "axios";
 import { useState } from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation"; // Import useRouter
+import { useRouter } from "next/navigation";
+import { Eye, EyeOff } from "lucide-react"; // Import icons
 
 export default function Login() {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const router = useRouter(); // Initialize router
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState(""); // Store error messages
+
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
+    setError(""); // Clear previous errors
 
     try {
       const { data } = await axios.post(
         "http://localhost:5000/api/auth/login",
-        {
-          email,
-          password,
-        }
+        { email, password }
       );
 
       router.push("/dashboard");
     } catch (error: any) {
-      console.error("Login error:", error);
-      alert(
-        error.response?.data?.message ||
-          "Something went wrong. Please try again."
-      );
+      setError(error.response?.data?.message || "Invalid email or password.");
     } finally {
       setLoading(false);
     }
@@ -71,6 +69,7 @@ export default function Login() {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
+              {/* Email Field */}
               <div className="space-y-2">
                 <Label
                   htmlFor="email"
@@ -85,27 +84,46 @@ export default function Login() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  disabled={loading}
                   className="border-gray-300 dark:border-gray-600 focus:border-[#74A82E] focus:ring-[#74A82E] dark:focus:border-[#5A8824] dark:focus:ring-[#5A8824]"
                 />
               </div>
-              <div className="space-y-2">
+
+              {/* Password Field with Eye Toggle */}
+              <div className="space-y-2 relative">
                 <Label
                   htmlFor="password"
                   className="text-[#1D3E6F] dark:text-[#74A82E] font-medium"
                 >
                   Password
                 </Label>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="Enter your password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="border-gray-300 dark:border-gray-600 focus:border-[#74A82E] focus:ring-[#74A82E] dark:focus:border-[#5A8824] dark:focus:ring-[#5A8824]"
-                />
+                <div className="relative">
+                  <Input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Enter your password"
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    disabled={loading}
+                    className="border-gray-300 dark:border-gray-600 focus:border-[#74A82E] focus:ring-[#74A82E] dark:focus:border-[#5A8824] dark:focus:ring-[#5A8824] pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-2 text-gray-500 dark:text-gray-400 focus:outline-none"
+                  >
+                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  </button>
+                </div>
               </div>
 
+              {/* Error Message */}
+              {error && (
+                <p className="text-red-500 text-center text-sm">{error}</p>
+              )}
+
+              {/* Login Button */}
               <Button
                 type="submit"
                 className="w-full mt-2 bg-[#74A82E] hover:bg-[#5A8824] text-white font-semibold py-2 rounded-md transition-all duration-300"
@@ -115,6 +133,7 @@ export default function Login() {
               </Button>
             </form>
 
+            {/* Forgot Password Link */}
             <p className="text-sm text-gray-500 dark:text-gray-400 mt-2 text-center">
               <Link
                 href="/forgot-password"
@@ -124,6 +143,8 @@ export default function Login() {
               </Link>
             </p>
           </CardContent>
+
+          {/* Signup Link */}
           <CardFooter className="text-center">
             <p className="text-sm text-gray-500 dark:text-gray-400">
               Don't have an account?{" "}
