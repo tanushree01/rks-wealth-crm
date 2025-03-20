@@ -1,9 +1,7 @@
 const { getAll } = require("../utiles/getAll");
 
-const table = 'top_schemes';
+const table = "top_schemes";
 
 exports.getTopSchemes = async (req, res) => {
-return getAll(req, res, table);
+  return getAll(req, res, table, "SCHEMES");
 };
-
-
