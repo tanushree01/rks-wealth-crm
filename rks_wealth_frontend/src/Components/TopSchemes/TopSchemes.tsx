@@ -15,7 +15,7 @@ import {
 import axios from "axios";
 import { Skeleton } from "../ui/skeleton";
 
-const ClientDairy = () => {
+const TopSchemes = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [diaryData, setDiaryData] = useState<any>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -27,7 +27,7 @@ const ClientDairy = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/client/diary`
+          `http://localhost:5000/api/client/topschemes `
         );
         setLoading(false);
         setDiaryData(response.data?.data);
@@ -193,44 +193,4 @@ const ClientDairy = () => {
   );
 };
 
-export default ClientDairy;
-
-// import React, { useEffect, useState } from "react";
-// import axios from "axios";
-
-// const DiaryTable = () => {
-//   const [diaryData, setDiaryData] = useState([]);
-
-//   useEffect(() => {
-//     axios.get("http://localhost:5000/api/client/diary")
-//       .then(response => setDiaryData(response.data.data || []))
-//       .catch(error => console.error("Error fetching data:", error));
-//   }, []);
-
-//   const headers = diaryData.length > 0 ? Object.keys(diaryData[0]) : [];
-
-//   return (
-//     <div className="overflow-x-auto">
-//       <table className="min-w-full bg-white border border-gray-300">
-//         <thead>
-// <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
-//   {headers.map((header, index) => (
-//     <th key={index} className="py-2 px-4 border-b border-gray-300">{header}</th>
-//   ))}
-// </tr>
-//         </thead>
-// <tbody className="text-gray-600 text-sm font-light">
-//   {diaryData.map((entry, index) => (
-//     <tr key={index} className="border-b border-gray-300 hover:bg-gray-100">
-//       {headers.map((header, idx) => (
-//         <td key={idx} className="py-2 px-4 border-b border-gray-300">{entry[header]}</td>
-//       ))}
-//     </tr>
-//   ))}
-// </tbody>
-//       </table>
-//     </div>
-//   );
-// };
-
-// export default DiaryTable;
+export default TopSchemes;
