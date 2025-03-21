@@ -14,8 +14,11 @@ import {
 } from "../ui/pagination"; // Import Pagination component
 import axios from "axios";
 import { Skeleton } from "../ui/skeleton";
+import { useRouter } from "next/router";
 
 const ClientDairy = () => {
+  const router = useRouter();
+
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [diaryData, setDiaryData] = useState<any>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -146,15 +149,24 @@ const ClientDairy = () => {
                           {diaryData.map((entry: any, index: number) => (
                             <tr
                               key={index}
-                              className={`text-black ${
-                                index % 2 === 0 ? "bg-gray-100" : "bg-white"
-                              } hover:bg-gray-200 transition`}
+                              className={`text-black ${index % 2 === 0 ? "bg-gray-100" : "bg-white"
+                                } hover:bg-gray-200 cursor-pointer transition`}
+                              onClick={() => {
+                                const query = {
+                                  FolioPAN: entry.PAN,
+                                  MintPAN: entry.PAN,
+                                  EMAIL: entry.EMAIL,
+                                  MOBILE: entry.MOBILE,
+                                };
+
+                                router.push({
+                                  pathname: "/foliomaster", // Adjust this to your dashboard page's path
+                                  query,
+                                });
+                              }}
                             >
                               {headers.map((header, idx) => (
-                                <td
-                                  key={idx}
-                                  className="py-3 px-5 border-b border-gray-300"
-                                >
+                                <td key={idx} className="py-3 px-5 border-b border-gray-300">
                                   {entry[header]}
                                 </td>
                               ))}

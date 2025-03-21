@@ -27,7 +27,7 @@ const FolioMaster = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/client/foliomaster `
+          `http://localhost:5000/api/client/foliomaster`
         );
         setLoading(false);
         setDiaryData(response.data?.data);

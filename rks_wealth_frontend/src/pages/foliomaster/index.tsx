@@ -1,2 +1,2 @@
-import FolioMaster from "../../Components/FolioMaster/FolioMaster";
-export default FolioMaster;
+import FoliomasterProfile from "../../Components/FolioMaster/FoliomasterProfile";
+export default FoliomasterProfile;
