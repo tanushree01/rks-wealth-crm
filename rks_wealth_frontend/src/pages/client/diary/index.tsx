@@ -1,2 +1,2 @@
-import ClientDiaryProfile from "../../../Components/ClientDairy/ClientDiaryProfile";
-export default ClientDiaryProfile;
+import ProfileDashboard from "../../../Components/ClientDairy/ProfileDashboard";
+export default ProfileDashboard;

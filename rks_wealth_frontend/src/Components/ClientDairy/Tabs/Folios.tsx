@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-import Sidebar from "../Sidebar/Sidebar";
-import { Menu, Search, X } from "lucide-react";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
+import { Search, X } from "lucide-react";
+import { Button } from "@/Components/ui/button";
+import { Input } from "@/Components/ui/input";
 import {
   Pagination,
   PaginationContent,
@@ -11,11 +10,11 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "../ui/pagination";
+} from "@/Components/ui/pagination";
 import axios from "axios";
-import { Skeleton } from "../ui/skeleton";
+import { Skeleton } from "@/Components/ui/skeleton"
 import { useRouter } from "next/router";
-import { Card } from "../ui/card";
+import { Card } from "@/Components/ui/card";
 import {
   Table,
   TableBody,
@@ -23,10 +22,9 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../ui/table";
-import Header from "../Header/Header";
+} from "@/Components//ui/table";
 
-const ClientDairy = () => {
+const Folios = () => {
   const router = useRouter();
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -45,10 +43,13 @@ const ClientDairy = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const params: any = { page: currentPage, limit: 10, ...searchParams };
-
+        const params: any = { page: currentPage, limit: 10, ...searchParams,...router.query };
+        delete params.IWELL_CODE
+        params.FolioPAN = params.PAN
+        params.MintPAN = params.PAN
+        delete params.PAN
         const response = await axios.get(
-          `http://localhost:5000/api/client/diary`,
+          `http://localhost:5000/api/client/foliomaster`,
           { params }
         );
 
@@ -125,11 +126,6 @@ const ClientDairy = () => {
 
   return (
     <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
-      <Sidebar isSidebarOpen={isSidebarOpen} />
-      <div className="flex-1 flex flex-col">
-        {/* Top Navbar */}
-        <Header setIsSidebarOpen={setIsSidebarOpen} />
-
         <main className="p-0 bg-gray-50 dark:bg-gray-900 min-h-screen">
           <div className="flex-1 p-6">
             {/* Scrollable Table Container */}
@@ -207,9 +203,7 @@ const ClientDairy = () => {
                             }`}
                             onClick={() => {
                               const query = {
-                                PAN: entry.PAN,
                                 FAMILY_HEAD: entry.FAMILY_HEAD,
-                                IWELL_CODE: entry.IWELL_CODE,
                                 page: 1,
                                 limit: 100
                               };
@@ -253,9 +247,8 @@ const ClientDairy = () => {
             </div>
           </div>
         </main>
-      </div>
     </div>
   );
 };
 
-export default ClientDairy;
+export default Folios;
