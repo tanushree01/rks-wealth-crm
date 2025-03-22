@@ -2,29 +2,30 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import Image from "next/image";
-import {
-  Home,
-  BarChart,
-  Folder,
-  Clock,
-  TrendingUp,
-  FileText,
-  LogOut,
-} from "lucide-react";
+import { Home, BarChart, TrendingUp, User, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useDispatch } from "react-redux";
+import { logout } from "@/store/slices/authSlice";
 
 const Sidebar = ({ isSidebarOpen }: { isSidebarOpen: boolean }) => {
   const router = useRouter();
+  const dispatch = useDispatch();
 
-  // Define sidebar items
+  const handleLogout = () => {
+    dispatch(logout());
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("token");
+    }
+    router.replace("/login");
+  };
+
   const menuItems = [
     { href: "/dashboard", label: "Home", icon: Home },
     { href: "/client", label: "Client Dairy", icon: BarChart },
-    { href: "/foliomaster", label: "Folio Master", icon: Folder },
-    { href: "/longterm", label: "Long Term", icon: Clock },
+   
+    { href: "/clientdairy", label: "Client Dairy", icon: BarChart },
     { href: "/topschemes", label: "Top Scheme", icon: TrendingUp },
-    { href: "/transaction", label: "Transaction 90 days", icon: FileText },
-    { href: "/login", label: "Logout", icon: LogOut },
+    { href: "/profile", label: "Profile", icon: User },
   ];
 
   return (
@@ -54,6 +55,14 @@ const Sidebar = ({ isSidebarOpen }: { isSidebarOpen: boolean }) => {
             {label}
           </Link>
         ))}
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-2 p-2 rounded transition text-red-600 hover:bg-red-100 w-full"
+          aria-label="Logout"
+        >
+          <LogOut size={18} />
+          Logout
+        </button>
       </nav>
     </motion.aside>
   );

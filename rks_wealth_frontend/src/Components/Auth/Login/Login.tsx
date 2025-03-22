@@ -17,27 +17,31 @@ import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff } from "lucide-react"; // Import icons
+import { loginSuccess } from "@/store/slices/authSlice";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/store";
 
 export default function Login() {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState(""); // Store error messages
-
+  const [error, setError] = useState("");
   const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-    setError(""); // Clear previous errors
+    setError("");
 
     try {
       const { data } = await axios.post(
         "http://localhost:5000/api/auth/login",
         { email, password }
       );
-
+      localStorage.setItem("token", data.token);
+      dispatch(loginSuccess(data));
       router.push("/dashboard");
     } catch (error: any) {
       setError(error.response?.data?.message || "Invalid email or password.");
