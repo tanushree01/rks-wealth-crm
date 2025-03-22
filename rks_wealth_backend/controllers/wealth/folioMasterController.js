@@ -13,8 +13,6 @@ exports.getFolioMasterRecords = async (req, res) => {
     const {
       FolioPAN,
       MintPAN,
-      EMAIL,
-      MOBILE,
       page = 1,
       limit = 10,
       orderBy,
@@ -27,20 +25,18 @@ exports.getFolioMasterRecords = async (req, res) => {
     const offset = (pageNum - 1) * limitNum;
 
     // Validation: Ensure all required fields are present
-    if (!FolioPAN || !MintPAN || !EMAIL || !MOBILE) {
+    if (!FolioPAN || !MintPAN) {
       return res
         .status(400)
         .json({
-          message: "FolioPAN, MintPAN, EMAIL, and MOBILE are required fields."
+          message: "FolioPAN, MintPAN are required fields."
         });
     }
 
     // Exact match conditions
     const whereConditions = {
       FolioPAN,
-      MintPAN,
-      EMAIL,
-      MOBILE: "'" + MOBILE + ""
+      MintPAN
     };
 
     const options = {

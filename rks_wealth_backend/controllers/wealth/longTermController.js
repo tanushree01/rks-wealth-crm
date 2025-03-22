@@ -13,11 +13,11 @@ exports.getLongTermRecords = async (req, res) => {
     try {
 
         const Model = await getModel(table);
-        const { folioNumber, page = 1, limit = 10, orderBy, order = "ASC" } = req.query;
+        const { PAN, page = 1, limit = 10, orderBy, order = "ASC" } = req.query;
 
         // Validate required field
-        if (!folioNumber) {
-            return res.status(400).json({ message: "folioNumber is required." });
+        if (!PAN) {
+            return res.status(400).json({ message: "PAN is required." });
         }
 
         // Convert pagination params to integers
@@ -26,7 +26,7 @@ exports.getLongTermRecords = async (req, res) => {
         const offset = (pageNum - 1) * limitNum;
 
         // Query conditions
-        const whereConditions = { "FOLIO NO": folioNumber };
+        const whereConditions = { "PAN": PAN };
 
         const options = {
             attributes: { exclude: ["id"] }, // Exclude id field if not needed
@@ -45,7 +45,7 @@ exports.getLongTermRecords = async (req, res) => {
 
         // Check if records exist
         if (count === 0) {
-            return res.status(404).json({ message: "No long-term records found for the given Folio Number." });
+            return res.status(404).json({ message: "No long-term records found" });
         }
 
         return res.status(200).json({

@@ -1,4 +1,4 @@
-const { Op } = require("sequelize");
+const { Op, Sequelize } = require("sequelize");
 const { getModel } = require("../models");
 
 const table = 'client_diary';
@@ -10,6 +10,7 @@ exports.getClientDiaries = async (req, res) => {
           limit = 10,
           orderBy,
           order = "ASC",
+          distinct,  
           ...filters
         } = req.query;
         const Model = await getModel(table);
@@ -25,14 +26,29 @@ exports.getClientDiaries = async (req, res) => {
             whereCondition[key] = { [Op.iLike]: `%${filters[key]}%` }; // Case-insensitive search
           }
         });
-    
-        const options = {
-            attributes: { exclude: ["id"] },
+
+        let options = {
             where: whereCondition,
             limit: limitNum,
             offset: offset
         };
-        
+
+        // Get model attributes correctly
+        const modelAttributes = Object.keys(Model.getAttributes());
+
+        // Conditionally apply DISTINCT ON (FAMILY_HEAD)
+        if (distinct === "true") {
+          options.attributes = [
+              [Sequelize.literal('DISTINCT ON ("FAMILY_HEAD") "FAMILY_HEAD"'), 'FAMILY_HEAD'],
+              ...modelAttributes
+                  .filter(attr => attr !== "FAMILY_HEAD" && attr !== "id") // Exclude "id"
+                  .map(attr => [Sequelize.col(attr), attr])
+          ];
+      } else {
+          options.attributes = { exclude: ["id"] };
+      }
+      
+
         // Add sorting dynamically if orderBy exists
         if (orderBy) {
             options.order = [[orderBy, order?.toUpperCase() || "ASC"]]; // Default to ASC if order is missing
