@@ -12,6 +12,17 @@ const FoliomasterProfile = dynamic(
   { ssr: false }
 );
 
+const LongTermProfile = dynamic(() => import("../LongTerm/LongTermProfile"), {
+  ssr: false,
+});
+
+const TransactionProfile = dynamic(
+  () => import("../Transaction/TransactionProfile"),
+  {
+    ssr: false,
+  }
+);
+
 const TableHeader = () => {
   const [selectedTab, setSelectedTab] = useState("clientDiary");
 
@@ -24,6 +35,10 @@ const TableHeader = () => {
     switch (selectedTab) {
       case "folioMaster":
         return <FoliomasterProfile />;
+      case "longTerm":
+        return <LongTermProfile />;
+      case "transaction":
+        return <TransactionProfile />;
       // case "clientDiary":
       //   return <ClientDiaryProfile />;
       default:
