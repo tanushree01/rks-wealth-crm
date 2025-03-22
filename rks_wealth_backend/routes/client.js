@@ -15,7 +15,7 @@ const router = express.Router();
 
 // Routes
 router.get("/diary", clientController.getClientDiaries);
-router.get("/diary", clientController.getClientDiaries);
+router.get("/diary/one", clientController.getClientDiary);
 router.get("/foliomaster", getFolioMasterRecords);
 // router.get('/foliomaster', getFolioMaster);
 router.get("/longterm", getLongTermRecords);

@@ -73,3 +73,37 @@ exports.getClientDiaries = async (req, res) => {
 };
 
 
+
+
+exports.getClientDiary = async (req, res) => {
+  try {
+      const { PAN, IWELL_CODE } = req.query;
+      const Model = await getModel(table);
+
+      // Ensure at least one of the required filters is provided
+      if (!PAN && !IWELL_CODE) {
+          return res.status(400).json({ message: "PAN or IWELL_CODE is required" });
+      }
+
+      // Create filtering conditions dynamically
+      let whereCondition = {};
+      if (PAN) whereCondition.PAN = { [Op.iLike]: `%${PAN}%` };
+      if (IWELL_CODE) whereCondition.IWELL_CODE = { [Op.iLike]: `%${IWELL_CODE}%` };
+
+      // Fetch the first matching client diary
+      const clientDiary = await Model.findOne({
+          where: whereCondition,
+          attributes: { exclude: ["id"] }, // Exclude ID
+      });
+
+      // If no record found
+      if (!clientDiary) {
+          return res.status(404).json({ message: "Client diary not found" });
+      }
+
+      return res.status(200).json(clientDiary);
+  } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: "Server Error", error: error.message });
+  }
+};
