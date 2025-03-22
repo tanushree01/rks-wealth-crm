@@ -24,6 +24,7 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
+import Header from "../Header/Header";
 
 const ClientDairy = () => {
   const router = useRouter();
@@ -44,7 +45,7 @@ const ClientDairy = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const params: any = { page: currentPage, ...searchParams };
+        const params: any = { page: currentPage, limit: 10, ...searchParams };
 
         const response = await axios.get(
           `http://localhost:5000/api/client/diary`,
@@ -127,19 +128,7 @@ const ClientDairy = () => {
       <Sidebar isSidebarOpen={isSidebarOpen} />
       <div className="flex-1 flex flex-col">
         {/* Top Navbar */}
-        <header className="bg-white dark:bg-gray-800 p-4 px-6 flex justify-between items-center shadow-md">
-          <Button
-            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            variant="outline"
-            className="ml-2"
-          >
-            <Menu />
-          </Button>
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-            Welcome to RKS Wealth Dashboard
-          </h2>
-          <div className="text-sm text-gray-600 dark:text-gray-300">User</div>
-        </header>
+        <Header setIsSidebarOpen={setIsSidebarOpen} />
 
         <main className="p-0 bg-gray-50 dark:bg-gray-900 min-h-screen">
           <div className="flex-1 p-6">

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "../Sidebar/Sidebar";
-import { Menu } from "lucide-react";
+import { Menu, User } from "lucide-react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import {
@@ -11,13 +11,26 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "../ui/pagination"; // Import Pagination component
+} from "../ui/pagination";
 import axios from "axios";
 import { Skeleton } from "../ui/skeleton";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../ui/table";
+import { Card } from "../ui/card";
+import router from "next/router";
+import Header from "../Header/Header";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
 
 const TopSchemes = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [diaryData, setDiaryData] = useState<any>([]);
+  const [topSchemeData, setTopScheme] = useState<any>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -26,11 +39,19 @@ const TopSchemes = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const params: any = {
+          page: currentPage,
+          limit: 10,
+          orderBy: "SCHEMES",
+          order: "ASC",
+        };
+
         const response = await axios.get(
-          `http://localhost:5000/api/client/topschemes `
+          `http://localhost:5000/api/client/topschemes`,
+          { params }
         );
         setLoading(false);
-        setDiaryData(response.data?.data);
+        setTopScheme(response.data?.data);
         setTotalPages(response.data?.totalPages);
       } catch (err: any) {
         setError(err.message);
@@ -84,30 +105,15 @@ const TopSchemes = () => {
       </PaginationItem>
     ));
   };
-  const headers = diaryData.length > 0 ? Object.keys(diaryData[0]) : [];
+  const headers = topSchemeData.length > 0 ? Object.keys(topSchemeData[0]) : [];
 
   return (
     <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
       <Sidebar isSidebarOpen={isSidebarOpen} />
       <div className="flex-1 flex flex-col">
-        {/* Top Navbar */}
-        <header className="bg-white dark:bg-gray-800 p-4 px-6 flex justify-between items-center shadow-md">
-          <Button
-            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            variant="outline"
-            className="ml-2"
-          >
-            <Menu />
-          </Button>
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-            Welcome to RKS Wealth Dashboard
-          </h2>
-          <div className="text-sm text-gray-600 dark:text-gray-300">User</div>
-        </header>
-
-        <main className="p-6 bg-gray-50 dark:bg-gray-900 min-h-screen">
-          <div className="flex-1 p-6">
-            {/* Scrollable Table Container */}
+        <Header setIsSidebarOpen={setIsSidebarOpen} />
+        <main className="p-5 bg-gray-50 dark:bg-gray-900 min-h-screen">
+          <div className="flex-1">
             <div
               className="overflow-x-auto"
               style={{ width: "calc(100vw - 300px)" }}
@@ -116,53 +122,44 @@ const TopSchemes = () => {
                 {loading ? (
                   <>
                     <Skeleton className="w-full h-10 mb-2" />
-                    <Skeleton className="w-full h-10 mb-2" />
-                    <Skeleton className="w-full h-10 mb-2" />
-                    <Skeleton className="w-full h-10 mb-2" />
-                    <Skeleton className="w-full h-10 mb-2" />
-                    <Skeleton className="w-full h-10 mb-2" />
-                    <Skeleton className="w-full h-10 mb-2" />
-                    <Skeleton className="w-full h-10 mb-2" />
-                    <Skeleton className="w-full h-10 mb-2" />
-                    <Skeleton className="w-full h-10 mb-2" />
                   </>
                 ) : (
                   <div className="w-full h-full overflow-auto">
-                    <div className="overflow-x-auto max-h-full">
-                      <table className="w-full min-w-max border-collapse border border-gray-300">
-                        <thead>
-                          <tr className="bg-[#74A82E] text-white sticky top-0 z-10">
+                    <Card className="shadow-md rounded-xl overflow-hidden p-0">
+                      <Table className="w-full overflow-hidden">
+                        <TableHeader className="bg-[#74A82E] text-white">
+                          <TableRow>
                             {headers.map((header, index) => (
-                              <th
+                              <TableHead
                                 key={index}
-                                className="py-3 px-5 border-b border-gray-400 text-left uppercase"
+                                className="py-1 px-5 text-left uppercase text-white"
                               >
                                 {header}
-                              </th>
+                              </TableHead>
                             ))}
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {diaryData.map((entry: any, index: number) => (
-                            <tr
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {topSchemeData.map((entry: any, index: any) => (
+                            <TableRow
                               key={index}
-                              className={`text-black ${
-                                index % 2 === 0 ? "bg-gray-100" : "bg-white"
-                              } hover:bg-gray-200 transition`}
+                              className={`transition hover:bg-gray-100 cursor-pointer ${
+                                index % 2 === 0 ? "bg-gray-50" : "bg-white"
+                              }`}
                             >
                               {headers.map((header, idx) => (
-                                <td
+                                <TableCell
                                   key={idx}
                                   className="py-3 px-5 border-b border-gray-300"
                                 >
                                   {entry[header]}
-                                </td>
+                                </TableCell>
                               ))}
-                            </tr>
+                            </TableRow>
                           ))}
-                        </tbody>
-                      </table>
-                    </div>
+                        </TableBody>
+                      </Table>
+                    </Card>
                   </div>
                 )}
               </div>

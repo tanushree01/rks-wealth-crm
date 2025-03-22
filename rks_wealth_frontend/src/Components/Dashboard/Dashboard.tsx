@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Button } from "@/Components/ui/button";
 import { Menu } from "lucide-react";
 import Sidebar from "../Sidebar/Sidebar";
+import Header from "../Header/Header";
 
 const Dashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -15,19 +16,7 @@ const Dashboard = () => {
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
         {/* Top Navbar */}
-        <header className="bg-white dark:bg-gray-800 p-4 px-6 flex justify-between items-center shadow-md">
-          <Button
-            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            variant="outline"
-            className="ml-2"
-          >
-            <Menu />
-          </Button>
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-            Welcome to RKS Wealth Dashboard
-          </h2>
-          <div className="text-sm text-gray-600 dark:text-gray-300">User</div>
-        </header>
+        <Header setIsSidebarOpen={setIsSidebarOpen} />
 
         {/* Main Dashboard Content */}
         <main className="p-6 bg-gray-50 dark:bg-gray-900 min-h-screen">
