@@ -40,6 +40,7 @@ export default function Login() {
         "http://localhost:5000/api/auth/login",
         { email, password }
       );
+      localStorage.setItem("token", data.token);
       dispatch(loginSuccess(data));
       router.push("/dashboard");
     } catch (error: any) {
