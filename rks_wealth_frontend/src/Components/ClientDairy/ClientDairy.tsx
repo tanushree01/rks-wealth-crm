@@ -192,26 +192,17 @@ const ClientDairy = () => {
               {loading ? (
                 <>
                   <Skeleton className="w-full h-10 mb-2" />
-                  <Skeleton className="w-full h-10 mb-2" />
-                  <Skeleton className="w-full h-10 mb-2" />
-                  <Skeleton className="w-full h-10 mb-2" />
-                  <Skeleton className="w-full h-10 mb-2" />
-                  <Skeleton className="w-full h-10 mb-2" />
-                  <Skeleton className="w-full h-10 mb-2" />
-                  <Skeleton className="w-full h-10 mb-2" />
-                  <Skeleton className="w-full h-10 mb-2" />
-                  <Skeleton className="w-full h-10 mb-2" />
                 </>
               ) : (
                 <div className="overflow-x-auto">
-                  <Card className="p-4 shadow-md rounded-xl overflow-hidden">
-                    <Table className="w-full border border-gray-300 rounded-lg overflow-hidden">
+                  <Card className="shadow-md rounded-xl overflow-hidden p-0">
+                    <Table className="w-full overflow-hidden">
                       <TableHeader className="bg-[#74A82E] text-white">
                         <TableRow>
                           {headers.map((header, index) => (
                             <TableHead
                               key={index}
-                              className="py-3 px-5 text-left uppercase text-white"
+                              className="py-1 px-5 text-left uppercase text-white"
                             >
                               {header}
                             </TableHead>
