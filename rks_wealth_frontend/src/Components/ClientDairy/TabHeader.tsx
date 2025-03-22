@@ -1,77 +1,56 @@
-'use client';
+"use client";
 
-import { useState } from "react";
-import ClientDairy from "./ClientDairy";
-import FoliomasterProfile from "../FolioMaster/FoliomasterProfile";
-import ClientDiaryProfile from "./ClientDiaryProfile";
+import { useState, useMemo, useCallback } from "react";
+import dynamic from "next/dynamic";
 
+// Dynamically import components to prevent unnecessary mounting
+const ClientDiaryProfile = dynamic(() => import("./ClientDiaryProfile"), { ssr: false });
+const FoliomasterProfile = dynamic(() => import("../FolioMaster/FoliomasterProfile"), { ssr: false });
 
-function TableHeader() {
+const TableHeader = () => {
   const [selectedTab, setSelectedTab] = useState("clientDiary");
 
-  const handleTabChange = (tab: any) => {
+  const handleTabChange = useCallback((tab: string) => {
     setSelectedTab(tab);
-  };
+  }, []);
+
+  // Memoized component rendering to avoid unnecessary re-renders
+  const renderComponent = useMemo(() => {
+    switch (selectedTab) {
+      case "folioMaster":
+        return <FoliomasterProfile />;
+      case "clientDiary":
+        return <ClientDiaryProfile />;
+      default:
+        return null;
+    }
+  }, [selectedTab]);
 
   return (
-    <>
-      <div className="row">
-        <div className="profile-head">
-          <ul className="nav nav-tabs poppins-black-italic" id="myTab" role="tablist">
-            <li className="nav-item">
-              <button
-                className={`nav-link ${selectedTab === "clientDiary" ? "active" : ""}`}
-                onClick={() => handleTabChange("clientDiary")}
-              >
-                Client Diary
-              </button>
-            </li>
-            <li className="nav-item">
-              <button
-                className={`nav-link ${selectedTab === "folioMaster" ? "active" : ""}`}
-                onClick={() => handleTabChange("folioMaster")}
-              >
-                Folio Master
-              </button>
-            </li>
-            <li className="nav-item">
-              <button
-                className={`nav-link ${selectedTab === "longTerm" ? "active" : ""}`}
-                onClick={() => handleTabChange("longTerm")}
-              >
-                Long Term
-              </button>
-            </li>
-            <li className="nav-item">
-              <button
-                className={`nav-link ${selectedTab === "topSchemeSubscription" ? "active" : ""}`}
-                onClick={() => handleTabChange("topSchemeSubscription")}
-              >
-                Top Scheme Subscription
-              </button>
-            </li>
-            <li className="nav-item">
-              <button
-                className={`nav-link ${selectedTab === "transaction" ? "active" : ""}`}
-                onClick={() => handleTabChange("transaction")}
-              >
-                Transaction
-              </button>
-            </li>
-          </ul>
-          <div className="container-fluid">
-            <div id="myTabContent">
-              {selectedTab === "folioMaster" && <ClientDiaryProfile/>}
-             {selectedTab === "longTerm" && <FoliomasterProfile/>}
-              {/*  {selectedTab === "topSchemeSubscription" && <LeaveHistory />}
-              {selectedTab === "transaction" && <MonthlyReport />}
-              {selectedTab === "clientDiary" && <MyTeam />} */}
-            </div>
-          </div>
+    <div className="p-6 bg-gray-100 min-h-screen">
+      <div className="mt-1 bg-white shadow-md rounded-lg p-4">
+        <div className="flex space-x-4 border-b pb-2">
+          <button
+            className={`px-4 py-2 rounded-t-lg font-semibold ${
+              selectedTab === "clientDiary" ? "bg-[#2c476a] text-white" : "bg-gray-200 text-gray-800"
+            }`}
+            onClick={() => handleTabChange("clientDiary")}
+          >
+            Client Diary
+          </button>
+          <button
+            className={`px-4 py-2 rounded-t-lg font-semibold ${
+              selectedTab === "folioMaster" ? "bg-[#2c476a] text-white" : "bg-gray-200 text-gray-800"
+            }`}
+            onClick={() => handleTabChange("folioMaster")}
+          >
+            Folio Master
+          </button>
         </div>
+        <div className="p-4">{renderComponent}</div>
       </div>
-    </>
+    </div>
   );
-}
+};
 
 export default TableHeader;
