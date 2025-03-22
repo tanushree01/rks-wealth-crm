@@ -124,7 +124,7 @@ const Transaction = () => {
   return (
     <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
         <main className="p-0 bg-gray-50 dark:bg-gray-900 min-h-screen">
-          <div className="flex-1 p-6">
+          <div className="flex-1 ps-6 pse-6 pt-2">
             {/* Scrollable Table Container */}
             <div
               className="overflow-x-auto"
@@ -174,6 +174,12 @@ const Transaction = () => {
               {loading ? (
                 <>
                   <Skeleton className="w-full h-10 mb-2" />
+                  <Skeleton className="w-full h-10 mb-2" />
+                  <Skeleton className="w-full h-10 mb-2" />
+                  <Skeleton className="w-full h-10 mb-2" />
+                  <Skeleton className="w-full h-10 mb-2" />
+                  <Skeleton className="w-full h-10 mb-2" />
+                  <Skeleton className="w-full h-10 mb-2" />
                 </>
               ) : (
                 <div className="overflow-x-auto">
@@ -192,20 +198,20 @@ const Transaction = () => {
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {diaryData.map((entry: any, index: any) => (
+                        {(diaryData || []).length > 0? diaryData.map((entry: any, index: any) => (
                           <TableRow
                             key={index}
                             className={`transition hover:bg-gray-100 cursor-pointer ${
                               index % 2 === 0 ? "bg-gray-50" : "bg-white"
                             }`}
-                            onClick={() => {
-                              const query = {
-                                FAMILY_HEAD: entry.FAMILY_HEAD,
-                                page: 1,
-                                limit: 100
-                              };
-                              router.push({ pathname: "/client/diary", query });
-                            }}
+                            // onClick={() => {
+                            //   const query = {
+                            //     FAMILY_HEAD: entry.FAMILY_HEAD,
+                            //     page: 1,
+                            //     limit: 10
+                            //   };
+                            //   router.push({ pathname: "/client/diary", query });
+                            // }}
                           >
                             {headers.map((header, idx) => (
                               <TableCell
@@ -216,7 +222,7 @@ const Transaction = () => {
                               </TableCell>
                             ))}
                           </TableRow>
-                        ))}
+                        )):<div className="flex justify-center items-center h-[20vh]">No transaction data</div>}
                       </TableBody>
                     </Table>
                   </Card>

@@ -175,6 +175,12 @@ const Longterm = () => {
               {loading ? (
                 <>
                   <Skeleton className="w-full h-10 mb-2" />
+                  <Skeleton className="w-full h-10 mb-2" />
+                  <Skeleton className="w-full h-10 mb-2" />
+                  <Skeleton className="w-full h-10 mb-2" />
+                  <Skeleton className="w-full h-10 mb-2" />
+                  <Skeleton className="w-full h-10 mb-2" />
+                  <Skeleton className="w-full h-10 mb-2" />
                 </>
               ) : (
                 <div className="overflow-x-auto">
@@ -193,20 +199,20 @@ const Longterm = () => {
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {diaryData.map((entry: any, index: any) => (
+                        {(diaryData || []).length > 0?diaryData.map((entry: any, index: any) => (
                           <TableRow
                             key={index}
                             className={`transition hover:bg-gray-100 cursor-pointer ${
                               index % 2 === 0 ? "bg-gray-50" : "bg-white"
                             }`}
-                            onClick={() => {
-                              const query = {
-                                FAMILY_HEAD: entry.FAMILY_HEAD,
-                                page: 1,
-                                limit: 100
-                              };
-                              router.push({ pathname: "/client/diary", query });
-                            }}
+                            // onClick={() => {
+                            //   const query = {
+                            //     FAMILY_HEAD: entry.FAMILY_HEAD,
+                            //     page: 1,
+                            //     limit: 100
+                            //   };
+                            //   router.push({ pathname: "/client/diary", query });
+                            // }}
                           >
                             {headers.map((header, idx) => (
                               <TableCell
@@ -217,7 +223,7 @@ const Longterm = () => {
                               </TableCell>
                             ))}
                           </TableRow>
-                        ))}
+                        )):<div className="flex justify-center items-center h-[20vh]">No transaction data</div>}
                       </TableBody>
                     </Table>
                   </Card>

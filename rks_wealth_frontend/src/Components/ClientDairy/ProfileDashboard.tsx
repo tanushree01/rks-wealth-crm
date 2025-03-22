@@ -89,13 +89,13 @@ const ProfileDashboard = () => {
         </CardContent>
       </Card>
       <Card className="w-full p-6 mt-4">
-      <Tabs defaultValue="profile">
+      <Tabs defaultValue="foliomaster" >
           <TabsList className="flex justify-center mb-6">
             <TabsTrigger value="foliomaster">Folio Master</TabsTrigger>
             <TabsTrigger value="longterm">Long Term</TabsTrigger>
             <TabsTrigger value="transaction">90 Days Transaction</TabsTrigger>
           </TabsList>
-          <TabsContent value="foliomaster">
+          <TabsContent value="foliomaster" >
             <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Folios/>
             </CardContent>
@@ -107,7 +107,6 @@ const ProfileDashboard = () => {
           </TabsContent>
           <TabsContent value="transaction">
             <CardContent> 
-
              <Transaction/>
             </CardContent>
           </TabsContent>
