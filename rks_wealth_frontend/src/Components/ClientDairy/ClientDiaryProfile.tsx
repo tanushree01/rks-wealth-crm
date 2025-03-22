@@ -84,10 +84,10 @@ const ClientDiaryProfile: React.FC = () => {
             </Card>
           </section>
 
-          {/* <section className="mt-8">
+          <section className="mt-8">
             <TableHeader />
           </section>
-           */}
+          
         </>
       )}
     </div>
