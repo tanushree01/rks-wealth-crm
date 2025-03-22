@@ -2,12 +2,14 @@
 
 import { useState } from "react";
 import ClientDairy from "./ClientDairy";
+import FoliomasterProfile from "../FolioMaster/FoliomasterProfile";
+import ClientDiaryProfile from "./ClientDiaryProfile";
 
 
 function TableHeader() {
   const [selectedTab, setSelectedTab] = useState("clientDiary");
 
-  const handleTabChange = (tab) => {
+  const handleTabChange = (tab: any) => {
     setSelectedTab(tab);
   };
 
@@ -59,9 +61,9 @@ function TableHeader() {
           </ul>
           <div className="container-fluid">
             <div id="myTabContent">
-              {selectedTab === "folioMaster" && <ClientDairy/>}
-              {/* {selectedTab === "longTerm" && <PendingLeaveReq />}
-              {selectedTab === "topSchemeSubscription" && <LeaveHistory />}
+              {selectedTab === "folioMaster" && <ClientDiaryProfile/>}
+             {selectedTab === "longTerm" && <FoliomasterProfile/>}
+              {/*  {selectedTab === "topSchemeSubscription" && <LeaveHistory />}
               {selectedTab === "transaction" && <MonthlyReport />}
               {selectedTab === "clientDiary" && <MyTeam />} */}
             </div>
