@@ -9,7 +9,7 @@ const Profile = () => {
   const user = useSelector((state: RootState) => state.auth.user);
 
   return (
-    <div className="flex h-screen w-screen bg-gradient-to-r from-green-500 via-cyan-500 to-blue-500">
+    <div className="flex h-screen w-screen bg-white text-black">
       {/* Sidebar */}
       <Sidebar isSidebarOpen={isSidebarOpen} />
 
@@ -21,9 +21,9 @@ const Profile = () => {
         {/* Profile Section */}
         <div className="flex flex-col justify-center items-center flex-1 px-4">
           {user ? (
-            <div className="bg-white/10 backdrop-blur-xl rounded-2xl shadow-xl p-10 text-center text-white w-full max-w-2xl border border-white/20">
+            <div className="bg-white rounded-2xl shadow-xl p-10 text-center text-black w-full max-w-2xl border border-gray-300">
               {/* Profile Image */}
-              <div className="w-32 h-32 flex items-center justify-center rounded-full bg-white/30 text-4xl font-semibold mx-auto mb-6 shadow-md border-4 border-white/40">
+              <div className="w-32 h-32 flex items-center justify-center rounded-full bg-gray-200 text-4xl font-semibold mx-auto mb-6 shadow-md border-4 border-gray-400">
                 {user.firstName[0]}
                 {user.lastName[0]}
               </div>
@@ -32,10 +32,10 @@ const Profile = () => {
               <h1 className="text-4xl font-bold tracking-wide">
                 {user.firstName} {user.lastName}
               </h1>
-              <p className="mt-1 text-lg opacity-80">{user.userType}</p>
+              <p className="mt-1 text-lg text-gray-600">{user.userType}</p>
 
               {/* Additional Info */}
-              <div className="mt-6 space-y-4 text-lg text-white/90">
+              <div className="mt-6 space-y-4 text-lg text-gray-800">
                 <p>
                   <strong className="font-semibold">Email:</strong> {user.email}
                 </p>
@@ -57,7 +57,7 @@ const Profile = () => {
               </div>
             </div>
           ) : (
-            <div className="text-center text-white text-xl opacity-80">
+            <div className="text-center text-black text-xl opacity-80">
               No user data available
             </div>
           )}
