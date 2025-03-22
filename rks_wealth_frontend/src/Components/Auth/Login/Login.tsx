@@ -17,6 +17,9 @@ import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff } from "lucide-react"; // Import icons
+import { loginSuccess } from "@/store/slices/authSlice";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/store";
 
 export default function Login() {
   const [loading, setLoading] = useState(false);
@@ -25,6 +28,7 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -36,7 +40,7 @@ export default function Login() {
         "http://localhost:5000/api/auth/login",
         { email, password }
       );
-
+      dispatch(loginSuccess(data));
       router.push("/dashboard");
     } catch (error: any) {
       setError(error.response?.data?.message || "Invalid email or password.");

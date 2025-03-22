@@ -1,7 +1,11 @@
 import { Menu, User } from "lucide-react";
 import { Button } from "../ui/button";
+import { RootState } from "@/store";
+import { useSelector } from "react-redux";
 
 const Header = ({ setIsSidebarOpen }: { setIsSidebarOpen: any }) => {
+  const user = useSelector((state: RootState) => state.auth.user);
+
   return (
     <header className="bg-white dark:bg-gray-900 p-4 px-6 flex justify-between items-center shadow-md border-b border-gray-200 dark:border-gray-700">
       <Button
@@ -24,7 +28,7 @@ const Header = ({ setIsSidebarOpen }: { setIsSidebarOpen: any }) => {
           <User className="text-gray-800 dark:text-white w-5 h-5" />
         </div>
         <span className="text-gray-700 dark:text-gray-300 text-sm">
-          RKS Wealth
+          {user?.firstName}
         </span>
       </div>
     </header>
