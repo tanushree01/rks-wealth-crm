@@ -211,7 +211,9 @@ const ClientDairy = () => {
                                 FAMILY_HEAD: entry.FAMILY_HEAD,
                                 IWELL_CODE: entry.IWELL_CODE,
                                 page: 1,
-                                limit: 100
+                                limit: 100,
+                                MintPAN: entry.PAN,
+                                FolioPAN: entry.PAN,
                               };
                               router.push({ pathname: "/client/diary", query });
                             }}
