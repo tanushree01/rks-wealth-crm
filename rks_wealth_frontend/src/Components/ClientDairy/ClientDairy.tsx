@@ -197,12 +197,6 @@ const ClientDairy = () => {
                           className={`text-black ${
                             index % 2 === 0 ? "bg-gray-100" : "bg-white"
                           } hover:bg-gray-200 cursor-pointer transition`}
-                          onClick={() =>
-                            router.push({
-                              pathname: "/foliomaster",
-                              query: { FolioPAN: entry.PAN },
-                            })
-                          }
                         >
                           {headers.map((header, idx) => (
                             <td
