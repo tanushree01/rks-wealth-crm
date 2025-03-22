@@ -11,10 +11,19 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "../ui/pagination"; // Import Pagination component
+} from "../ui/pagination";
 import axios from "axios";
 import { Skeleton } from "../ui/skeleton";
 import { useRouter } from "next/router";
+import { Card } from "../ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../ui/table";
 
 const ClientDairy = () => {
   const router = useRouter();
@@ -132,7 +141,7 @@ const ClientDairy = () => {
           <div className="text-sm text-gray-600 dark:text-gray-300">User</div>
         </header>
 
-        <main className="p-6 bg-gray-50 dark:bg-gray-900 min-h-screen">
+        <main className="p-0 bg-gray-50 dark:bg-gray-900 min-h-screen">
           <div className="flex-1 p-6">
             {/* Scrollable Table Container */}
             <div
@@ -175,71 +184,61 @@ const ClientDairy = () => {
                   onClick={handleSearch}
                   className="flex items-center px-4 py-2 rounded-lg bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-md hover:shadow-lg hover:opacity-90 transition"
                 >
-                  <Search className="mr-2" /> Search
+                  <Search />
+                  Search
                 </Button>
               </div>
 
               {loading ? (
                 <>
                   <Skeleton className="w-full h-10 mb-2" />
-                  <Skeleton className="w-full h-10 mb-2" />
-                  <Skeleton className="w-full h-10 mb-2" />
-                  <Skeleton className="w-full h-10 mb-2" />
-                  <Skeleton className="w-full h-10 mb-2" />
-                  <Skeleton className="w-full h-10 mb-2" />
-                  <Skeleton className="w-full h-10 mb-2" />
-                  <Skeleton className="w-full h-10 mb-2" />
-                  <Skeleton className="w-full h-10 mb-2" />
-                  <Skeleton className="w-full h-10 mb-2" />
                 </>
               ) : (
                 <div className="overflow-x-auto">
-                  <table className="w-full min-w-max border-collapse border border-gray-300">
-                    <thead>
-                      <tr className="bg-[#74A82E] text-white">
-                        {headers.map((header, index) => (
-                          <th
-                            key={index}
-                            className="py-3 px-5 border-b border-gray-400 text-left uppercase"
-                          >
-                            {header}
-                          </th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {diaryData.map((entry: any, index: number) => (
-                        <tr
-                          key={index}
-                          className={`text-black ${
-                            index % 2 === 0 ? "bg-gray-100" : "bg-white"
-                          } hover:bg-gray-200 cursor-pointer transition`}
-                          onClick={() => {
-                            const query = {
-                              FolioPAN: entry.PAN,
-                              MintPAN: entry.PAN,
-                              EMAIL: entry.EMAIL,
-                              MOBILE: entry.MOBILE,
-                            };
-
-                            router.push({
-                              pathname: "/foliomaster", // Adjust this to your dashboard page's path
-                              query,
-                            });
-                          }}
-                        >
-                          {headers.map((header, idx) => (
-                            <td
-                              key={idx}
-                              className="py-3 px-5 border-b border-gray-300"
+                  <Card className="shadow-md rounded-xl overflow-hidden p-0">
+                    <Table className="w-full overflow-hidden">
+                      <TableHeader className="bg-[#74A82E] text-white">
+                        <TableRow>
+                          {headers.map((header, index) => (
+                            <TableHead
+                              key={index}
+                              className="py-1 px-5 text-left uppercase text-white"
                             >
-                              {entry[header]}
-                            </td>
+                              {header}
+                            </TableHead>
                           ))}
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {diaryData.map((entry: any, index: any) => (
+                          <TableRow
+                            key={index}
+                            className={`transition hover:bg-gray-100 cursor-pointer ${
+                              index % 2 === 0 ? "bg-gray-50" : "bg-white"
+                            }`}
+                            onClick={() => {
+                              const query = {
+                                FolioPAN: entry.PAN,
+                                MintPAN: entry.PAN,
+                                EMAIL: entry.EMAIL,
+                                MOBILE: entry.MOBILE,
+                              };
+                              router.push({ pathname: "/foliomaster", query });
+                            }}
+                          >
+                            {headers.map((header, idx) => (
+                              <TableCell
+                                key={idx}
+                                className="py-3 px-5 border-b border-gray-300"
+                              >
+                                {entry[header]}
+                              </TableCell>
+                            ))}
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </Card>
                 </div>
               )}
               <Pagination>
