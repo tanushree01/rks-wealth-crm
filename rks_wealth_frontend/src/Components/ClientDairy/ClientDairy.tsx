@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "../Sidebar/Sidebar";
-import { Menu } from "lucide-react";
+import { Menu, Search, X } from "lucide-react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import {
@@ -25,13 +25,23 @@ const ClientDairy = () => {
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
+  const [searchColumn, setSearchColumn] = useState<string>("");
+  const [searchValue, setSearchValue] = useState<string>("");
+  const [searchParams, setSearchParams] = useState<{ [key: string]: string }>(
+    {}
+  );
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       try {
+        const params: any = { page: currentPage, ...searchParams };
+
         const response = await axios.get(
-          `http://localhost:5000/api/client/diary`
+          `http://localhost:5000/api/client/diary`,
+          { params }
         );
+
         setLoading(false);
         setDiaryData(response.data?.data);
         setTotalPages(response.data?.totalPages);
@@ -42,7 +52,7 @@ const ClientDairy = () => {
     };
 
     fetchData();
-  }, [currentPage]);
+  }, [currentPage, searchParams]);
 
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) {
@@ -89,6 +99,20 @@ const ClientDairy = () => {
   };
   const headers = diaryData.length > 0 ? Object.keys(diaryData[0]) : [];
 
+  const handleSearch = () => {
+    if (searchColumn.trim() && searchValue.trim()) {
+      setSearchParams({ [searchColumn]: searchValue });
+      setCurrentPage(1);
+    }
+  };
+
+  const handleClearSearch = () => {
+    setSearchColumn("");
+    setSearchValue("");
+    setSearchParams({});
+    setCurrentPage(1);
+  };
+
   return (
     <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
       <Sidebar isSidebarOpen={isSidebarOpen} />
@@ -115,69 +139,85 @@ const ClientDairy = () => {
               className="overflow-x-auto"
               style={{ width: "calc(100vw - 300px)" }}
             >
-              <div className="max-w-screen overflow-x-auto">
-                {loading ? (
-                  <>
-                    <Skeleton className="w-full h-10 mb-2" />
-                    <Skeleton className="w-full h-10 mb-2" />
-                    <Skeleton className="w-full h-10 mb-2" />
-                    <Skeleton className="w-full h-10 mb-2" />
-                    <Skeleton className="w-full h-10 mb-2" />
-                    <Skeleton className="w-full h-10 mb-2" />
-                    <Skeleton className="w-full h-10 mb-2" />
-                    <Skeleton className="w-full h-10 mb-2" />
-                    <Skeleton className="w-full h-10 mb-2" />
-                    <Skeleton className="w-full h-10 mb-2" />
-                  </>
-                ) : (
-                  <div className="w-full h-full overflow-auto">
-                    <div className="overflow-x-auto max-h-full">
-                      <table className="w-full min-w-max border-collapse border border-gray-300">
-                        <thead>
-                          <tr className="bg-[#74A82E] text-white sticky top-0 z-10">
-                            {headers.map((header, index) => (
-                              <th
-                                key={index}
-                                className="py-3 px-5 border-b border-gray-400 text-left uppercase"
-                              >
-                                {header}
-                              </th>
-                            ))}
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {diaryData.map((entry: any, index: number) => (
-                            <tr
-                              key={index}
-                              className={`text-black ${index % 2 === 0 ? "bg-gray-100" : "bg-white"
-                                } hover:bg-gray-200 cursor-pointer transition`}
-                              onClick={() => {
-                                const query = {
-                                  FolioPAN: entry.PAN,
-                                  MintPAN: entry.PAN,
-                                  EMAIL: entry.EMAIL,
-                                  MOBILE: entry.MOBILE,
-                                };
-
-                                router.push({
-                                  pathname: "/foliomaster", // Adjust this to your dashboard page's path
-                                  query,
-                                });
-                              }}
-                            >
-                              {headers.map((header, idx) => (
-                                <td key={idx} className="py-3 px-5 border-b border-gray-300">
-                                  {entry[header]}
-                                </td>
-                              ))}
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                )}
+              <div className="flex items-center gap-4 mb-4">
+                <select
+                  className="border rounded-md p-2"
+                  value={searchColumn}
+                  onChange={(e) => setSearchColumn(e.target.value)}
+                >
+                  <option value="">Select Column</option>
+                  {headers.map((header, index) => (
+                    <option key={index} value={header}>
+                      {header}
+                    </option>
+                  ))}
+                </select>
+                <div className="relative">
+                  <Input
+                    type="text"
+                    placeholder="Search value..."
+                    value={searchValue}
+                    onChange={(e) => setSearchValue(e.target.value)}
+                    className="border rounded-md p-2 w-60 pr-10"
+                  />
+                  {searchValue && (
+                    <X
+                      className="absolute right-3 top-3 cursor-pointer text-gray-500"
+                      size={18}
+                      onClick={handleClearSearch}
+                    />
+                  )}
+                </div>
+                <Button variant="outline" onClick={handleSearch}>
+                  <Search className="mr-2" /> Search
+                </Button>
               </div>
+
+              {loading ? (
+                <Skeleton className="w-full h-10 mb-2" />
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full min-w-max border-collapse border border-gray-300">
+                    <thead>
+                      <tr className="bg-[#74A82E] text-white">
+                        {headers.map((header, index) => (
+                          <th
+                            key={index}
+                            className="py-3 px-5 border-b border-gray-400 text-left uppercase"
+                          >
+                            {header}
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {diaryData.map((entry: any, index: number) => (
+                        <tr
+                          key={index}
+                          className={`text-black ${
+                            index % 2 === 0 ? "bg-gray-100" : "bg-white"
+                          } hover:bg-gray-200 cursor-pointer transition`}
+                          onClick={() =>
+                            router.push({
+                              pathname: "/foliomaster",
+                              query: { FolioPAN: entry.PAN },
+                            })
+                          }
+                        >
+                          {headers.map((header, idx) => (
+                            <td
+                              key={idx}
+                              className="py-3 px-5 border-b border-gray-300"
+                            >
+                              {entry[header]}
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
               <Pagination>
                 <PaginationContent>
                   <PaginationItem>
