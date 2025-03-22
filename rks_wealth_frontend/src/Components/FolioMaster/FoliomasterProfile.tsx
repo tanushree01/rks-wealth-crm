@@ -9,16 +9,14 @@ import {
   TableRow,
 } from "@/Components/ui/table";
 
-// Define the type of the data you expect
 interface DynamicData {
-  [key: string]: any; // Replace `any` with specific types if known
+  [key: string]: any;
 }
 
 const FoliomasterProfile: React.FC = () => {
   const router = useRouter();
   const { FolioPAN, MintPAN, EMAIL, MOBILE } = router.query;
 
-  // Explicitly type dynamicData as an array of objects
   const [dynamicData, setDynamicData] = useState<DynamicData[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -35,14 +33,10 @@ const FoliomasterProfile: React.FC = () => {
             throw new Error("Failed to fetch data");
           }
           const result = await response.json();
-          console.log("API Response:", result);
-
-          // Check if response contains 'data' and ensure it's an array
           if (result?.data && Array.isArray(result.data)) {
             setDynamicData(result.data);
           } else {
-            console.error("Unexpected API response format:", result);
-            setDynamicData([]); // Fallback to an empty array
+            setDynamicData([]);
           }
         } catch (error: any) {
           setError(error.message);
@@ -55,53 +49,58 @@ const FoliomasterProfile: React.FC = () => {
     }
   }, [FolioPAN, MintPAN, EMAIL, MOBILE]);
 
-  // Extract table headers from the first object in the array
   const tableHeaders =
     dynamicData.length > 0 ? Object.keys(dynamicData[0]) : [];
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
-      {/* Header */}
-      <header className="bg-white shadow rounded-lg p-4 flex justify-between items-center">
-        <h1 className="text-2xl font-bold">User Dashboard</h1>
-        <div>
-          <span className="text-gray-500">Welcome, || "User"!</span>
-        </div>
+    <div className="p-6 bg-gradient-to-r from-blue-100 to-purple-200 min-h-screen">
+      <header className="bg-white shadow-lg rounded-xl p-6 flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold text-gray-800">User Dashboard</h1>
+        <span className="text-gray-600">Welcome, User!</span>
       </header>
 
       {loading ? (
-        <p className="text-center text-gray-600 mt-6">Loading...</p>
+        <p className="text-center text-gray-600 mt-6 text-lg animate-pulse">
+          Loading...
+        </p>
       ) : error ? (
-        <p className="text-center text-red-600 mt-6">Error: {error}</p>
-      ) : dynamicData.length == 0 ? (
-        <p className="text-center text-gray-600 mt-6">No data available.</p>
+        <p className="text-center text-red-600 mt-6 text-lg">Error: {error}</p>
+      ) : dynamicData.length === 0 ? (
+        <p className="text-center text-gray-600 mt-6 text-lg">
+          No data available.
+        </p>
       ) : (
         <>
-          {/* Dynamic Data Cards */}
           <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
             {Object.entries(dynamicData[0]).map(([key, value], index) => (
-              <Card key={index} className="bg-white shadow rounded-lg p-4">
+              <Card
+                key={index}
+                className="bg-white shadow-lg rounded-lg p-6 transition-transform transform hover:scale-105 hover:shadow-xl"
+              >
                 <CardContent>
-                  <h2 className="text-sm font-medium text-gray-500 mb-1">
+                  <h2 className="text-sm font-medium text-gray-500 uppercase">
                     {key}
                   </h2>
-                  <p className="text-base font-semibold">{value}</p>
+                  <p className="text-lg font-semibold text-gray-800 mt-2">
+                    {value}
+                  </p>
                 </CardContent>
               </Card>
             ))}
           </section>
 
-          {/* Dynamic Investment Table */}
           <section className="mt-8">
-            <h2 className="text-2xl font-bold mb-4">Investment Details</h2>
-            <div className="overflow-x-auto bg-white shadow rounded-lg">
+            <h2 className="text-2xl font-bold mb-4 text-gray-800">
+              Investment Details
+            </h2>
+            <div className="overflow-x-auto bg-white shadow-lg rounded-lg p-4">
               <Table>
                 <TableHead>
-                  <TableRow>
+                  <TableRow className="bg-gray-100">
                     {tableHeaders.map((header, index) => (
                       <TableCell
                         key={index}
-                        className="font-bold text-gray-700"
+                        className="font-bold text-gray-700 p-3"
                       >
                         {header}
                       </TableCell>
@@ -110,9 +109,11 @@ const FoliomasterProfile: React.FC = () => {
                 </TableHead>
                 <TableBody>
                   {dynamicData.map((row, rowIndex) => (
-                    <TableRow key={rowIndex}>
+                    <TableRow key={rowIndex} className="hover:bg-gray-50">
                       {tableHeaders.map((header, colIndex) => (
-                        <TableCell key={colIndex}>{row[header]}</TableCell>
+                        <TableCell key={colIndex} className="p-3">
+                          {row[header]}
+                        </TableCell>
                       ))}
                     </TableRow>
                   ))}
