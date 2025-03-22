@@ -17,10 +17,10 @@ const TableHeader = () => {
   // Memoized component rendering to avoid unnecessary re-renders
   const renderComponent = useMemo(() => {
     switch (selectedTab) {
-      // case "folioMaster":
-      //   return <FoliomasterProfile />;
-      case "clientDiary":
-        return <ClientDiaryProfile />;
+      case "folioMaster":
+        return <FoliomasterProfile />;
+      // case "clientDiary":
+      //   return <ClientDiaryProfile />;
       default:
         return null;
     }
