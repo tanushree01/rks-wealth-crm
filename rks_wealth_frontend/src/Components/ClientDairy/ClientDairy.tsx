@@ -139,9 +139,9 @@ const ClientDairy = () => {
               className="overflow-x-auto"
               style={{ width: "calc(100vw - 300px)" }}
             >
-              <div className="flex items-center gap-4 mb-4">
+              <div className="flex flex-wrap items-center gap-4 mb-4 bg-white p-4 rounded-lg shadow-md">
                 <select
-                  className="border rounded-md p-2"
+                  className="border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none transition"
                   value={searchColumn}
                   onChange={(e) => setSearchColumn(e.target.value)}
                 >
@@ -152,23 +152,29 @@ const ClientDairy = () => {
                     </option>
                   ))}
                 </select>
+
                 <div className="relative">
                   <Input
                     type="text"
                     placeholder="Search value..."
                     value={searchValue}
                     onChange={(e) => setSearchValue(e.target.value)}
-                    className="border rounded-md p-2 w-60 pr-10"
+                    className="border border-gray-300 rounded-lg px-4 py-2 pr-10 w-60 focus:ring-2 focus:ring-blue-400 focus:outline-none transition"
                   />
                   {searchValue && (
                     <X
-                      className="absolute right-3 top-3 cursor-pointer text-gray-500"
+                      className="absolute right-3 top-3 cursor-pointer text-gray-500 hover:text-gray-700 transition"
                       size={18}
                       onClick={handleClearSearch}
                     />
                   )}
                 </div>
-                <Button variant="outline" onClick={handleSearch}>
+
+                <Button
+                  variant="outline"
+                  onClick={handleSearch}
+                  className="flex items-center px-4 py-2 rounded-lg bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-md hover:shadow-lg hover:opacity-90 transition"
+                >
                   <Search className="mr-2" /> Search
                 </Button>
               </div>
