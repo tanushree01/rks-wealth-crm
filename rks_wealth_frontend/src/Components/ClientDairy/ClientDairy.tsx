@@ -218,12 +218,11 @@ const ClientDairy = () => {
                             }`}
                             onClick={() => {
                               const query = {
-                                FolioPAN: entry.PAN,
-                                MintPAN: entry.PAN,
-                                EMAIL: entry.EMAIL,
-                                MOBILE: entry.MOBILE,
+                                FAMILY_HEAD: entry.FAMILY_HEAD,
+                                page: 1,
+                                limit: 100
                               };
-                              router.push({ pathname: "/foliomaster", query });
+                              router.push({ pathname: "/client/diary", query });
                             }}
                           >
                             {headers.map((header, idx) => (

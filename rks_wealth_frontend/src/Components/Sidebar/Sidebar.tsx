@@ -19,7 +19,7 @@ const Sidebar = ({ isSidebarOpen }: { isSidebarOpen: boolean }) => {
   // Define sidebar items
   const menuItems = [
     { href: "/dashboard", label: "Home", icon: Home },
-    { href: "/clientdairy", label: "Client Dairy", icon: BarChart },
+    { href: "/client", label: "Client Dairy", icon: BarChart },
     { href: "/foliomaster", label: "Folio Master", icon: Folder },
     { href: "/longterm", label: "Long Term", icon: Clock },
     { href: "/topschemes", label: "Top Scheme", icon: TrendingUp },
