@@ -10,14 +10,14 @@ RUN npm install
 # Copy the rest of the application
 COPY . .
 
-# Build the Next.js app
+# Build the Next.js app (Export for static hosting)
 RUN npm run build
 
 # Serve with Nginx
 FROM nginx:alpine
 
 # Copy built frontend from builder
-COPY --from=builder /app/.next /usr/share/nginx/html
+COPY --from=builder /app/out /usr/share/nginx/html
 
 # Copy custom Nginx config
 COPY nginx.conf /etc/nginx/conf.d/default.conf

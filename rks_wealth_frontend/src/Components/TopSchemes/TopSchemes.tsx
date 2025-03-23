@@ -47,7 +47,7 @@ const TopSchemes = () => {
         };
 
         const response = await axios.get(
-          `http://localhost:5000/api/client/topschemes`,
+          `/api/client/topschemes`,
           { params }
         );
         setLoading(false);
@@ -166,22 +166,27 @@ const TopSchemes = () => {
               <Pagination>
                 <PaginationContent>
                   <PaginationItem>
-                    <PaginationPrevious
-                      className="text-black"
+                    <button
+                      className="text-black disabled:opacity-50"
                       onClick={() => handlePageChange(currentPage - 1)}
                       disabled={currentPage === 1}
-                    />
+                    >
+                      <PaginationPrevious />
+                    </button>
                   </PaginationItem>
                   {renderPagination()}
                   <PaginationItem>
-                    <PaginationNext
-                      className="text-black"
+                    <button
+                      className="text-black disabled:opacity-50"
                       onClick={() => handlePageChange(currentPage + 1)}
                       disabled={currentPage === totalPages}
-                    />
+                    >
+                      <PaginationNext />
+                    </button>
                   </PaginationItem>
                 </PaginationContent>
               </Pagination>
+
             </div>
           </div>
         </main>

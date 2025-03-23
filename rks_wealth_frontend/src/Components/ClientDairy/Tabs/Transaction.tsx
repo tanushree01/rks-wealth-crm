@@ -46,7 +46,7 @@ const Transaction = () => {
         const params: any = { page: currentPage, limit: 10, ...searchParams,...router.query };
         delete params.IWELL_CODE
         const response = await axios.get(
-          `http://localhost:5000/api/client/transaction`,
+          `/api/client/transaction`,
           { params }
         );
 
@@ -231,22 +231,27 @@ const Transaction = () => {
               <Pagination>
                 <PaginationContent>
                   <PaginationItem>
-                    <PaginationPrevious
-                      className="text-black"
+                    <button
+                      className="text-black disabled:opacity-50"
                       onClick={() => handlePageChange(currentPage - 1)}
                       disabled={currentPage === 1}
-                    />
+                    >
+                      <PaginationPrevious />
+                    </button>
                   </PaginationItem>
                   {renderPagination()}
                   <PaginationItem>
-                    <PaginationNext
-                      className="text-black"
+                    <button
+                      className="text-black disabled:opacity-50"
                       onClick={() => handlePageChange(currentPage + 1)}
                       disabled={currentPage === totalPages}
-                    />
+                    >
+                      <PaginationNext />
+                    </button>
                   </PaginationItem>
                 </PaginationContent>
               </Pagination>
+
             </div>
           </div>
         </main>

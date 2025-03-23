@@ -34,7 +34,7 @@ const ProfileDashboard = () => {
       try {
         setLoading(true);
         const response = await fetch(
-          `http://localhost:5000/api/client/diary/one?PAN=${PAN}&page=${page}&limit=${limit}`
+          `/api/client/diary/one?PAN=${PAN}&page=${page}&limit=${limit}`
         );
 
         if (!response.ok) throw new Error("Failed to fetch data");
@@ -84,7 +84,7 @@ const ProfileDashboard = () => {
             <p className="text-red-500 text-center">Error: {error}</p>
           ) : (
             filteredData.length > 0 &&
-            filteredData.map(([key, value]) => (
+            filteredData.map(([key, value]:any) => (
               <div key={key} className=" rounded-lg shadow-sm p-2">
                 <strong className="capitalize block text-gray-700">
                   {key.replace(/_/g, " ")}:

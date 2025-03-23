@@ -48,7 +48,7 @@ const ClientDairy = () => {
         const params: any = { page: currentPage, limit: 10, ...searchParams };
 
         const response = await axios.get(
-          `http://localhost:5000/api/client/diary`,
+          `/api/client/diary`,
           { params }
         );
 
@@ -231,25 +231,30 @@ const ClientDairy = () => {
                   </Card>
                 </div>
               )}
-              <Pagination>
-                <PaginationContent>
-                  <PaginationItem>
-                    <PaginationPrevious
-                      className="text-black"
-                      onClick={() => handlePageChange(currentPage - 1)}
-                      disabled={currentPage === 1}
-                    />
-                  </PaginationItem>
-                  {renderPagination()}
-                  <PaginationItem>
-                    <PaginationNext
-                      className="text-black"
-                      onClick={() => handlePageChange(currentPage + 1)}
-                      disabled={currentPage === totalPages}
-                    />
-                  </PaginationItem>
-                </PaginationContent>
-              </Pagination>
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <button
+                    className="text-black disabled:opacity-50"
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                  >
+                    <PaginationPrevious />
+                  </button>
+                </PaginationItem>
+                {renderPagination()}
+                <PaginationItem>
+                  <button
+                    className="text-black disabled:opacity-50"
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                  >
+                    <PaginationNext />
+                  </button>
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+
             </div>
           </div>
         </main>

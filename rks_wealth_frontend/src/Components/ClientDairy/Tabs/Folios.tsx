@@ -54,7 +54,7 @@ const Folios = () => {
         params.MintPAN = params.PAN;
         delete params.PAN;
         const response = await axios.get(
-          `http://localhost:5000/api/client/foliomaster`,
+          `/api/client/foliomaster`,
           { params }
         );
 
@@ -233,22 +233,27 @@ const Folios = () => {
             <Pagination>
               <PaginationContent>
                 <PaginationItem>
-                  <PaginationPrevious
-                    className="text-black"
+                  <button
+                    className="text-black disabled:opacity-50"
                     onClick={() => handlePageChange(currentPage - 1)}
                     disabled={currentPage === 1}
-                  />
+                  >
+                    <PaginationPrevious />
+                  </button>
                 </PaginationItem>
                 {renderPagination()}
                 <PaginationItem>
-                  <PaginationNext
-                    className="text-black"
+                  <button
+                    className="text-black disabled:opacity-50"
                     onClick={() => handlePageChange(currentPage + 1)}
                     disabled={currentPage === totalPages}
-                  />
+                  >
+                    <PaginationNext />
+                  </button>
                 </PaginationItem>
               </PaginationContent>
             </Pagination>
+
           </div>
         </div>
       </main>

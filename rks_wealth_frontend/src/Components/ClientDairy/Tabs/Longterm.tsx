@@ -47,7 +47,7 @@ const Longterm = () => {
         delete params.IWELL_CODE
 
         const response = await axios.get(
-          `http://localhost:5000/api/client/longterm`,
+          `/api/client/longterm`,
           { params }
         );
 
@@ -229,25 +229,30 @@ const Longterm = () => {
                   </Card>
                 </div>
               )}
-              <Pagination>
+            <Pagination>
                 <PaginationContent>
                   <PaginationItem>
-                    <PaginationPrevious
-                      className="text-black"
+                    <button
+                      className="text-black disabled:opacity-50"
                       onClick={() => handlePageChange(currentPage - 1)}
                       disabled={currentPage === 1}
-                    />
+                    >
+                      <PaginationPrevious />
+                    </button>
                   </PaginationItem>
                   {renderPagination()}
                   <PaginationItem>
-                    <PaginationNext
-                      className="text-black"
+                    <button
+                      className="text-black disabled:opacity-50"
                       onClick={() => handlePageChange(currentPage + 1)}
                       disabled={currentPage === totalPages}
-                    />
+                    >
+                      <PaginationNext />
+                    </button>
                   </PaginationItem>
                 </PaginationContent>
               </Pagination>
+
             </div>
           </div>
         </main>
