@@ -1,11 +1,12 @@
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { Card, CardContent } from "@/Components/ui/card";
+import { Card } from "@/Components/ui/card";
 import {
   Table,
   TableBody,
   TableCell,
   TableHead,
+  TableHeader,
   TableRow,
 } from "@/Components/ui/table";
 
@@ -13,41 +14,30 @@ interface DynamicData {
   [key: string]: any;
 }
 
-const FoliomasterProfile: React.FC = () => {
+const LongTermProfile: React.FC = () => {
   const router = useRouter();
-  const { FolioPAN, MintPAN, EMAIL, MOBILE } = router.query;
-  console.log("FolioPAN:", FolioPAN, "MintPAN:", MintPAN);
+  const { PAN } = router.query;
 
   const [dynamicData, setDynamicData] = useState<DynamicData[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!router.isReady) {
-      console.log("Router is not ready yet");
-      return;
-    }
-    // Ensure router is ready
-    if (!FolioPAN || !MintPAN) return; // Ensure necessary params are available
+    if (!router.isReady || !PAN) return;
 
     const fetchData = async () => {
       try {
         setLoading(true);
-        const apiUrl = `http://localhost:5000/api/client/foliomaster?FolioPAN=${FolioPAN}&MintPAN=${MintPAN}&page=1&limit=10`;
-
-        console.log("Fetching API:", apiUrl); // Debugging
-
+        // const apiUrl = `http://localhost:5000/api/client/longterm?PAN=${PAN}&page=1&limit=10`;
+        const apiUrl = `http://localhost:5000/api/client/longterm?PAN=AQQPK6748P&page=1&limit=10`;
         const response = await fetch(apiUrl);
         if (!response.ok) {
           throw new Error(`Failed to fetch data: ${response.statusText}`);
         }
 
         const result = await response.json();
-        console.log("API Response:", result); // Debugging
-
         setDynamicData(result?.data ?? []);
       } catch (error: any) {
-        console.error("API Error:", error.message); // Debugging
         setError(error.message);
       } finally {
         setLoading(false);
@@ -55,7 +45,10 @@ const FoliomasterProfile: React.FC = () => {
     };
 
     fetchData();
-  }, [router.isReady, FolioPAN, MintPAN]);
+  }, [router.isReady, PAN]);
+
+  // Define headers based on expected API response
+  const headers = dynamicData.length > 0 ? Object.keys(dynamicData[0]) : [];
 
   return (
     <div className="p-6 bg-gradient-to-r from-blue-100 to-purple-200 min-h-screen">
@@ -80,31 +73,41 @@ const FoliomasterProfile: React.FC = () => {
             Investment Details
           </h2>
           <div className="overflow-x-auto bg-white shadow-lg rounded-lg p-4">
-            <Table>
-              <TableHead>
-                <TableRow className="bg-gray-100">
-                  {Object.keys(dynamicData[0]).map((header, index) => (
-                    <TableCell
-                      key={index}
-                      className="font-bold text-gray-700 p-3"
-                    >
-                      {header}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {dynamicData.map((row, rowIndex) => (
-                  <TableRow key={rowIndex} className="hover:bg-gray-50">
-                    {Object.keys(row).map((key, colIndex) => (
-                      <TableCell key={colIndex} className="p-3">
-                        {row[key]}
-                      </TableCell>
+            <Card className="shadow-md rounded-xl overflow-hidden p-0">
+              <Table className="w-full">
+                <TableHeader className="bg-[#74A82E] text-white">
+                  <TableRow>
+                    {headers.map((header, index) => (
+                      <TableHead
+                        key={index}
+                        className="py-1 px-5 text-left uppercase text-white"
+                      >
+                        {header}
+                      </TableHead>
                     ))}
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {dynamicData.map((entry: DynamicData, index: number) => (
+                    <TableRow
+                      key={index}
+                      className={`transition hover:bg-gray-100 cursor-pointer ${
+                        index % 2 === 0 ? "bg-gray-50" : "bg-white"
+                      }`}
+                    >
+                      {headers.map((header, idx) => (
+                        <TableCell
+                          key={idx}
+                          className="py-3 px-5 border-b border-gray-300"
+                        >
+                          {entry[header]}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </Card>
           </div>
         </section>
       )}
@@ -112,4 +115,4 @@ const FoliomasterProfile: React.FC = () => {
   );
 };
 
-export default FoliomasterProfile;
+export default LongTermProfile;
