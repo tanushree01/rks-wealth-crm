@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
-import { Card, CardContent } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Card, CardContent } from "@/Components/ui/card";
+import { Separator } from "@/Components/ui/separator";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/Components/ui/tabs";
 import Transaction from "@/Components/ClientDairy/Tabs/Transaction";
 import Folios from "./Tabs/Folios";
 import Longterm from "./Tabs/Longterm";
@@ -13,7 +13,7 @@ interface DynamicData {
 
 const ProfileDashboard = () => {
   const router = useRouter();
-  const { data, FAMILY_HEAD, page = "1", limit = "100" } = useMemo(() => router.query, [router.query]);
+  const { data,PAN, FAMILY_HEAD, page = "1", limit = "100" } = useMemo(() => router.query, [router.query]);
 
   const [dynamicData, setDynamicData] = useState<DynamicData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -28,7 +28,7 @@ const ProfileDashboard = () => {
       try {
         setLoading(true);
         const response = await fetch(
-          `http://localhost:5000/api/client/diary/one?PAN=AQQPK6748P&IWELL_CODE=311772238&page=${page}&limit=${limit}`
+          `http://localhost:5000/api/client/diary/one?PAN=${PAN}&page=${page}&limit=${limit}`
         );
 
         if (!response.ok) throw new Error("Failed to fetch data");
@@ -89,13 +89,13 @@ const ProfileDashboard = () => {
         </CardContent>
       </Card>
       <Card className="w-full p-6 mt-4">
-      <Tabs defaultValue="profile">
+      <Tabs defaultValue="foliomaster">
           <TabsList className="flex justify-center mb-6">
             <TabsTrigger value="foliomaster">Folio Master</TabsTrigger>
             <TabsTrigger value="longterm">Long Term</TabsTrigger>
             <TabsTrigger value="transaction">90 Days Transaction</TabsTrigger>
           </TabsList>
-          <TabsContent value="foliomaster">
+          <TabsContent value="foliomaster" > 
             <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Folios/>
             </CardContent>

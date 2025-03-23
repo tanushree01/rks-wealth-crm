@@ -23,7 +23,7 @@ const Sidebar = ({ isSidebarOpen }: { isSidebarOpen: boolean }) => {
     { href: "/dashboard", label: "Home", icon: Home },
     { href: "/client", label: "Client Dairy", icon: BarChart },
    
-    { href: "/clientdairy", label: "Client Dairy", icon: BarChart },
+    // { href: "/clientdairy", label: "Client Dairy", icon: BarChart },
     { href: "/topschemes", label: "Top Scheme", icon: TrendingUp },
     { href: "/profile", label: "Profile", icon: User },
   ];
