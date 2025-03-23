@@ -21,7 +21,7 @@ pipeline {
         stage('Push to Docker Hub') {
             steps {
                 script {
-                    sh 'docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"'
+                    sh 'docker login -u "shivamparvat" -p "Shivamdocker@6162"'
                     sh 'docker tag rks_backend mydockerhubuser/rks_backend:latest'
                     sh 'docker tag rks_frontend mydockerhubuser/rks_frontend:latest'
                     sh 'docker push mydockerhubuser/rks_backend:latest'
