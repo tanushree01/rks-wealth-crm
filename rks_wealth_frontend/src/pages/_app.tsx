@@ -12,8 +12,11 @@ export default function App({ Component, pageProps }: AppProps) {
     const token =
       typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
-    // Redirect to login if not authenticated
-    if (!token && router.pathname !== "/login") {
+    if (token && (router.pathname === "/" || router.pathname === "/login")) {
+      // Redirect to dashboard if authenticated
+      router.push("/dashboard");
+    } else if (!token && router.pathname !== "/login") {
+      // Redirect to login if not authenticated
       router.push("/login");
     }
   }, [router.pathname]);
