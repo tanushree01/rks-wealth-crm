@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        REPO = 'shivamgoswami2711/rks-wealth-crm' // Change to your repo
+        REPO = 'tanushree01/rks-wealth-crm' // Change to your repo
     }
 
     stages {
