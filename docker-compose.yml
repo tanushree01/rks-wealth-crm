@@ -1,7 +1,6 @@
-version: '3.8'
-
 services:
   backend:
+    image: shivamparvat/rks_backend:latest
     build: ./rks_wealth_backend
     container_name: rks_backend
     ports:
@@ -11,6 +10,7 @@ services:
     restart: always
 
   frontend:
+    image: shivamparvat/rks_frontend:latest
     build: ./rks_wealth_frontend
     container_name: rks_frontend
     ports:
@@ -18,3 +18,4 @@ services:
     depends_on:
       - backend
     restart: always
+
