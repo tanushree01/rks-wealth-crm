@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./rks_wealth_backend
+    container_name: rks_backend
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+    restart: always
+
+  frontend:
+    build: ./rks_wealth_frontend
+    container_name: rks_frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: always
