@@ -23,8 +23,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/Components//ui/table";
+import PaginationComponent from "@/Components/PaginationComponent/PaginationComponent";
+import Sidebar from "@/Components/Sidebar/Sidebar";
+import Header from "@/Components/Header/Header";
 
-const Folios = () => {
+const Folios = ({ isHeader = true }: { isHeader?: boolean }) => {
   const router = useRouter();
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -53,10 +56,7 @@ const Folios = () => {
         params.FolioPAN = params.PAN;
         params.MintPAN = params.PAN;
         delete params.PAN;
-        const response = await axios.get(
-          `/api/client/foliomaster`,
-          { params }
-        );
+        const response = await axios.get(`/api/client/foliomaster`, { params });
 
         setLoading(false);
         setDiaryData(response.data?.data);
@@ -131,132 +131,123 @@ const Folios = () => {
 
   return (
     <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
-      <main className="p-0 bg-gray-50 dark:bg-gray-900 min-h-screen">
-        <div className="flex-1 p-6">
-          {/* Scrollable Table Container */}
-          <div
-            className="overflow-x-auto"
-            style={{ width: "calc(100vw - 300px)" }}
-          >
-            <div className="flex flex-wrap items-center gap-4 mb-4 bg-white p-4 rounded-lg shadow-md">
-              <select
-                className="border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none transition"
-                value={searchColumn}
-                onChange={(e) => setSearchColumn(e.target.value)}
+      {isHeader && <Sidebar isSidebarOpen={isSidebarOpen} />}
+      <div className="flex-1 flex flex-col">
+        {isHeader && <Header setIsSidebarOpen={setIsSidebarOpen} />}
+        <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
+          <main className="p-0 bg-gray-50 dark:bg-gray-900 min-h-screen">
+            <div className="flex-1 p-6">
+              {/* Scrollable Table Container */}
+              <div
+                className="overflow-x-auto"
+                style={{ width: "calc(100vw - 300px)" }}
               >
-                <option value="">Select Column</option>
-                {headers.map((header, index) => (
-                  <option key={index} value={header}>
-                    {header}
-                  </option>
-                ))}
-              </select>
+                <div className="flex flex-wrap items-center gap-4 mb-4 bg-white p-4 rounded-lg shadow-md">
+                  <select
+                    className="border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none transition"
+                    value={searchColumn}
+                    onChange={(e) => setSearchColumn(e.target.value)}
+                  >
+                    <option value="">Select Column</option>
+                    {headers.map((header, index) => (
+                      <option key={index} value={header}>
+                        {header}
+                      </option>
+                    ))}
+                  </select>
 
-              <div className="relative">
-                <Input
-                  type="text"
-                  placeholder="Search value..."
-                  value={searchValue}
-                  onChange={(e) => setSearchValue(e.target.value)}
-                  className="border border-gray-300 rounded-lg px-4 py-2 pr-10 w-60 focus:ring-2 focus:ring-blue-400 focus:outline-none transition"
-                />
-                {searchValue && (
-                  <X
-                    className="absolute right-3 top-3 cursor-pointer text-gray-500 hover:text-gray-700 transition"
-                    size={18}
-                    onClick={handleClearSearch}
-                  />
-                )}
-              </div>
+                  <div className="relative">
+                    <Input
+                      type="text"
+                      placeholder="Search value..."
+                      value={searchValue}
+                      onChange={(e) => setSearchValue(e.target.value)}
+                      className="border border-gray-300 rounded-lg px-4 py-2 pr-10 w-60 focus:ring-2 focus:ring-blue-400 focus:outline-none transition"
+                    />
+                    {searchValue && (
+                      <X
+                        className="absolute right-3 top-3 cursor-pointer text-gray-500 hover:text-gray-700 transition"
+                        size={18}
+                        onClick={handleClearSearch}
+                      />
+                    )}
+                  </div>
 
-              <Button
-                variant="outline"
-                onClick={handleSearch}
-                className="flex items-center px-4 py-2 rounded-lg bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-md hover:shadow-lg hover:opacity-90 transition"
-              >
-                <Search />
-                Search
-              </Button>
-            </div>
+                  <Button
+                    variant="outline"
+                    onClick={handleSearch}
+                    className="flex items-center px-4 py-2 rounded-lg bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-md hover:shadow-lg hover:opacity-90 transition"
+                  >
+                    <Search />
+                    Search
+                  </Button>
+                </div>
 
-            {loading ? (
-              <>
-                <Skeleton className="w-full h-10 mb-2" />
-              </>
-            ) : (
-              <div className="overflow-x-auto">
-                <Card className="shadow-md rounded-xl overflow-hidden p-0">
-                  <Table className="w-full overflow-hidden">
-                    <TableHeader className="bg-[#74A82E] text-white">
-                      <TableRow>
-                        {headers.map((header, index) => (
-                          <TableHead
-                            key={index}
-                            className="py-1 px-5 text-left uppercase text-white"
-                          >
-                            {header}
-                          </TableHead>
-                        ))}
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {diaryData.map((entry: any, index: any) => (
-                        <TableRow
-                          key={index}
-                          className={`transition hover:bg-gray-100 cursor-pointer ${
-                            index % 2 === 0 ? "bg-gray-50" : "bg-white"
-                          }`}
-                          onClick={() => {
-                            const query = {
-                              FAMILY_HEAD: entry.FAMILY_HEAD,
-                              page: 1,
-                              limit: 100,
-                            };
-                            router.push({ pathname: "/client/diary", query });
-                          }}
-                        >
-                          {headers.map((header, idx) => (
-                            <TableCell
-                              key={idx}
-                              className="py-3 px-5 border-b border-gray-300"
+                {loading ? (
+                  <>
+                    <Skeleton className="w-full h-10 mb-2" />
+                  </>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <Card className="shadow-md rounded-xl overflow-hidden p-0">
+                      <Table className="w-full overflow-hidden">
+                        <TableHeader className="bg-[#74A82E] text-white">
+                          <TableRow>
+                            {headers.map((header, index) => (
+                              <TableHead
+                                key={index}
+                                className="py-1 px-5 text-left uppercase text-white"
+                              >
+                                {header}
+                              </TableHead>
+                            ))}
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {diaryData.map((entry: any, index: any) => (
+                            <TableRow
+                              key={index}
+                              className={`transition hover:bg-gray-100 cursor-pointer ${
+                                index % 2 === 0 ? "bg-gray-50" : "bg-white"
+                              }`}
+                              onClick={() => {
+                                const query = {
+                                  FAMILY_HEAD: entry.FAMILY_HEAD,
+                                  page: 1,
+                                  limit: 100,
+                                };
+                                router.push({
+                                  pathname: "/client/diary",
+                                  query,
+                                });
+                              }}
                             >
-                              {entry[header]}
-                            </TableCell>
+                              {headers.map((header, idx) => (
+                                <TableCell
+                                  key={idx}
+                                  className="py-3 px-5 border-b border-gray-300"
+                                >
+                                  {entry[header]}
+                                </TableCell>
+                              ))}
+                            </TableRow>
                           ))}
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </Card>
+                        </TableBody>
+                      </Table>
+                    </Card>
+                  </div>
+                )}
+                <PaginationComponent
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  handlePageChange={handlePageChange}
+                  renderPagination={renderPagination}
+                />
               </div>
-            )}
-            <Pagination>
-              <PaginationContent>
-                <PaginationItem>
-                  <button
-                    className="text-black disabled:opacity-50"
-                    onClick={() => handlePageChange(currentPage - 1)}
-                    disabled={currentPage === 1}
-                  >
-                    <PaginationPrevious />
-                  </button>
-                </PaginationItem>
-                {renderPagination()}
-                <PaginationItem>
-                  <button
-                    className="text-black disabled:opacity-50"
-                    onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={currentPage === totalPages}
-                  >
-                    <PaginationNext />
-                  </button>
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
-
-          </div>
+            </div>
+          </main>
         </div>
-      </main>
+      </div>
     </div>
   );
 };

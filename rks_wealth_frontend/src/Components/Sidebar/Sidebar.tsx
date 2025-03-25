@@ -2,7 +2,16 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import Image from "next/image";
-import { Home, BarChart, TrendingUp, User, LogOut } from "lucide-react";
+import {
+  Home,
+  BarChart,
+  TrendingUp,
+  User,
+  LogOut,
+  Folder,
+  Calendar,
+  Clock,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useDispatch } from "react-redux";
 import { logout } from "@/store/slices/authSlice";
@@ -22,7 +31,10 @@ const Sidebar = ({ isSidebarOpen }: { isSidebarOpen: boolean }) => {
   const menuItems = [
     { href: "/dashboard", label: "Home", icon: Home },
     { href: "/client", label: "Client Dairy", icon: BarChart },
-       { href: "/topschemes", label: "Top Scheme", icon: TrendingUp },
+    { href: "/topschemes", label: "Top Scheme", icon: TrendingUp },
+    { href: "/folio-master", label: "Folio Master", icon: Folder },
+    { href: "/long-term", label: "Long Term", icon: Calendar },
+    { href: "/90-days-transaction", label: "90 Days Transaction", icon: Clock },
     { href: "/profile", label: "Profile", icon: User },
   ];
 

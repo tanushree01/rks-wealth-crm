@@ -84,7 +84,7 @@ const ProfileDashboard = () => {
             <p className="text-red-500 text-center">Error: {error}</p>
           ) : (
             filteredData.length > 0 &&
-            filteredData.map(([key, value]:any) => (
+            filteredData.map(([key, value]: any) => (
               <div key={key} className=" rounded-lg shadow-sm p-2">
                 <strong className="capitalize block text-gray-700">
                   {key.replace(/_/g, " ")}:
@@ -102,9 +102,9 @@ const ProfileDashboard = () => {
             <TabsTrigger value="longterm">Long Term</TabsTrigger>
             <TabsTrigger value="transaction">90 Days Transaction</TabsTrigger>
           </TabsList>
-          <TabsContent value="foliomaster" >
+          <TabsContent value="foliomaster">
             <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Folios />
+              <Folios isHeader={false} />
             </CardContent>
           </TabsContent>
           <TabsContent value="longterm">
