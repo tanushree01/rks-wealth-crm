@@ -13,6 +13,7 @@ import {
   FileSpreadsheet,
   Settings,
   SlidersHorizontal,
+  Download,
 } from "lucide-react";
 import { Button } from "@/Components/ui/button";
 import { Input } from "@/Components/ui/input";
@@ -39,6 +40,7 @@ import {
 } from "@/Components/ui/table";
 import Header from "../Header/Header";
 import PaginationComponent from "../PaginationComponent/PaginationComponent";
+import DownloadFile from "@/utils/Filedownload";
 
 const ClientDairy = () => {
   const router = useRouter();
@@ -52,6 +54,7 @@ const ClientDairy = () => {
   const [searchParams, setSearchParams] = useState<{ [key: string]: string }>(
     {}
   );
+
   const [searchToggles, setSearchToggles] = useState<{
     [key: string]: boolean;
   }>({});
@@ -62,13 +65,19 @@ const ClientDairy = () => {
   const [visibleColumns, setVisibleColumns] = useState<string[]>([]);
 
   const [manageColumnsOpen, setManageColumnsOpen] = useState<boolean>(false);
+  const token =
+    typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
         const params: any = { page: currentPage, limit: 10, ...searchParams };
-        const response = await axios.get(`/api/client/diary`, { params });
+        const response = await axios.get(`/api/client/diary`, {
+          params, headers: {
+            Authorization: `Bearer ${token}`, // Adding the token
+          },
+        });
         const data = response.data?.data || [];
         setDiaryData(data);
         setTotalPages(response.data?.totalPages || 1);
@@ -94,12 +103,18 @@ const ClientDairy = () => {
     fetchData();
   }, [currentPage, searchParams, columns]);
 
+
+  const onDownload = async () => {
+    if(token)
+    DownloadFile(`/api/client/diary/download`, token, searchParams);
+   }
+
   const allHeaders =
     columns.length > 0
       ? columns
       : diaryData.length > 0
-      ? Object.keys(diaryData[0])
-      : [];
+        ? Object.keys(diaryData[0])
+        : [];
   const displayedHeaders = allHeaders.filter((header) =>
     visibleColumns.includes(header)
   );
@@ -108,8 +123,8 @@ const ClientDairy = () => {
     displayedHeaders.every((header) =>
       searchParams[header]
         ? String(entry[header] || "")
-            .toLowerCase()
-            .includes(searchParams[header].toLowerCase())
+          .toLowerCase()
+          .includes(searchParams[header].toLowerCase())
         : true
     )
   );
@@ -268,11 +283,10 @@ const ClientDairy = () => {
                           >
                             {/* Custom Checkbox */}
                             <div
-                              className={`w-4 h-4 flex items-center justify-center border-2 rounded-sm bg-white ${
-                                visibleColumns.includes(header)
-                                  ? "border-[#9bae58]"
-                                  : "border-gray-400"
-                              }`}
+                              className={`w-4 h-4 flex items-center justify-center border-2 rounded-sm bg-white ${visibleColumns.includes(header)
+                                ? "border-[#9bae58]"
+                                : "border-gray-400"
+                                }`}
                             >
                               {visibleColumns.includes(header) && (
                                 <svg
@@ -299,7 +313,7 @@ const ClientDairy = () => {
                   </div>
                 )}
               </div>
-              <Button variant="outline" className="p-2">
+              <Button variant="outline" className="p-2" onClick={onDownload}>
                 <FileSpreadsheet size={20} className="text-gray-600" />
               </Button>
             </div>
@@ -314,97 +328,104 @@ const ClientDairy = () => {
                   : "calc(100vw - 40px)",
               }}
             >
-              {loading ? (
-                <Skeleton className="w-full h-10 mb-2" />
-              ) : (
-                <div className="overflow-x-auto">
-                  <Card className="shadow-lg rounded-2xl overflow-hidden border border-gray-200">
-                    <Table className="w-full">
-                      <TableHeader className="bg-[#9bae58] text-white">
-                        <TableRow className="hover:bg-[#74A82E]">
-                          {displayedHeaders.map((header, index) => (
-                            <TableHead
-                              key={index}
-                              className="py-3 px-6 text-left uppercase font-semibold text-white"
-                            >
-                              <div className="flex items-center gap-3">
-                                <span>{header}</span>
-                                <button
-                                  onClick={() => toggleColumnSearch(header)}
-                                  className="text-white opacity-80"
-                                >
-                                  {searchToggles[header] ? (
-                                    <ChevronUp size={16} />
-                                  ) : (
-                                    <ChevronDown size={16} />
-                                  )}
-                                </button>
-                                <button
-                                  onClick={() => handleSort(header)}
-                                  className="text-white opacity-80"
-                                >
-                                  {sortConfig && sortConfig.key === header ? (
-                                    sortConfig.direction === "asc" ? (
-                                      <SortAsc size={16} />
-                                    ) : (
-                                      <SortDesc size={16} />
-                                    )
-                                  ) : (
-                                    <SortAsc size={16} className="opacity-50" />
-                                  )}
-                                </button>
-                              </div>
-                              {searchToggles[header] && (
-                                <Input
-                                  type="text"
-                                  placeholder={`Search ${header}...`}
-                                  value={searchParams[header] || ""}
-                                  onChange={(e) =>
-                                    handleColumnSearchChange(
-                                      header,
-                                      e.target.value
-                                    )
-                                  }
-                                  className="mt-2 w-full px-3 py-2 bg-white text-gray-700 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-500 shadow-sm"
-                                />
-                              )}
-                            </TableHead>
-                          ))}
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {sortedData.map((entry: any, index: number) => (
-                          <TableRow
+              <div className="overflow-x-auto">
+                <Card className="shadow-lg rounded-2xl overflow-hidden border border-gray-200">
+                  <Table className="w-full">
+                    <TableHeader className="bg-[#9bae58] text-white">
+                      <TableRow className="hover:bg-[#74A82E]">
+                        {displayedHeaders.map((header, index) => (
+                          <TableHead
                             key={index}
-                            className={`transition hover:bg-gray-100 cursor-pointer ${
-                              index % 2 === 0 ? "bg-gray-50" : "bg-white"
-                            }`}
-                            onClick={() => {
-                              const query = {
-                                PAN: entry.PAN,
-                                FAMILY_HEAD: entry.FAMILY_HEAD,
-                                IWELL_CODE: entry.IWELL_CODE,
-                                page: 1,
-                                limit: 10,
-                              };
-                              router.push({ pathname: "/client/diary", query });
-                            }}
+                            className="py-3 px-6 text-left uppercase font-semibold text-white"
                           >
-                            {displayedHeaders.map((header, idx) => (
-                              <TableCell
-                                key={idx}
-                                className="py-4 px-6 border-b border-gray-200 text-gray-800"
+                            <div className="flex items-center gap-3">
+                              <span>{header}</span>
+                              <button
+                                onClick={() => toggleColumnSearch(header)}
+                                className="text-white opacity-80"
                               >
-                                {entry[header]}
+                                {searchToggles[header] ? (
+                                  <ChevronUp size={16} />
+                                ) : (
+                                  <ChevronDown size={16} />
+                                )}
+                              </button>
+                              <button
+                                onClick={() => handleSort(header)}
+                                className="text-white opacity-80"
+                              >
+                                {sortConfig && sortConfig.key === header ? (
+                                  sortConfig.direction === "asc" ? (
+                                    <SortAsc size={16} />
+                                  ) : (
+                                    <SortDesc size={16} />
+                                  )
+                                ) : (
+                                  <SortAsc size={16} className="opacity-50" />
+                                )}
+                              </button>
+                            </div>
+                            {searchToggles[header] && (
+                              <Input
+                                type="text"
+                                placeholder={`Search ${header}...`}
+                                value={searchParams[header] || ""}
+                                onChange={(e) =>
+                                  handleColumnSearchChange(
+                                    header,
+                                    e.target.value
+                                  )
+                                }
+                                className="mt-2 w-full px-3 py-2 bg-white text-gray-700 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-500 shadow-sm"
+                              />
+                            )}
+                          </TableHead>
+                        ))}
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {loading
+                        ? Array.from({ length: 5 }).map((_, index) => (
+                          <TableRow key={index}>
+                            {displayedHeaders.map((_, idx) => (
+                              <TableCell key={idx}>
+                                <Skeleton className="w-full h-10 mb-2" />
                               </TableCell>
                             ))}
                           </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </Card>
-                </div>
-              )}
+                        )) : (
+                          <>
+                            {sortedData.map((entry: any, index: number) => (
+                              <TableRow
+                                key={index}
+                                className={`transition hover:bg-gray-100 cursor-pointer ${index % 2 === 0 ? "bg-gray-50" : "bg-white"
+                                  }`}
+                                onClick={() => {
+                                  const query = {
+                                    PAN: entry.PAN,
+                                    FAMILY_HEAD: entry.FAMILY_HEAD,
+                                    IWELL_CODE: entry.IWELL_CODE,
+                                    page: 1,
+                                    limit: 10,
+                                  };
+                                  router.push({ pathname: "/client/diary", query });
+                                }}
+                              >
+                                {displayedHeaders.map((header, idx) => (
+                                  <TableCell
+                                    key={idx}
+                                    className="py-4 px-6 border-b border-gray-200 text-gray-800"
+                                  >
+                                    {entry[header]}
+                                  </TableCell>
+                                ))}
+                              </TableRow>
+                            ))}
+                          </>)}
+                    </TableBody>
+                  </Table>
+                </Card>
+              </div>
 
               <PaginationComponent
                 currentPage={currentPage}

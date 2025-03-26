@@ -112,7 +112,9 @@ exports.downloadFolioMasterRecords = async (req, res) => {
     }
 
     // Create a new workbook and worksheet
-    const workbook = await generateExcelFile(rows);
+    const plainRows = rows.map((row) => row.get({ plain: true }));
+  
+    const workbook = await generateExcelFile(plainRows);
     // Write to response
     res.setHeader(
       "Content-Type",

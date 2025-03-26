@@ -91,8 +91,9 @@ exports.downloadLongTermRecords = async (req, res) => {
     if (count === 0) {
       return res.status(404).json({ message: "No long-term records found" });
     }
-
-    const workbook = await generateExcelFile(rows);
+    const plainRows = rows.map((row) => row.get({ plain: true }));
+  
+    const workbook = await generateExcelFile(plainRows);
     // Write to response
     res.setHeader(
       "Content-Type",

@@ -92,7 +92,9 @@ exports.download90DaysTransactionRecords = async (req, res) => {
         .status(404)
         .json({ message: "No 90 Days Transaction records found" });
     }
-    const workbook = await generateExcelFile(rows);
+    const plainRows = rows.map((row) => row.get({ plain: true }));
+  
+    const workbook = await generateExcelFile(plainRows);
     // Write to response
     res.setHeader(
       "Content-Type",

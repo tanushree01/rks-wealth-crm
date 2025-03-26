@@ -21,15 +21,21 @@ exports.getClientDiaries = async (req, res) => {
         const offset = (pageNum - 1) * limitNum;
     
         // Prepare filtering conditions
-        let whereCondition = {};
+        let whereConditions = {};
         Object.keys(filters).forEach(key => {
           if (filters[key]) {
-            whereCondition[key] = { [Op.iLike]: `%${filters[key]}%` }; // Case-insensitive search
+            whereConditions[key] = { [Op.iLike]: `%${filters[key]}%` }; // Case-insensitive search
           }
         });
 
+        const userType = req.user.userType;
+        console.log(userType)
+        if (userType === "RM" || userType === "SRM") {
+          whereConditions[userType] = req.user.username;
+        }
+
         let options = {
-            where: whereCondition,
+            where: whereConditions,
             limit: limitNum,
             offset: offset
         };
@@ -87,12 +93,12 @@ exports.getClientDiary = async (req, res) => {
       }
 
       // Create filtering conditions dynamically
-      let whereCondition = {};
-      if (IWELL_CODE) whereCondition.IWELL_CODE = { [Op.iLike]: `%${IWELL_CODE}%` };
+      let whereConditions = {};
+      if (IWELL_CODE) whereConditions.IWELL_CODE = { [Op.iLike]: `%${IWELL_CODE}%` };
 
       // Fetch the first matching client diary
       const clientDiary = await Model.findOne({
-          where: whereCondition,
+          where: whereConditions,
           attributes: { exclude: ["id"] }, // Exclude ID
       });
 
@@ -123,15 +129,15 @@ exports.downloadClientDiaries = async (req, res) => {
 
   
       // Prepare filtering conditions
-      let whereCondition = {};
+      let whereConditions = {};
       Object.keys(filters).forEach(key => {
         if (filters[key]) {
-          whereCondition[key] = { [Op.iLike]: `%${filters[key]}%` }; // Case-insensitive search
+          whereConditions[key] = { [Op.iLike]: `%${filters[key]}%` }; // Case-insensitive search
         }
       });
 
       let options = {
-          where: whereCondition,
+          where: whereConditions,
       };
 
       // Get model attributes correctly
@@ -164,8 +170,9 @@ exports.downloadClientDiaries = async (req, res) => {
           .status(404)
           .json({ message: "No records found matching." });
       }
+      const plainRows = rows.map((row) => row.get({ plain: true }));
   
-      const workbook = await generateExcelFile(rows);
+      const workbook = await generateExcelFile(plainRows);
       // Write to response
       res.setHeader(
         "Content-Type",
@@ -173,7 +180,7 @@ exports.downloadClientDiaries = async (req, res) => {
       );
       res.setHeader(
         "Content-Disposition",
-        "attachment; filename=folio_master_records.xlsx"
+        "attachment; filename=client_dairy_records.xlsx"
       );
   
       await workbook.xlsx.write(res);

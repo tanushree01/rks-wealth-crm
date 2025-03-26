@@ -16,7 +16,7 @@ const User = sequelize.define('User', {
   gender: { type: DataTypes.ENUM('Male', 'Female', 'Other'), allowNull: false },
   address: { type: DataTypes.TEXT, allowNull: false },
   maritalStatus: { type: DataTypes.ENUM('Single', 'Married', 'Divorced', 'Widowed'), allowNull: false },
-  userType: { type: DataTypes.ENUM('Admin','RM','SRM'), defaultValue: 'Admin' },
+  userType: { type: DataTypes.ENUM('Admin','RM','SERVICE_RM'), defaultValue: 'Admin' },
 }, { timestamps: true });
 
 module.exports = User;

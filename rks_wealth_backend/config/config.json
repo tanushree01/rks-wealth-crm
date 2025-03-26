@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "RKSWEALTH",
+    "password": "Rks@1234",
+    "database": "RKSWEALTH",
+    "host": "34.131.158.210",
+    "dialect": "postgres"
+  },
+  "test": {
+    "username": "RKSWEALTH",
+    "password": "Rks@1234",
+    "database": "RKSWEALTH",
+    "host": "34.131.158.210",
+    "dialect": "postgres"
+  },
+  "production": {
+    "username": "RKSWEALTH",
+    "password": "Rks@1234",
+    "database": "RKSWEALTH",
+    "host": "34.131.158.210",
+    "dialect": "postgres"
+  }
+}
