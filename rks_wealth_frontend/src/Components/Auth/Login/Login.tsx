@@ -36,10 +36,7 @@ export default function Login() {
     setError("");
 
     try {
-      const { data } = await axios.post(
-        `/api/auth/login`,
-        { email, password }
-      );
+      const { data } = await axios.post(`/api/auth/login`, { email, password });
       localStorage.setItem("token", data.token);
       dispatch(loginSuccess(data));
       router.push("/dashboard");
@@ -51,12 +48,12 @@ export default function Login() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-white dark:bg-[#1D3E6F]">
+    <div className="flex min-h-screen flex-col items-center mt-20 bg-white dark:bg-[#1D3E6F]">
       <Image
         src="/logo.jpg"
         alt="Company Logo"
-        width={120}
-        height={120}
+        width={150}
+        height={150}
         className="mb-4"
       />
 
@@ -67,7 +64,7 @@ export default function Login() {
       >
         <Card className="w-[400px] shadow-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800">
           <CardHeader>
-            <CardTitle className="text-center text-2xl font-bold text-[#1D3E6F] dark:text-[#74A82E]">
+            <CardTitle className="text-center text-2xl font-bold text-[#34466e] dark:text-[#74A82E]">
               Login
             </CardTitle>
           </CardHeader>
@@ -77,7 +74,7 @@ export default function Login() {
               <div className="space-y-2">
                 <Label
                   htmlFor="email"
-                  className="text-[#1D3E6F] dark:text-[#74A82E] font-medium"
+                  className="text-[#34466e] dark:text-[#74A82E] font-medium"
                 >
                   Email
                 </Label>
@@ -97,7 +94,7 @@ export default function Login() {
               <div className="space-y-2 relative">
                 <Label
                   htmlFor="password"
-                  className="text-[#1D3E6F] dark:text-[#74A82E] font-medium"
+                  className="text-[#34466e] dark:text-[#74A82E] font-medium"
                 >
                   Password
                 </Label>
@@ -141,7 +138,7 @@ export default function Login() {
             <p className="text-sm text-gray-500 dark:text-gray-400 mt-2 text-center">
               <Link
                 href="/forgot-password"
-                className="text-[#1D3E6F] dark:text-[#74A82E] hover:underline"
+                className="text-[#34466e] dark:text-[#74A82E] hover:underline"
               >
                 Forgot Password?
               </Link>
@@ -154,7 +151,7 @@ export default function Login() {
               Don't have an account?{" "}
               <Link
                 href="/register"
-                className="text-[#1D3E6F] dark:text-[#74A82E] hover:underline font-medium"
+                className="text-[#34466e] dark:text-[#74A82E] hover:underline font-medium"
               >
                 Sign up
               </Link>
