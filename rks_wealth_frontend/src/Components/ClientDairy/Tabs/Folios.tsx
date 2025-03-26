@@ -30,7 +30,7 @@ import Header from "@/Components/Header/Header";
 const Folios = ({ isHeader = true }: { isHeader?: boolean }) => {
   const router = useRouter();
 
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [diaryData, setDiaryData] = useState<any>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -133,7 +133,7 @@ const Folios = ({ isHeader = true }: { isHeader?: boolean }) => {
     <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
       {isHeader && <Sidebar isSidebarOpen={isSidebarOpen} />}
       <div className="flex-1 flex flex-col">
-        {isHeader && <Header setIsSidebarOpen={setIsSidebarOpen} />}
+        {isHeader && <Header />}
         <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
           <main className="p-0 bg-gray-50 dark:bg-gray-900 min-h-screen">
             <div className="flex-1 p-6">

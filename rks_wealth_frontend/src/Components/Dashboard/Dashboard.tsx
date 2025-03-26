@@ -5,7 +5,7 @@ import Sidebar from "../Sidebar/Sidebar";
 import Header from "../Header/Header";
 
 const Dashboard = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true); // Sidebar open by default
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Sidebar open by default
 
   return (
     <div className="h-screen flex flex-col bg-[#f7f7f7]">

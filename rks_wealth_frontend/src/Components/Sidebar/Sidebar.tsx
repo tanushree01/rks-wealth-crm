@@ -71,7 +71,7 @@ const Sidebar = ({ isSidebarOpen }: { isSidebarOpen: boolean }) => {
       {/* Logout Button at Bottom */}
       <button
         onClick={handleLogout}
-        className="flex items-center gap-2 p-2 rounded transition text-red-600 hover:bg-red-100 w-full"
+        className="flex items-center bg-gray-100 gap-2 p-2 rounded transition text-red-600 hover:bg-red-100 w-full"
         aria-label="Logout"
       >
         <LogOut size={18} />
