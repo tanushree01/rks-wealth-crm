@@ -102,7 +102,7 @@ exports.download90DaysTransactionRecords = async (req, res) => {
     );
     res.setHeader(
       "Content-Disposition",
-      "attachment; filename=folio_master_records.xlsx"
+      "attachment; filename=90day_records.xlsx"
     );
 
     await workbook.xlsx.write(res);

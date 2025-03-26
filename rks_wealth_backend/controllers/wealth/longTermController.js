@@ -101,7 +101,7 @@ exports.downloadLongTermRecords = async (req, res) => {
     );
     res.setHeader(
       "Content-Disposition",
-      "attachment; filename=folio_master_records.xlsx"
+      "attachment; filename=Long_Term_records.xlsx"
     );
 
     await workbook.xlsx.write(res);
