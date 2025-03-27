@@ -6,6 +6,8 @@ import {
   SortAsc,
   SortDesc,
   FileSpreadsheet,
+  Menu,
+  SlidersHorizontal,
 } from "lucide-react";import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import {
@@ -209,28 +211,46 @@ const TopSchemes = () => {
   };
 
   return (
-    <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
-      <Sidebar isSidebarOpen={isSidebarOpen} />
-      <div className="flex-1 flex flex-col">
-        <Header setIsSidebarOpen={setIsSidebarOpen} />
-        <main className="p-5 bg-gray-50 dark:bg-gray-900 min-h-screen">
-          <div className="flex-1">
-            <div
-              className="overflow-x-auto"
-              style={{ width: "calc(100vw - 300px)" }}
+<div className="h-screen flex flex-col bg-[#f7f7f7]">
+      {/* Full-width Header */}
+      <Header />
+      <div className="flex flex-1">
+        {/* Sidebar (Fixed Width) */}
+        {isSidebarOpen && (
+          <div className="w-64 bg-[#34466e] text-white">
+            <Sidebar isSidebarOpen={isSidebarOpen} />
+          </div>
+        )}
+        <div className="flex-1 flex flex-col">
+          {/* Sidebar Toggle Button */}
+          <div className="bg-[#f7f7f7] p-4 px-6 flex justify-between items-center shadow-md text-[#34466e]">
+            {/* Sidebar Toggle Button */}
+            <Button
+              onClick={() => setIsSidebarOpen((prev) => !prev)}
+              variant="outline"
+              className=" bg-[#f7f7f7] text-[#9bae58] shadow-lg rounded-none"
             >
-               <div className="flex flex-wrap items-center justify-between gap-4 mb-4 bg-white p-4 rounded-lg shadow-md">
-              <div className="flex items-center gap-4"></div>
-              <div className="flex items-center gap-4">
-                <div className="relative">
-                  <Button
-                    variant="outline"
-                    onClick={() => setManageColumnsOpen(!manageColumnsOpen)}
-                  >
-                    Manage Columns
-                  </Button>
+              <Menu style={{ width: "20px", height: "40px" }} />
+            </Button>
+
+            {/* Portfolio Overview (Centered) */}
+            <h3 className="text-xl font-bold text-center flex-1">
+             Top Schemes
+            </h3>
+            <div className="flex items-center gap-4">
+              <div className="relative">
+                <Button
+                  variant="outline"
+                  onClick={() => setManageColumnsOpen(!manageColumnsOpen)}
+                >
+                  <SlidersHorizontal size={20} className="text-gray-600" />
+                </Button>
+           
                   {manageColumnsOpen && (
                     <div className="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-md shadow-lg z-10">
+                      <h3 className="text-l font-bold text-center bg-gray-50 rounded-lg border border-gray-300 p-3 m-4 text-[#34466e]">
+                      Manage Columns
+                    </h3>
                       <ul className="p-2">
                         {allHeaders.map((header, idx) => (
                           <li
@@ -308,12 +328,9 @@ const TopSchemes = () => {
                                 placeholder={`Search ${header}...`}
                                 value={searchParams[header] || ""}
                                 onChange={(e) =>
-                                  handleColumnSearchChange(
-                                    header,
-                                    e.target.value
-                                  )
+                                  handleColumnSearchChange(header, e.target.value)
                                 }
-                                className="mt-2 w-full px-3 py-2 bg-white text-gray-700 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-500 shadow-sm"
+                                className="mt-2 w-full"
                               />
                             )}
                           </TableHead>
@@ -321,59 +338,63 @@ const TopSchemes = () => {
                           </TableRow>
                         </TableHeader>
                         <TableBody>
-                          {sortedData.map((entry: any, index: any) => (
-                            <TableRow
-                              key={index}
-                              className={`transition hover:bg-gray-100 cursor-pointer ${
-                                index % 2 === 0 ? "bg-gray-50" : "bg-white"
-                              }`}
-                            >
-                              {allHeaders.map((header, idx) => (
-                                <TableCell
-                                  key={idx}
-                                  className="py-3 px-5 border-b border-gray-300"
-                                >
-                                  {entry[header]}
-                                </TableCell>
-                              ))}
+                          {sortedData.length > 0 ? (
+                            sortedData.map((entry: any, index: number) => (
+                              <TableRow
+                                key={index}
+                                className="border-b hover:bg-gray-100"
+                              >
+                                {displayedHeaders.map((header, idx) => (
+                                  <TableCell
+                                    key={idx}
+                                    className="py-3 px-6"
+                                  >
+                                    {entry[header]}
+                                  </TableCell>
+                                ))}
+                              </TableRow>
+                            ))
+                          ) : (
+                            <TableRow>
+                              <TableCell
+                                colSpan={displayedHeaders.length}
+                                className="text-center py-4"
+                              >
+                                No Data Available
+                              </TableCell>
                             </TableRow>
-                          ))}
+                          )}
                         </TableBody>
                       </Table>
                     </Card>
                   </div>
                 )}
               </div>
-              <Pagination>
-                <PaginationContent>
-                  <PaginationItem>
-                    <button
-                      className="text-black disabled:opacity-50"
-                      onClick={() => handlePageChange(currentPage - 1)}
-                      disabled={currentPage === 1}
-                    >
-                      <PaginationPrevious />
-                    </button>
-                  </PaginationItem>
-                  {renderPagination()}
-                  <PaginationItem>
-                    <button
-                      className="text-black disabled:opacity-50"
-                      onClick={() => handlePageChange(currentPage + 1)}
-                      disabled={currentPage === totalPages}
-                    >
-                      <PaginationNext />
-                    </button>
-                  </PaginationItem>
-                </PaginationContent>
-              </Pagination>
-
-            </div>
-          </div>
-        </main>
+              <div className="mt-4">
+                <Pagination className="flex justify-center gap-2">
+                  <PaginationPrevious
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    
+                  >
+                    Previous
+                  </PaginationPrevious>
+                  <PaginationContent>
+                    {renderPagination()}
+                  </PaginationContent>
+                  <PaginationNext
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                  >
+                    Next
+                  </PaginationNext>
+                </Pagination>
+              </div>
+        </div>
       </div>
     </div>
   );
 };
 
 export default TopSchemes;
+
