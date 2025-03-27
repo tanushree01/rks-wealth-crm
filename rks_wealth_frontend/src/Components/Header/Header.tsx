@@ -10,6 +10,7 @@ import { RootState } from "@/store";
 import { useSelector } from "react-redux";
 import Image from "next/image";
 import { useState } from "react";
+import Link from "next/link";
 
 const Header = () => {
   const user = useSelector((state: RootState) => state.auth.user);
@@ -68,7 +69,9 @@ const Header = () => {
           <div className="absolute right-0 mt-2 w-48 bg-[#ffffff] shadow-lg rounded-md border border-[#dbdbdb]">
             <ul className="text-[#34466e]">
               <li className="px-4 py-2 hover:bg-gray-100 flex items-center cursor-pointer">
-                <User className="w-4 h-4 mr-2" /> Profile
+                <Link href="/profile" className="flex items-center w-full">
+                  <User className="w-4 h-4 mr-2" /> Profile
+                </Link>
               </li>
               <li className="px-4 py-2 hover:bg-gray-100 flex items-center cursor-pointer">
                 <Settings className="w-4 h-4 mr-2" /> Admin

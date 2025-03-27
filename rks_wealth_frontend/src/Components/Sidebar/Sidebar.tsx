@@ -34,7 +34,6 @@ const Sidebar = ({ isSidebarOpen }: { isSidebarOpen: boolean }) => {
     { href: "/folio-master", label: "Folio Master", icon: Folder },
     { href: "/long-term", label: "Long Term", icon: Calendar },
     { href: "/90-days-transaction", label: "90 Days Transaction", icon: Clock },
-    { href: "/profile", label: "Profile", icon: User },
   ];
 
   return (
