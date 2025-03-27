@@ -40,6 +40,8 @@ const Transaction = ({ isHeader = true }: { isHeader?: boolean }) => {
   const [searchParams, setSearchParams] = useState<{ [key: string]: string }>(
     {}
   );
+  const token =
+  typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -52,7 +54,9 @@ const Transaction = ({ isHeader = true }: { isHeader?: boolean }) => {
           ...router.query,
         };
         delete params.IWELL_CODE;
-        const response = await axios.get(`/api/client/transaction`, { params });
+        const response = await axios.get(`/api/client/transaction`, { params,headers: {
+          Authorization: `Bearer ${token}`, 
+        }, });
 
         setLoading(false);
         setDiaryData(response.data?.data);
@@ -129,7 +133,7 @@ const Transaction = ({ isHeader = true }: { isHeader?: boolean }) => {
     <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
       {isHeader && <Sidebar isSidebarOpen={isSidebarOpen} />}
       <div className="flex-1 flex flex-col">
-        {isHeader && <Header setIsSidebarOpen={setIsSidebarOpen} />}
+        {/* {isHeader && <Header setIsSidebarOpen={setIsSidebarOpen} />} */}
         <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
           <main className="p-0 bg-gray-50 dark:bg-gray-900 min-h-screen">
             <div className="flex-1 ps-6 pse-6 pt-2">

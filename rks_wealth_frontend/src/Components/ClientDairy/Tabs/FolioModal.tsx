@@ -17,7 +17,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/Components/ui/table";
-import { DialogTitle } from "@radix-ui/react-dialog";
 import axios from "axios";
 import { ArrowLeft, Search, X } from "lucide-react";
 import { useRouter } from "next/router";
@@ -42,7 +41,8 @@ const FolioModal = ({
   const [searchParams, setSearchParams] = useState<{ [key: string]: string }>(
     {}
   );
-
+  const token =
+  typeof window !== "undefined" ? localStorage.getItem("token") : null;
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -58,7 +58,9 @@ const FolioModal = ({
         params.MintPAN = params.PAN;
         delete params.PAN;
 
-        const response = await axios.get(`/api/client/foliomaster`, { params });
+        const response = await axios.get(`/api/client/foliomaster`, { params,headers: {
+          Authorization: `Bearer ${token}`, 
+        }, });
         setDiaryData(response.data?.data || []);
         setTotalPages(response.data?.totalPages || 1);
       } catch (err: any) {

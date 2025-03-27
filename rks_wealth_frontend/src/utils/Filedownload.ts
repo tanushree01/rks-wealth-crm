@@ -3,7 +3,7 @@ import axios from "axios";
  * 
  * @param url api url
  * @param token auth token
- * @param searchParams filte parameters
+ * @param searchParams filter parameters
  * @returns void
  */
 const DownloadFile = async (
@@ -20,11 +20,21 @@ const DownloadFile = async (
       responseType: "blob", // Ensures binary data is received correctly
     });
 
+    // Extract filename from content-disposition header
+    const contentDisposition = response.headers["content-disposition"];
+    let fileName = "downloaded_file.xlsx";
+    if (contentDisposition) {
+      const match = contentDisposition.match(/filename\s*=\s*(?:"([^"]+)"|([^;]+))/);
+      if (match) {
+        fileName = match[1] || match[2];
+      }
+    }
+
     // Create a Blob URL
     const blobUrl = window.URL.createObjectURL(response.data);
     const link = document.createElement("a");
     link.href = blobUrl;
-    link.setAttribute("download", "folio_master_records.xlsx"); // File name
+    link.setAttribute("download", fileName.trim()); // Use extracted file name
     document.body.appendChild(link);
     link.click();
 

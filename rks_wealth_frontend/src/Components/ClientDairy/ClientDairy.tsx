@@ -41,9 +41,12 @@ import {
 import Header from "../Header/Header";
 import PaginationComponent from "../PaginationComponent/PaginationComponent";
 import DownloadFile from "@/utils/Filedownload";
+import { useDispatch } from "react-redux";
+import { logout } from "@/store/slices/authSlice";
 
 const ClientDairy = () => {
   const router = useRouter();
+  const dispatch = useDispatch();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [diaryData, setDiaryData] = useState<any[]>([]);
   const [columns, setColumns] = useState<string[]>([]);
@@ -68,14 +71,13 @@ const ClientDairy = () => {
   const token =
     typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
-  useEffect(() => {
-    const fetchData = async () => {
+  const fetchData = async () => {
       setLoading(true);
       try {
         const params: any = { page: currentPage, limit: 10, ...searchParams };
         const response = await axios.get(`/api/client/diary`, {
           params, headers: {
-            Authorization: `Bearer ${token}`, // Adding the token
+            Authorization: `Bearer ${token}`, 
           },
         });
         const data = response.data?.data || [];
@@ -95,11 +97,20 @@ const ClientDairy = () => {
           }
         }
       } catch (err: any) {
+        setLoading(false)
         setError(err.message);
-        setLoading(false);
-      }
-    };
+        if(err.status === 401){
+            dispatch(logout());
+            if (typeof window !== "undefined") {
+              localStorage.removeItem("token");
+            }
+            router.replace("/login");
+          }
+        }
+  };
 
+    
+  useEffect(() => {
     fetchData();
   }, [currentPage, searchParams, columns]);
 

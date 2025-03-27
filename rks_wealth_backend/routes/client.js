@@ -19,7 +19,15 @@ const roleMiddleware = require("../middlewares/auth/roleMiddleware.js");
 const router = express.Router();
 
 // Routes
+router.get(
+  "/diary/one/download",
+  authMiddleware,
+  roleMiddleware(["Admin", "RM"]),
+  clientController.downloadClientDiary
+);
 router.get("/diary/one", authMiddleware, clientController.getClientDiary);
+
+
 router.get(
   "/diary/download",
   authMiddleware,
@@ -27,6 +35,8 @@ router.get(
   clientController.downloadClientDiaries
 );
 router.get("/diary", authMiddleware, clientController.getClientDiaries);
+
+
 
 router.get(
   "/foliomaste/download",
@@ -44,12 +54,15 @@ router.get(
 );
 router.get("/longterm", authMiddleware, getLongTermRecords);
 
+
 router.get(
   "/transaction/download",
   authMiddleware,
   roleMiddleware(["Admin", "RM"]),
   download90DaysTransactionRecords
 );
+
+
 router.get("/transaction", authMiddleware, get90DaysTransactionRecords);
 
 router.get("/topschemes", authMiddleware, getTopSchemes);

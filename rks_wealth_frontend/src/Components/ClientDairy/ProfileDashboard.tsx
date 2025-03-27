@@ -137,8 +137,7 @@ const ProfileDashboard = () => {
   const router = useRouter();
   const {
     data,
-    PAN,
-    FAMILY_HEAD,
+    IWELL_CODE,
     page = "1",
     limit = "100",
   } = useMemo(() => router.query, [router.query]);
@@ -150,8 +149,11 @@ const ProfileDashboard = () => {
   const [folioOpen, setFolioOpen] = useState(false);
   const [trOpen, setTrOpen] = useState(false);
 
+  const token =
+    typeof window !== "undefined" ? localStorage.getItem("token") : null;
+
   useEffect(() => {
-    if (!FAMILY_HEAD) return;
+    if (!IWELL_CODE) return;
 
     let isMounted = true;
 
@@ -159,7 +161,11 @@ const ProfileDashboard = () => {
       try {
         setLoading(true);
         const response = await fetch(
-          `/api/client/diary/one?PAN=${PAN}&page=${page}&limit=${limit}`
+          `/api/client/diary/one?IWELL_CODE=${IWELL_CODE}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            }
+        },
         );
 
         if (!response.ok) throw new Error("Failed to fetch data");
@@ -179,7 +185,7 @@ const ProfileDashboard = () => {
     return () => {
       isMounted = false;
     };
-  }, [FAMILY_HEAD, page, limit]);
+  }, [IWELL_CODE, page, limit]);
 
   let userData;
   try {
@@ -372,7 +378,7 @@ const ProfileDashboard = () => {
             {[
               { text: "FOLIO MASTER", setOpen: setFolioOpen },
               { text: "TR. 90 DAYS", setOpen: setFolioOpen },
-              { text: "LONG TERM", setOpen: () => {} }, // Handle separately if needed
+              { text: "LONG TERM", setOpen: () => { } }, // Handle separately if needed
             ].map(({ text, setOpen }, index) => (
               <Button
                 key={index}

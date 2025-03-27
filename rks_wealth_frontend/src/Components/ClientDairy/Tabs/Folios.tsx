@@ -42,6 +42,9 @@ const Folios = ({ isHeader = true }: { isHeader?: boolean }) => {
     {}
   );
 
+  const token =
+  typeof window !== "undefined" ? localStorage.getItem("token") : null;
+
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -56,7 +59,9 @@ const Folios = ({ isHeader = true }: { isHeader?: boolean }) => {
         params.FolioPAN = params.PAN;
         params.MintPAN = params.PAN;
         delete params.PAN;
-        const response = await axios.get(`/api/client/foliomaster`, { params });
+        const response = await axios.get(`/api/client/foliomaster`, { params,headers: {
+          Authorization: `Bearer ${token}`, 
+        },});
 
         setLoading(false);
         setDiaryData(response.data?.data);
