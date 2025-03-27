@@ -130,6 +130,8 @@ import { Card, CardContent } from "../ui/card";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import { Button } from "../ui/button";
+import FolioModal from "./Tabs/FolioModal";
+import { Dialog, DialogContent, DialogTrigger } from "@radix-ui/react-dialog";
 
 const ProfileDashboard = () => {
   const router = useRouter();
@@ -144,6 +146,9 @@ const ProfileDashboard = () => {
   const [dynamicData, setDynamicData] = useState<any | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedModal, setSelectedModal] = useState<string | null>(null);
+  const [folioOpen, setFolioOpen] = useState(false);
+  const [trOpen, setTrOpen] = useState(false);
 
   useEffect(() => {
     if (!FAMILY_HEAD) return;
@@ -364,16 +369,23 @@ const ProfileDashboard = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4 p-2">
-            {["FOLIO MASTER", "TR. 90 DAYS", "LONG TERM"].map((text, index) => (
+            {[
+              { text: "FOLIO MASTER", setOpen: setFolioOpen },
+              { text: "TR. 90 DAYS", setOpen: setFolioOpen },
+              { text: "LONG TERM", setOpen: () => {} }, // Handle separately if needed
+            ].map(({ text, setOpen }, index) => (
               <Button
                 key={index}
                 variant="outline"
                 className="w-full p-7 bg-gray-100"
+                onClick={() => setOpen(true)}
               >
                 {text}
               </Button>
             ))}
           </div>
+
+          <FolioModal open={folioOpen} setOpen={setFolioOpen} />
         </div>
       </div>
     </div>
