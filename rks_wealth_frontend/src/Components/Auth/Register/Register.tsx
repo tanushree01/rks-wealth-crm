@@ -157,7 +157,7 @@ export default function Register() {
                   name: "maritalStatus",
                   options: ["Single", "Married", "Divorced", "Widowed"],
                 },
-                { name: "userType", options: ["Admin", "User", "Guest"] },
+                { name: "userType", options: ['Admin', 'RM', 'SERVICE_RM'] },
               ].map(({ name, options }) => (
                 <div key={name}>
                   <Label
