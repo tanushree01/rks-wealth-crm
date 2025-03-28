@@ -39,7 +39,7 @@ router.get("/diary", authMiddleware, clientController.getClientDiaries);
 
 
 router.get(
-  "/foliomaste/download",
+  "/foliomaster/download",
   authMiddleware,
   roleMiddleware(["Admin", "RM"]),
   downloadFolioMasterRecords
