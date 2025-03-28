@@ -14,6 +14,7 @@ interface ComponentsHeaderProps {
   visibleColumns: string[];
   handleColumnVisibilityChange: (header: string) => void;
   pageName: any;
+  onDownload: any;
 }
 
 const ComponentsHeader: React.FC<ComponentsHeaderProps> = ({
@@ -23,6 +24,7 @@ const ComponentsHeader: React.FC<ComponentsHeaderProps> = ({
   visibleColumns,
   handleColumnVisibilityChange,
   pageName,
+  onDownload,
 }) => {
   const [manageColumnsOpen, setManageColumnsOpen] = useState(false);
 
@@ -107,7 +109,7 @@ const ComponentsHeader: React.FC<ComponentsHeaderProps> = ({
           )}
         </div>
 
-        <Button variant="outline" className="p-2">
+        <Button variant="outline" className="p-2" onClick={onDownload}>
           <FileSpreadsheet size={20} className="text-gray-600" />
         </Button>
       </div>
