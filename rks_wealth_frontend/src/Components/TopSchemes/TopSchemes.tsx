@@ -21,7 +21,6 @@ import {
 import { Card } from "../ui/card";
 import PageLayout from "../PageLayout/PageLayout";
 import DownloadFile from "@/utils/Filedownload";
-import PaginationComponent from "../PaginationComponent/PaginationComponent";
 
 const TopSchemes = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
