@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Search, X } from "lucide-react";
 import { Button } from "@/Components/ui/button";
 import { Input } from "@/Components/ui/input";
+import { ChevronDown, ChevronUp, SortAsc, SortDesc } from "lucide-react";
 import {
   Pagination,
   PaginationContent,
@@ -25,55 +26,131 @@ import {
 } from "@/Components//ui/table";
 import Sidebar from "@/Components/Sidebar/Sidebar";
 import Header from "@/Components/Header/Header";
+import PageLayout from "@/Components/PageLayout/PageLayout";
+import DownloadFile from "@/utils/Filedownload";
 
 const Transaction = ({ isHeader = true }: { isHeader?: boolean }) => {
   const router = useRouter();
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [diaryData, setDiaryData] = useState<any>([]);
+  const [transaction, setTransaction] = useState<any>([]);
+  const [columns, setColumns] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
-  const [searchColumn, setSearchColumn] = useState<string>("");
-  const [searchValue, setSearchValue] = useState<string>("");
   const [searchParams, setSearchParams] = useState<{ [key: string]: string }>(
     {}
   );
+  const [searchToggles, setSearchToggles] = useState<{
+    [key: string]: boolean;
+  }>({});
+  const [sortConfig, setSortConfig] = useState<{
+    key: string;
+    direction: "asc" | "desc";
+  } | null>(null);
+  const [visibleColumns, setVisibleColumns] = useState<string[]>([]);
+
   const token =
-  typeof window !== "undefined" ? localStorage.getItem("token") : null;
+    typeof window !== "undefined" ? localStorage.getItem("token") : null;
+
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const params: any = {
+        page: currentPage,
+        limit: 10,
+        ...searchParams,
+        ...router.query,
+      };
+      delete params.IWELL_CODE;
+      const response = await axios.get(`/api/client/transaction`, {
+        params, headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setLoading(false);
+      setTransaction(response.data?.data);
+      setTotalPages(response.data?.totalPages);
+    } catch (err: any) {
+      setError(err.message);
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const params: any = {
-          page: currentPage,
-          limit: 10,
-          ...searchParams,
-          ...router.query,
-        };
-        delete params.IWELL_CODE;
-        const response = await axios.get(`/api/client/transaction`, { params,headers: {
-          Authorization: `Bearer ${token}`, 
-        }, });
-
-        setLoading(false);
-        setDiaryData(response.data?.data);
-        setTotalPages(response.data?.totalPages);
-      } catch (err: any) {
-        setError(err.message);
-        setLoading(false);
-      }
-    };
-
     fetchData();
-  }, [currentPage, searchParams]);
+  }, [currentPage, searchParams, columns]);
+
+  const onDownload = async () => {
+    if (token)
+      DownloadFile(`/api/client/transaction/download`, token, searchParams);
+  };
+
+  const allHeaders =
+    columns.length > 0
+      ? columns
+      : transaction.length > 0
+        ? Object.keys(transaction[0])
+        : [];
+  const displayedHeaders = allHeaders.filter((header) =>
+    visibleColumns.includes(header)
+  );
+
+  const filteredData = transaction.filter((entry: any) =>
+    displayedHeaders.every((header) =>
+      searchParams[header]
+        ? String(entry[header] || "")
+          .toLowerCase()
+          .includes(searchParams[header].toLowerCase())
+        : true
+    )
+  );
+
+  const sortedData = React.useMemo(() => {
+    if (sortConfig) {
+      const sorted = [...filteredData].sort((a, b) => {
+        const aValue = a[sortConfig.key] || "";
+        const bValue = b[sortConfig.key] || "";
+        if (aValue < bValue) return sortConfig.direction === "asc" ? -1 : 1;
+        if (aValue > bValue) return sortConfig.direction === "asc" ? 1 : -1;
+        return 0;
+      });
+      return sorted;
+    }
+    return filteredData;
+  }, [filteredData, sortConfig]);
+
+  const toggleColumnSearch = (header: string) => {
+    setSearchToggles((prev) => ({
+      ...prev,
+      [header]: !prev[header],
+    }));
+  };
+
+  const handleColumnSearchChange = (header: string, value: string) => {
+    setSearchParams((prev) => ({
+      ...prev,
+      [header]: value,
+    }));
+    setCurrentPage(1);
+  };
+
 
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);
     }
+  };
+
+  const handleSort = (header: string) => {
+    setSortConfig((prev) => {
+      if (prev && prev.key === header) {
+        if (prev.direction === "asc") return { key: header, direction: "desc" };
+        return null;
+      }
+      return { key: header, direction: "asc" };
+    });
   };
 
   const renderPagination = () => {
@@ -113,168 +190,127 @@ const Transaction = ({ isHeader = true }: { isHeader?: boolean }) => {
       </PaginationItem>
     ));
   };
-  const headers = diaryData.length > 0 ? Object.keys(diaryData[0]) : [];
 
-  const handleSearch = () => {
-    if (searchColumn.trim() && searchValue.trim()) {
-      setSearchParams({ [searchColumn]: searchValue });
-      setCurrentPage(1);
-    }
+  const handleColumnVisibilityChange = (header: string) => {
+    setVisibleColumns((prev) => {
+      if (prev.includes(header)) {
+        return prev.filter((col) => col !== header);
+      } else {
+        return [...prev, header];
+      }
+    });
   };
 
-  const handleClearSearch = () => {
-    setSearchColumn("");
-    setSearchValue("");
-    setSearchParams({});
-    setCurrentPage(1);
-  };
 
   return (
-    <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
-      {isHeader && <Sidebar isSidebarOpen={isSidebarOpen} />}
-      <div className="flex-1 flex flex-col">
-        {/* {isHeader && <Header setIsSidebarOpen={setIsSidebarOpen} />} */}
-        <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
-          <main className="p-0 bg-gray-50 dark:bg-gray-900 min-h-screen">
-            <div className="flex-1 ps-6 pse-6 pt-2">
-              {/* Scrollable Table Container */}
-              <div
-                className="overflow-x-auto"
-                style={{ width: "calc(100vw - 300px)" }}
-              >
-                <div className="flex flex-wrap items-center gap-4 mb-4 bg-white p-4 rounded-lg shadow-md">
-                  <select
-                    className="border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none transition"
-                    value={searchColumn}
-                    onChange={(e) => setSearchColumn(e.target.value)}
-                  >
-                    <option value="">Select Column</option>
-                    {headers.map((header, index) => (
-                      <option key={index} value={header}>
-                        {header}
-                      </option>
-                    ))}
-                  </select>
-
-                  <div className="relative">
-                    <Input
-                      type="text"
-                      placeholder="Search value..."
-                      value={searchValue}
-                      onChange={(e) => setSearchValue(e.target.value)}
-                      className="border border-gray-300 rounded-lg px-4 py-2 pr-10 w-60 focus:ring-2 focus:ring-blue-400 focus:outline-none transition"
-                    />
-                    {searchValue && (
-                      <X
-                        className="absolute right-3 top-3 cursor-pointer text-gray-500 hover:text-gray-700 transition"
-                        size={18}
-                        onClick={handleClearSearch}
-                      />
-                    )}
-                  </div>
-
-                  <Button
-                    variant="outline"
-                    onClick={handleSearch}
-                    className="flex items-center px-4 py-2 rounded-lg bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-md hover:shadow-lg hover:opacity-90 transition"
-                  >
-                    <Search />
-                    Search
-                  </Button>
-                </div>
-
-                {loading ? (
-                  <>
-                    <Skeleton className="w-full h-10 mb-2" />
-                    <Skeleton className="w-full h-10 mb-2" />
-                    <Skeleton className="w-full h-10 mb-2" />
-                    <Skeleton className="w-full h-10 mb-2" />
-                    <Skeleton className="w-full h-10 mb-2" />
-                    <Skeleton className="w-full h-10 mb-2" />
-                    <Skeleton className="w-full h-10 mb-2" />
-                  </>
-                ) : (
-                  <div className="overflow-x-auto">
-                    <Card className="shadow-md rounded-xl overflow-hidden p-0">
-                      <Table className="w-full overflow-hidden">
-                        <TableHeader className="bg-[#74A82E] text-white">
-                          <TableRow>
-                            {headers.map((header, index) => (
-                              <TableHead
-                                key={index}
-                                className="py-1 px-5 text-left uppercase text-white"
-                              >
-                                {header}
-                              </TableHead>
-                            ))}
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {(diaryData || []).length > 0 ? (
-                            diaryData.map((entry: any, index: any) => (
-                              <TableRow
-                                key={index}
-                                className={`transition hover:bg-gray-100 cursor-pointer ${
-                                  index % 2 === 0 ? "bg-gray-50" : "bg-white"
-                                }`}
-                                // onClick={() => {
-                                //   const query = {
-                                //     FAMILY_HEAD: entry.FAMILY_HEAD,
-                                //     page: 1,
-                                //     limit: 10
-                                //   };
-                                //   router.push({ pathname: "/client/diary", query });
-                                // }}
-                              >
-                                {headers.map((header, idx) => (
-                                  <TableCell
-                                    key={idx}
-                                    className="py-3 px-5 border-b border-gray-300"
-                                  >
-                                    {entry[header]}
-                                  </TableCell>
-                                ))}
-                              </TableRow>
-                            ))
+    <PageLayout
+      isSidebarOpen={isSidebarOpen}
+      setIsSidebarOpen={setIsSidebarOpen}
+      allHeaders={allHeaders}
+      visibleColumns={visibleColumns}
+      handleColumnVisibilityChange={handleColumnVisibilityChange}
+      pageName="Transaction 90 days"
+      currentPage={currentPage}
+      totalPages={totalPages}
+      handlePageChange={handlePageChange}
+      renderPagination={renderPagination}
+      onDownload={onDownload}
+    >
+      <div
+        className="flex-1 p-6"
+        style={{
+          width: isSidebarOpen ? "calc(100vw - 300px)" : "calc(100vw - 40px)",
+        }}
+      >
+        <div className="overflow-x-auto">
+          <Card className="shadow-lg rounded-2xl overflow-hidden border border-gray-200">
+            <Table className="w-full">
+              <TableHeader className="bg-[#9bae58] text-white">
+                <TableRow className="hover:bg-[#74A82E]">
+                  {displayedHeaders.map((header, index) => (
+                    <TableHead
+                      key={index}
+                      className="py-3 px-6 text-left uppercase font-semibold text-white"
+                    >
+                      <div className="flex items-center gap-3">
+                        <span>{header}</span>
+                        <button
+                          onClick={() => toggleColumnSearch(header)}
+                          className="text-white opacity-80"
+                        >
+                          {searchToggles[header] ? (
+                            <ChevronUp size={16} />
                           ) : (
-                            <div className="flex justify-center items-center h-[20vh]">
-                              No transaction data
-                            </div>
+                            <ChevronDown size={16} />
                           )}
-                        </TableBody>
-                      </Table>
-                    </Card>
-                  </div>
+                        </button>
+                        <button
+                          onClick={() => handleSort(header)}
+                          className="text-white opacity-80"
+                        >
+                          {sortConfig && sortConfig.key === header ? (
+                            sortConfig.direction === "asc" ? (
+                              <SortAsc size={16} />
+                            ) : (
+                              <SortDesc size={16} />
+                            )
+                          ) : (
+                            <SortAsc size={16} className="opacity-50" />
+                          )}
+                        </button>
+                      </div>
+                      {searchToggles[header] && (
+                        <Input
+                          type="text"
+                          placeholder={`Search ${header}...`}
+                          value={searchParams[header] || ""}
+                          onChange={(e) =>
+                            handleColumnSearchChange(header, e.target.value)
+                          }
+                          className="mt-2 w-full px-3 py-2 bg-white text-gray-700 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-500 shadow-sm"
+                        />
+                      )}
+                    </TableHead>
+                  ))}
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {loading ? (
+                  Array.from({ length: 5 }).map((_, index) => (
+                    <TableRow key={index}>
+                      {displayedHeaders.map((_, idx) => (
+                        <TableCell key={idx}>
+                          <Skeleton className="w-full h-10 mb-2" />
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))
+                ) : (
+                  <>
+                    {sortedData.map((entry: any, index: number) => (
+                      <TableRow
+                        key={index}
+                        className={`transition hover:bg-gray-100 cursor-pointer ${index % 2 === 0 ? "bg-gray-50" : "bg-white"
+                          }`}
+                      >
+                        {displayedHeaders.map((header, idx) => (
+                          <TableCell
+                            key={idx}
+                            className="py-4 px-6 border-b border-gray-200 text-gray-800"
+                          >
+                            {entry[header]}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    ))}
+                  </>
                 )}
-                <Pagination>
-                  <PaginationContent>
-                    <PaginationItem>
-                      <button
-                        className="text-black disabled:opacity-50"
-                        onClick={() => handlePageChange(currentPage - 1)}
-                        disabled={currentPage === 1}
-                      >
-                        <PaginationPrevious />
-                      </button>
-                    </PaginationItem>
-                    {renderPagination()}
-                    <PaginationItem>
-                      <button
-                        className="text-black disabled:opacity-50"
-                        onClick={() => handlePageChange(currentPage + 1)}
-                        disabled={currentPage === totalPages}
-                      >
-                        <PaginationNext />
-                      </button>
-                    </PaginationItem>
-                  </PaginationContent>
-                </Pagination>
-              </div>
-            </div>
-          </main>
+              </TableBody>
+            </Table>
+          </Card>
         </div>
       </div>
-    </div>
+    </PageLayout>
   );
 };
 
