@@ -16,7 +16,7 @@ const Profile = () => {
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
         {/* Top Navbar */}
-        <Header setIsSidebarOpen={setIsSidebarOpen} />
+        <Header/>
 
         {/* Profile Section */}
         <div className="flex flex-col justify-center items-center flex-1 px-4">
