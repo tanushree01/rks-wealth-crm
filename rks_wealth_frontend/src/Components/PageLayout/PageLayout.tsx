@@ -16,6 +16,7 @@ interface PageLayoutProps {
   totalPages: number;
   handlePageChange: (page: number) => void;
   renderPagination: () => any;
+  onDownload: any;
 }
 
 const PageLayout: React.FC<PageLayoutProps> = ({
@@ -30,6 +31,7 @@ const PageLayout: React.FC<PageLayoutProps> = ({
   totalPages,
   handlePageChange,
   renderPagination,
+  onDownload,
 }) => {
   return (
     <div className="h-screen flex flex-col bg-[#f7f7f7]">
@@ -48,6 +50,7 @@ const PageLayout: React.FC<PageLayoutProps> = ({
             visibleColumns={visibleColumns}
             handleColumnVisibilityChange={handleColumnVisibilityChange}
             pageName={pageName}
+            onDownload={onDownload}
           />
           <main className="p-0 bg-gray-50 dark:bg-gray-900 min-h-screen">
             {children}

@@ -2,7 +2,7 @@ const { getModel } = require("../../models");
 const generateExcelFile = require("../../service/generateExcelFile");
 const { getAll } = require("../utiles/getAll");
 
-const table = "top_schemes";
+const table = "top_scheme";
 
 exports.getTopSchemes = async (req, res) => {
   return getAll(req, res, table, "SCHEMES");
@@ -12,15 +12,12 @@ exports.getTopSchemes = async (req, res) => {
 exports.downloadTopSchemes = async (req, res) => {
   try {
     const {
-      orderBy = orderByDefalut,
+      orderBy = "SCHEMES",
       order = "ASC",
       ...filters
     } = req.query;
     const Model = await getModel(table);
     // Convert page & limit to integers
-    const pageNum = parseInt(page, 10);
-    const limitNum = parseInt(limit, 10);
-    const offset = (pageNum - 1) * limitNum;
 
     // Prepare filtering conditions
     let whereConditions = {};
@@ -29,22 +26,16 @@ exports.downloadTopSchemes = async (req, res) => {
         whereConditions[key] = { [Op.iLike]: `%${filters[key]}%` }; // Case-insensitive search
       }
     });
-    const userType = req.user.userType;
-    if (userType === 'RM') {
-      whereConditions[userType] = req.user.username;
-    }
 
     // Fetch data with pagination, filtering, and sorting
     const { count, rows } = await Model.findAndCountAll({
       attributes: { exclude: ["id"] },
       where: whereConditions,
       order: [[orderBy, order.toUpperCase()]], // Sorting dynamically
-      limit: limitNum,
-      offset: offset
     });
 
     if (count === 0) {
-      return res.status(404).json({ message: "No long-term records found" });
+      return res.status(404).json({ message: "No top Schemes records found" });
     }
     const plainRows = rows.map((row) => row.get({ plain: true }));
   
@@ -56,7 +47,7 @@ exports.downloadTopSchemes = async (req, res) => {
     );
     res.setHeader(
       "Content-Disposition",
-      "attachment; filename=Long_Term_records.xlsx"
+      "attachment; filename=top_schemes_records.xlsx"
     );
 
     await workbook.xlsx.write(res);

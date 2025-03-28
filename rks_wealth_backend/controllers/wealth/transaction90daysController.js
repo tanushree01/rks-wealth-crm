@@ -1,7 +1,7 @@
 const { getModel } = require("../../models");
 const { getAll } = require("../utiles/getAll");
 
-const table = 'transaction_90days';
+const table = 'tr_90dayes';
 
 exports.get90DaysTransaction = async (req, res) => {
   return getAll(req, res, table);

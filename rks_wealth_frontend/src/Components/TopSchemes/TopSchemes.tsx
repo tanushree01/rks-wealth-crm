@@ -1,25 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "../Sidebar/Sidebar";
-import {
-  ChevronDown,
-  ChevronUp,
-  SortAsc,
-  SortDesc,
-  FileSpreadsheet,
-  Menu,
-  SlidersHorizontal,
-  ArrowLeft,
-} from "lucide-react";
+import { ChevronDown, ChevronUp, SortAsc, SortDesc } from "lucide-react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import {
-  Pagination,
-  PaginationContent,
   PaginationEllipsis,
   PaginationItem,
   PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
 } from "../ui/pagination";
 import axios from "axios";
 import { Skeleton } from "../ui/skeleton";
@@ -32,13 +19,8 @@ import {
   TableRow,
 } from "../ui/table";
 import { Card } from "../ui/card";
-import router from "next/router";
-import Header from "../Header/Header";
-import { useSelector } from "react-redux";
-import { RootState } from "@/store";
-import ComponentsHeader from "../Header/ComponentHeader";
-import PaginationComponent from "../PaginationComponent/PaginationComponent";
 import PageLayout from "../PageLayout/PageLayout";
+import DownloadFile from "@/utils/Filedownload";
 
 const TopSchemes = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -61,43 +43,56 @@ const TopSchemes = () => {
   const [visibleColumns, setVisibleColumns] = useState<string[]>([]);
 
   const [manageColumnsOpen, setManageColumnsOpen] = useState<boolean>(false);
+  const token =
+    typeof window !== "undefined" ? localStorage.getItem("token") : null;
+
+  const fetchData = async () => {
+    try {
+      const params: any = {
+        page: currentPage,
+        limit: 10,
+        orderBy: "SCHEMES",
+        order: "ASC",
+        ...searchParams,
+      };
+
+      const response = await axios.get(`/api/client/topschemes`, {
+        params,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = response.data?.data || [];
+      setLoading(false);
+      setTopScheme(data);
+      setTotalPages(response.data?.totalPages || 1);
+      if (data.length) {
+        const newHeaders = Object.keys(data[0]);
+        if (JSON.stringify(newHeaders) !== JSON.stringify(columns)) {
+          setColumns(newHeaders);
+          setVisibleColumns(newHeaders);
+          const initialToggles = newHeaders.reduce((acc: any, header) => {
+            acc[header] = false;
+            return acc;
+          }, {});
+          setSearchToggles(initialToggles);
+        }
+      }
+    } catch (err: any) {
+      setError(err.message);
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const params: any = {
-          page: currentPage,
-          limit: 10,
-          orderBy: "SCHEMES",
-          order: "ASC",
-          ...searchParams,
-        };
-
-        const response = await axios.get(`/api/client/topschemes`, { params });
-        const data = response.data?.data || [];
-        setLoading(false);
-        setTopScheme(data);
-        setTotalPages(response.data?.totalPages);
-        if (data.length) {
-          const newHeaders = Object.keys(data[0]);
-          if (JSON.stringify(newHeaders) !== JSON.stringify(columns)) {
-            setColumns(newHeaders);
-            setVisibleColumns(newHeaders);
-            const initialToggles = newHeaders.reduce((acc: any, header) => {
-              acc[header] = false;
-              return acc;
-            }, {});
-            setSearchToggles(initialToggles);
-          }
-        }
-      } catch (err: any) {
-        setError(err.message);
-        setLoading(false);
-      }
-    };
-
     fetchData();
   }, [currentPage, searchParams, columns]);
+
+  const onDownload = async () => {
+    if (token)
+      DownloadFile(`/api/client/topschemes/download`, token, searchParams);
+  };
+
   const allHeaders =
     columns.length > 0
       ? columns
@@ -222,94 +217,102 @@ const TopSchemes = () => {
       totalPages={totalPages}
       handlePageChange={handlePageChange}
       renderPagination={renderPagination}
+      onDownload={onDownload}
     >
-      <div className="max-w-screen overflow-x-auto">
-        {loading ? (
-          <>
-            <Skeleton className="w-full h-10 mb-2" />
-          </>
-        ) : (
-          <div className="w-full h-full overflow-auto">
-            <Card className="shadow-md rounded-xl overflow-hidden p-0">
-              <Table className="w-full overflow-hidden">
-                <TableHeader className="bg-[#74A82E] text-white">
-                  <TableRow className="hover:bg-[#74A82E]">
-                    {displayedHeaders.map((header, index) => (
-                      <TableHead
-                        key={index}
-                        className="py-3 px-6 text-left uppercase font-semibold text-white"
-                      >
-                        <div className="flex items-center gap-3">
-                          <span>{header}</span>
-                          <button
-                            onClick={() => toggleColumnSearch(header)}
-                            className="text-white opacity-80"
-                          >
-                            {searchToggles[header] ? (
-                              <ChevronUp size={16} />
+      <div
+        className="flex-1 p-6"
+        style={{
+          width: isSidebarOpen ? "calc(100vw - 300px)" : "calc(100vw - 40px)",
+        }}
+      >
+        <div className="overflow-x-auto">
+          <Card className="shadow-lg rounded-2xl overflow-hidden border border-gray-200">
+            <Table className="w-full">
+              <TableHeader className="bg-[#9bae58] text-white">
+                <TableRow className="hover:bg-[#74A82E]">
+                  {displayedHeaders.map((header, index) => (
+                    <TableHead
+                      key={index}
+                      className="py-3 px-6 text-left uppercase font-semibold text-white"
+                    >
+                      <div className="flex items-center gap-3">
+                        <span>{header}</span>
+                        <button
+                          onClick={() => toggleColumnSearch(header)}
+                          className="text-white opacity-80"
+                        >
+                          {searchToggles[header] ? (
+                            <ChevronUp size={16} />
+                          ) : (
+                            <ChevronDown size={16} />
+                          )}
+                        </button>
+                        <button
+                          onClick={() => handleSort(header)}
+                          className="text-white opacity-80"
+                        >
+                          {sortConfig && sortConfig.key === header ? (
+                            sortConfig.direction === "asc" ? (
+                              <SortAsc size={16} />
                             ) : (
-                              <ChevronDown size={16} />
-                            )}
-                          </button>
-                          <button
-                            onClick={() => handleSort(header)}
-                            className="text-white opacity-80"
-                          >
-                            {sortConfig && sortConfig.key === header ? (
-                              sortConfig.direction === "asc" ? (
-                                <SortAsc size={16} />
-                              ) : (
-                                <SortDesc size={16} />
-                              )
-                            ) : (
-                              <SortAsc size={16} className="opacity-50" />
-                            )}
-                          </button>
-                        </div>
-                        {searchToggles[header] && (
-                          <Input
-                            type="text"
-                            placeholder={`Search ${header}...`}
-                            value={searchParams[header] || ""}
-                            onChange={(e) =>
-                              handleColumnSearchChange(header, e.target.value)
-                            }
-                            className="mt-2 w-full"
-                          />
-                        )}
-                      </TableHead>
-                    ))}
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {sortedData.length > 0 ? (
-                    sortedData.map((entry: any, index: number) => (
+                              <SortDesc size={16} />
+                            )
+                          ) : (
+                            <SortAsc size={16} className="opacity-50" />
+                          )}
+                        </button>
+                      </div>
+                      {searchToggles[header] && (
+                        <Input
+                          type="text"
+                          placeholder={`Search ${header}...`}
+                          value={searchParams[header] || ""}
+                          onChange={(e) =>
+                            handleColumnSearchChange(header, e.target.value)
+                          }
+                          className="mt-2 w-full px-3 py-2 bg-white text-gray-700 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-500 shadow-sm"
+                        />
+                      )}
+                    </TableHead>
+                  ))}
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {loading ? (
+                  Array.from({ length: 5 }).map((_, index) => (
+                    <TableRow key={index}>
+                      {displayedHeaders.map((_, idx) => (
+                        <TableCell key={idx}>
+                          <Skeleton className="w-full h-10 mb-2" />
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))
+                ) : (
+                  <>
+                    {sortedData.map((entry: any, index: number) => (
                       <TableRow
                         key={index}
-                        className="border-b hover:bg-gray-100"
+                        className={`transition hover:bg-gray-100 cursor-pointer ${
+                          index % 2 === 0 ? "bg-gray-50" : "bg-white"
+                        }`}
                       >
                         {displayedHeaders.map((header, idx) => (
-                          <TableCell key={idx} className="py-3 px-6">
+                          <TableCell
+                            key={idx}
+                            className="py-4 px-6 border-b border-gray-200 text-gray-800"
+                          >
                             {entry[header]}
                           </TableCell>
                         ))}
                       </TableRow>
-                    ))
-                  ) : (
-                    <TableRow>
-                      <TableCell
-                        colSpan={displayedHeaders.length}
-                        className="text-center py-4"
-                      >
-                        No Data Available
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </Card>
-          </div>
-        )}
+                    ))}
+                  </>
+                )}
+              </TableBody>
+            </Table>
+          </Card>
+        </div>
       </div>
     </PageLayout>
   );

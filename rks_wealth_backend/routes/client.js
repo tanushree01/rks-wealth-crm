@@ -8,7 +8,7 @@ const {
   getLongTermRecords,
   downloadLongTermRecords
 } = require("../controllers/wealth/longTermController.js");
-const { getTopSchemes } = require("../controllers/wealth/topSchemes.js");
+const { getTopSchemes, downloadTopSchemes } = require("../controllers/wealth/topSchemes.js");
 const {
   get90DaysTransactionRecords,
   download90DaysTransactionRecords
@@ -36,7 +36,7 @@ router.get(
 router.get("/diary", authMiddleware, clientController.getClientDiaries);
 
 router.get(
-  "/foliomaste/download",
+  "/foliomaster/download",
   authMiddleware,
   roleMiddleware(["Admin", "RM"]),
   downloadFolioMasterRecords
