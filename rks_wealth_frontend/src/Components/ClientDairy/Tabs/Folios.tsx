@@ -26,6 +26,7 @@ import {
 } from "@/Components//ui/table";
 import DownloadFile from "@/utils/Filedownload";
 import PageLayout from "@/Components/PageLayout/PageLayout";
+import { toast } from "react-toastify";
 
 const Folios = () => {
   const router = useRouter();
@@ -84,6 +85,7 @@ const Folios = () => {
     } catch (err: any) {
       setError(err.message);
       setLoading(false);
+      toast.error(err.message);
     }
   };
 

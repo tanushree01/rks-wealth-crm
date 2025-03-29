@@ -23,7 +23,7 @@ const Header = () => {
   const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
+  console.log(user);
   useEffect(() => {
     const storedUser = localStorage.getItem("userData");
     if (storedUser) {
@@ -41,6 +41,16 @@ const Header = () => {
     }
     router.replace("/login");
   };
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("userData");
+    if (storedUser) {
+      const parsedData = JSON.parse(storedUser);
+      setUser(parsedData.user); // Extract the user object
+    }
+  }, []);
+
+
 
   return (
     <header className="bg-[#34466e] p-4 px-6 flex justify-between items-center shadow-md w-full">
@@ -92,7 +102,7 @@ const Header = () => {
 
         {/* Dropdown Menu */}
         {isDropdownOpen && (
-          <div className="absolute z-[1] right-0 mt-2 w-48 bg-[#ffffff] shadow-lg rounded-md border border-[#dbdbdb]">
+          <div className="absolute right-0 mt-2 w-48 bg-[#ffffff] shadow-lg rounded-md border border-[#dbdbdb] z-50">
             <ul className="text-[#34466e]">
               {/* <li className="px-4 py-2 hover:bg-gray-100 flex items-center cursor-pointer">
                 <Link href="/profile" className="flex items-center w-full">

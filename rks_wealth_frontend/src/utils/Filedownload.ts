@@ -1,4 +1,5 @@
 import axios from "axios";
+import { toast } from "react-toastify";
 /**
  * 
  * @param url api url
@@ -38,10 +39,12 @@ const DownloadFile = async (
     document.body.appendChild(link);
     link.click();
 
+    toast.success("File downloaded successfully!");
     // Cleanup
     document.body.removeChild(link);
     window.URL.revokeObjectURL(blobUrl);
   } catch (error) {
+    toast.error("Download failed. Please try again.");
     console.error("Download failed:", error);
   }
 };

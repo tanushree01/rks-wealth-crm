@@ -33,6 +33,7 @@ import DownloadFile from "@/utils/Filedownload";
 import { useDispatch } from "react-redux";
 import { logout } from "@/store/slices/authSlice";
 import PageLayout from "../PageLayout/PageLayout";
+import { toast } from "react-toastify";
 
 const ClientDairy = () => {
   const router = useRouter();
@@ -88,6 +89,7 @@ const ClientDairy = () => {
     } catch (err: any) {
       setLoading(false)
       setError(err.message);
+      toast.error(err.message);
       if (err.status === 401) {
         dispatch(logout());
         if (typeof window !== "undefined") {

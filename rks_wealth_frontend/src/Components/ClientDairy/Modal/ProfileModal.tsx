@@ -23,6 +23,7 @@ import axios from "axios";
 import { ArrowLeft, ChevronDown, ChevronUp, FileSpreadsheet, Search, SlidersHorizontal, SortAsc, SortDesc, X } from "lucide-react";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
+import { toast } from "react-toastify";
 
 
 
@@ -85,7 +86,7 @@ const ProfileModal = ({
           ...condition,
           ...searchParams,
         };
-        delete params.IWELL_CODE;
+        params.IWELL_CODE;
 
         const response = await axios.get(`/api/client/${url}`, {
           params, headers: {
@@ -111,6 +112,7 @@ const ProfileModal = ({
       } catch (err: any) {
         setApiData([]);
         setError(err.message);
+        toast.error(err.message);
       } finally {
         setLoading(false);
       }

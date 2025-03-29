@@ -4,6 +4,7 @@ import { Provider } from "react-redux";
 import { store } from "@/store";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
+import { toast, ToastContainer } from "react-toastify";
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
@@ -23,6 +24,7 @@ export default function App({ Component, pageProps }: AppProps) {
 
   return (
     <Provider store={store}>
+       <ToastContainer />
       <Component {...pageProps} />
     </Provider>
   );

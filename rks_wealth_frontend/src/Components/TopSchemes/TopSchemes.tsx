@@ -21,6 +21,7 @@ import {
 import { Card } from "../ui/card";
 import PageLayout from "../PageLayout/PageLayout";
 import DownloadFile from "@/utils/Filedownload";
+import { toast } from "react-toastify";
 
 const TopSchemes = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -81,6 +82,7 @@ const TopSchemes = () => {
     } catch (err: any) {
       setError(err.message);
       setLoading(false);
+      toast.error(err.message);
     }
   };
 

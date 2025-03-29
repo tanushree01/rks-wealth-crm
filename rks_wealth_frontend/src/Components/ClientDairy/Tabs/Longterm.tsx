@@ -32,6 +32,7 @@ import {
 } from "@/Components//ui/table";
 import DownloadFile from "@/utils/Filedownload";
 import PageLayout from "@/Components/PageLayout/PageLayout";
+import { toast } from "react-toastify";
 
 const Longterm = () => {
   const router = useRouter();
@@ -92,6 +93,7 @@ const Longterm = () => {
     } catch (err: any) {
       setError(err.message);
       setLoading(false);
+      toast.error(err.message);
     }
   };
 

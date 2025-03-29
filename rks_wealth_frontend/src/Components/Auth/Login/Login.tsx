@@ -21,6 +21,7 @@ import { loginSuccess } from "@/store/slices/authSlice";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/store";
 import logo from "@/assets/logo.jpg"; // Adjust the path to your logo
+import { toast } from "react-toastify";
 
 export default function Login() {
   const [loading, setLoading] = useState(false);
@@ -42,8 +43,10 @@ export default function Login() {
       localStorage.setItem("userData", JSON.stringify(data));
       dispatch(loginSuccess(data));
       router.push("/dashboard");
+      toast.success("Login successful!");
     } catch (error: any) {
       setError(error.response?.data?.message || "Invalid email or password.");
+      toast.error(error.response?.data?.message || "Invalid email or password.");
     } finally {
       setLoading(false);
     }
