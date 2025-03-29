@@ -375,7 +375,7 @@ const ProfileDashboard = () => {
                   { label: "CAGR", value: dynamicData?.CAGR },
                   {
                     label: "AVG HOLDING DAY",
-                    value: dynamicData?.AVG_HOLDING_DAY,
+                    value: dynamicData?.AVG_HOLDING_DAYS,
                   },
                 ],
               },
