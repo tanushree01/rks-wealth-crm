@@ -8,6 +8,8 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { useState } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface FormData {
   userName: string;
@@ -32,7 +34,7 @@ const formatLabel = (label: string) => {
 
 export default function Register() {
   const [formData, setFormData] = useState<FormData>({
-    userName: "Admin",
+    userName: "",
     firstName: "",
     lastName: "",
     email: "",
@@ -69,7 +71,7 @@ export default function Register() {
         },
       });
       console.log("data================", data);
-      alert("Registration successful!");
+      toast.success("Registration successful!");
       setFormData({
         userName: "",
         firstName: "",
@@ -85,7 +87,7 @@ export default function Register() {
       });
     } catch (error: any) {
       console.error("Error:", error);
-      alert(error.response?.data?.message || "Registration failed!");
+      toast.error(error.response?.data?.message || "Registration failed!");
     } finally {
       setLoading(false);
     }
@@ -110,29 +112,34 @@ export default function Register() {
               onSubmit={handleSubmit}
               className="grid grid-cols-1 md:grid-cols-2 gap-4"
             >
-              {["firstName", "lastName", "email", "phone", "address"].map(
-                (field) => (
-                  <div key={field}>
-                    <Label
-                      htmlFor={field}
-                      className="text-[#1D3E6F] dark:text-[#74A82E]"
-                    >
-                      {formatLabel(field)}
-                    </Label>
-                    <Input
-                      id={field}
-                      name={field}
-                      type={field === "email" ? "email" : "text"}
-                      autoComplete={field}
-                      placeholder={`Enter your ${formatLabel(field)}`}
-                      value={formData[field as keyof FormData]}
-                      onChange={handleChange}
-                      required
-                      className="border-gray-300 dark:border-gray-600 focus:border-[#1D3E6F] dark:focus:border-[#74A82E] focus:ring-[#1D3E6F] dark:focus:ring-[#74A82E]"
-                    />
-                  </div>
-                )
-              )}
+              {[
+                "userName",
+                "firstName",
+                "lastName",
+                "email",
+                "phone",
+                "address",
+              ].map((field) => (
+                <div key={field}>
+                  <Label
+                    htmlFor={field}
+                    className="text-[#1D3E6F] dark:text-[#74A82E]"
+                  >
+                    {formatLabel(field)}
+                  </Label>
+                  <Input
+                    id={field}
+                    name={field}
+                    type={field === "email" ? "email" : "text"}
+                    autoComplete={field}
+                    placeholder={`Enter your ${formatLabel(field)}`}
+                    value={formData[field as keyof FormData]}
+                    onChange={handleChange}
+                    required
+                    className="border-gray-300 dark:border-gray-600 focus:border-[#1D3E6F] dark:focus:border-[#74A82E] focus:ring-[#1D3E6F] dark:focus:ring-[#74A82E]"
+                  />
+                </div>
+              ))}
 
               {["password", "confirmPassword"].map((field) => (
                 <div key={field}>
@@ -153,39 +160,6 @@ export default function Register() {
                     required
                     className="border-gray-300 dark:border-gray-600 focus:border-[#1D3E6F] dark:focus:border-[#74A82E] focus:ring-[#1D3E6F] dark:focus:ring-[#74A82E]"
                   />
-                </div>
-              ))}
-
-              {[
-                { name: "gender", options: ["Male", "Female", "Other"] },
-                {
-                  name: "maritalStatus",
-                  options: ["Single", "Married", "Divorced", "Widowed"],
-                },
-                { name: "userType", options: ["Admin", "RM", "SERVICE_RM"] },
-              ].map(({ name, options }) => (
-                <div key={name}>
-                  <Label
-                    htmlFor={name}
-                    className="text-[#1D3E6F] dark:text-[#74A82E]"
-                  >
-                    {formatLabel(name)}
-                  </Label>
-                  <select
-                    id={name}
-                    name={name as keyof FormData}
-                    value={formData[name as keyof FormData]}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-3 py-2 border rounded-md bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 focus:border-[#1D3E6F] dark:focus:border-[#74A82E] focus:ring-[#1D3E6F] dark:focus:ring-[#74A82E]"
-                  >
-                    <option value="">Select {formatLabel(name)}</option>
-                    {options.map((option) => (
-                      <option key={option} value={option}>
-                        {option}
-                      </option>
-                    ))}
-                  </select>
                 </div>
               ))}
 
