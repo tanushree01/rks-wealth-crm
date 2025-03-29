@@ -9,12 +9,27 @@ import {
 import { RootState } from "@/store";
 import { useSelector } from "react-redux";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 
+interface User {
+  firstName: string;
+  lastName: string;
+  email?: string;
+}
+
 const Header = () => {
-  const user = useSelector((state: RootState) => state.auth.user);
+  // const user = useSelector((state: RootState) => state.auth.user);
+  const [user, setUser] = useState<User | null>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  console.log(user);
+  useEffect(() => {
+    const storedUser = localStorage.getItem("userData");
+    if (storedUser) {
+      const parsedData = JSON.parse(storedUser);
+      setUser(parsedData.user); // Extract the user object
+    }
+  }, []);
 
   return (
     <header className="bg-[#34466e] p-4 px-6 flex justify-between items-center shadow-md w-full">
