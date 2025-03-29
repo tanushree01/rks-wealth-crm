@@ -257,8 +257,8 @@ const ProfileDashboard = () => {
               { title: "FAMILY SIP", value: dynamicData?.SIP_STATUS },
               { title: "FAMILY LAST 365 DAYS", value: dynamicData?.SIP_STATUS },
               { title: "AUM RKS", value: dynamicData?.RKS_AUM },
-              { title: "AUM TOTAL", value: dynamicData?.RKS_AUM },
-              { title: "EXTRA AUM", value: dynamicData?.RKS_AUM },
+              { title: "AUM TOTAL", value: dynamicData?.IW_AUM },
+              { title: "EXTRA AUM", value: dynamicData?.EXTRA_AUM },
             ].map((item, index) => (
               <div key={index} className="text-sm font-medium">
                 <p className="text-[#9bae58]">{item.title}</p>
@@ -269,7 +269,7 @@ const ProfileDashboard = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
             {[
               {
-                heading: ["SIP RKS", "SIP STATUS"],
+                heading: ["SIP RKS"],
                 data: [
                   { label: "RKS M1", value: dynamicData?.RKS_M1 },
                   { label: "RKS M2", value: dynamicData?.RKS_M2 },
@@ -278,7 +278,7 @@ const ProfileDashboard = () => {
                 ],
               },
               {
-                heading: ["SIP OTHERS", "SIP STATUS"],
+                heading: ["SIP OTHERS"],
                 data: [
                   { label: "OTHERS M1", value: dynamicData?.OTHER_M1 },
                   { label: "OTHERS M2", value: dynamicData?.OTHER_M2 },
@@ -290,7 +290,6 @@ const ProfileDashboard = () => {
               <Card key={index} className="border p-1 rounded-none">
                 <div className="flex justify-between font-semibold text-[#9bae58] border-b px-5 pb-1">
                   <span>{card.heading[0]}</span>
-                  <span>{card.heading[1]}</span>
                 </div>
                 <CardContent className="text-sm p-0">
                   {card.data.map((item, idx) => (
