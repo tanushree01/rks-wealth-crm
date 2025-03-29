@@ -188,7 +188,7 @@ const TransactionModal = ({
         </div>
 
         {/* Table */}
-        <div className="overflow-auto max-h-[calc(100%-150px)]">
+        <div className="overflow-auto max-h-[calc(100vh-100px)]">
           {loading ? (
             <Skeleton className="w-full h-10 mb-2" />
           ) : (
