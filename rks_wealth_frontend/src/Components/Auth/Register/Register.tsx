@@ -48,11 +48,8 @@ export default function Register() {
   });
 
   const [loading, setLoading] = useState(false);
-  const token =
-    typeof window !== "undefined" ? localStorage.getItem("token") : null;
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
+  const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
@@ -70,8 +67,6 @@ export default function Register() {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log("data================", data);
-      toast.success("Registration successful!");
       setFormData({
         userName: "",
         firstName: "",
@@ -85,6 +80,7 @@ export default function Register() {
         maritalStatus: "",
         userType: "",
       });
+      toast.success("Registration successful!");
     } catch (error: any) {
       console.error("Error:", error);
       toast.error(error.response?.data?.message || "Registration failed!");
@@ -109,9 +105,8 @@ export default function Register() {
           </CardHeader>
           <CardContent>
             <form
-              onSubmit={handleSubmit}
-              className="grid grid-cols-1 md:grid-cols-2 gap-4"
-            >
+             onSubmit={handleSubmit}
+             className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {[
                 "userName",
                 "firstName",
@@ -121,10 +116,7 @@ export default function Register() {
                 "address",
               ].map((field) => (
                 <div key={field}>
-                  <Label
-                    htmlFor={field}
-                    className="text-[#1D3E6F] dark:text-[#74A82E]"
-                  >
+                  <Label htmlFor={field} className="text-[#1D3E6F] dark:text-[#74A82E]">
                     {formatLabel(field)}
                   </Label>
                   <Input
@@ -136,17 +128,13 @@ export default function Register() {
                     value={formData[field as keyof FormData]}
                     onChange={handleChange}
                     required
-                    className="border-gray-300 dark:border-gray-600 focus:border-[#1D3E6F] dark:focus:border-[#74A82E] focus:ring-[#1D3E6F] dark:focus:ring-[#74A82E]"
                   />
                 </div>
               ))}
 
               {["password", "confirmPassword"].map((field) => (
                 <div key={field}>
-                  <Label
-                    htmlFor={field}
-                    className="text-[#1D3E6F] dark:text-[#74A82E]"
-                  >
+                  <Label htmlFor={field} className="text-[#1D3E6F] dark:text-[#74A82E]">
                     {formatLabel(field)}
                   </Label>
                   <Input
@@ -163,26 +151,35 @@ export default function Register() {
                 </div>
               ))}
 
+              {[{ name: "gender", options: ["Male", "Female", "Other"] },
+                { name: "maritalStatus", options: ["Single", "Married", "Divorced", "Widowed"] },
+                { name: "userType", options: ["Admin", "RM", "SERVICE_RM"] }].map(({ name, options }) => (
+                <div key={name}>
+                  <Label htmlFor={name} className="text-[#1D3E6F] dark:text-[#74A82E]">
+                    {formatLabel(name)}
+                  </Label>
+                  <select
+                    id={name}
+                    name={name}
+                    value={formData[name as keyof FormData]}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-3 py-2 border rounded-md"
+                  >
+                    <option value="">Select {formatLabel(name)}</option>
+                    {options.map((option) => (
+                      <option key={option} value={option}>{option}</option>
+                    ))}
+                  </select>
+                </div>
+              ))}
+
               <div className="md:col-span-2 flex justify-center">
-                <Button
-                  type="submit"
-                  className="w-full max-w-sm bg-[#74A82E] hover:bg-[#5A8824] text-white font-semibold py-2 rounded-md transition-all duration-300"
-                  disabled={loading}
-                >
+                <Button type="submit" className="w-full max-w-sm bg-[#74A82E]" disabled={loading}>
                   {loading ? "Registering..." : "Sign Up"}
                 </Button>
               </div>
             </form>
-
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-4 text-center">
-              Already have an account?
-              <Link
-                href="/login"
-                className="text-[#1D3E6F] dark:text-[#74A82E] hover:underline ml-1"
-              >
-                Login
-              </Link>
-            </p>
           </CardContent>
         </Card>
       </motion.div>
