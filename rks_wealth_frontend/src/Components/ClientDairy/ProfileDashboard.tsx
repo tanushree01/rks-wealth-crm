@@ -314,7 +314,7 @@ const ProfileDashboard = () => {
                 <CardContent className="text-sm p-0">
                   {card.data.map((item, idx) => (
                     <div key={idx} className="flex justify-between px-5 py-1">
-                      <span className="text-orange-500">{item.label}</span>
+                      <span className="text-black-500">{item.label}</span>
                       <span className="font-medium text-gray-700">
                         {item.value || "N/A"}
                       </span>
