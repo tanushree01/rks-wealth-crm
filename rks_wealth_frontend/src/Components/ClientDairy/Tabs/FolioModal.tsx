@@ -22,7 +22,7 @@ import { ArrowLeft, Search, X } from "lucide-react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
-const FolioModal = ({
+const TransactionModal = ({
   open,
   setOpen,
 }: {
@@ -42,7 +42,7 @@ const FolioModal = ({
     {}
   );
   const token =
-  typeof window !== "undefined" ? localStorage.getItem("token") : null;
+    typeof window !== "undefined" ? localStorage.getItem("token") : null;
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -54,13 +54,16 @@ const FolioModal = ({
           ...router.query,
         };
         delete params.IWELL_CODE;
-        params.FolioPAN = params.PAN;
-        params.MintPAN = params.PAN;
+        params.FOLIOPAN = params.PAN;
+        params.MINTPAN = params.PAN;
         delete params.PAN;
 
-        const response = await axios.get(`/api/client/foliomaster`, { params,headers: {
-          Authorization: `Bearer ${token}`, 
-        }, });
+        const response = await axios.get(`/api/client/foliomaster`, {
+          params,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         setDiaryData(response.data?.data || []);
         setTotalPages(response.data?.totalPages || 1);
       } catch (err: any) {
@@ -228,4 +231,4 @@ const FolioModal = ({
   );
 };
 
-export default FolioModal;
+export default TransactionModal;

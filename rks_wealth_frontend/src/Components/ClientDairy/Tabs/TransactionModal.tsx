@@ -142,7 +142,7 @@ const TransactionModal = ({
               <ArrowLeft className="w-6 h-6" />
             </Button>
             <h2 className="text-xl font-bold text-center flex-1">
-              FOLIO MASTER
+              Transaction 90 days Modal
             </h2>
             <div className="w-6"></div>
           </div>
