@@ -161,11 +161,12 @@ const ProfileDashboard = () => {
       try {
         setLoading(true);
         const response = await fetch(
-          `/api/client/diary/one?IWELL_CODE=${IWELL_CODE}`, {
+          `/api/client/diary/one?IWELL_CODE=${IWELL_CODE}`,
+          {
             headers: {
               Authorization: `Bearer ${token}`,
-            }
-        },
+            },
+          }
         );
 
         if (!response.ok) throw new Error("Failed to fetch data");
@@ -232,9 +233,17 @@ const ProfileDashboard = () => {
             {[
               { label: "AGE", value: dynamicData?.AGE },
               { label: "KYC DOB", value: dynamicData?.DATE_OF_BIRTH },
-              { label: "BIRTHDAY DOB", value: dynamicData?.DATE_OF_BIRTH },
+              {
+                label: "BIRTHDAY DOB",
+                value: dynamicData?.DATE_OF_BIRTH,
+                isInput: "date",
+              },
               { label: "PAN", value: dynamicData?.PAN },
-              { label: "KYC STATUS", value: "N/A" },
+              {
+                label: "KYC STATUS",
+                value: dynamicData?.KYC_STATUS || "",
+                isInput: "text",
+              },
               { label: "RM", value: dynamicData?.RM },
               { label: "SUB BROKER", value: dynamicData?.SUB_BROKER || "N/A" },
               { label: "SRM", value: dynamicData?.SRM || "N/A" },
@@ -244,7 +253,18 @@ const ProfileDashboard = () => {
                 <span className="font-semibold text-[#34466e] min-w-[160px]">
                   {item.label} :
                 </span>
-                <span className="ml-2">{item.value || "N/A"}</span>
+                {item.isInput ? (
+                  <input
+                    type={item.isInput}
+                    className="ml-2 border border-gray-300 px-2 py-1 rounded"
+                    value={item.value || ""}
+                    onChange={(e) =>
+                      console.log(`${item.label} changed:`, e.target.value)
+                    }
+                  />
+                ) : (
+                  <span className="ml-2">{item.value || "N/A"}</span>
+                )}
               </div>
             ))}
           </div>
@@ -253,9 +273,9 @@ const ProfileDashboard = () => {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
               { title: "FAMILY HEAD", value: dynamicData?.FAMILY_HEAD },
-              { title: "FAMILY AUM", value: dynamicData?.IW_AUM },
-              { title: "FAMILY SIP", value: dynamicData?.SIP_STATUS },
-              { title: "FAMILY LAST 365 DAYS", value: dynamicData?.SIP_STATUS },
+              { title: "FAMILY AUM", value: "N/A" },
+              { title: "FAMILY SIP", value: "N/A" },
+              { title: "FAMILY LAST 365 DAYS", value: "N/A" },
               { title: "AUM RKS", value: dynamicData?.RKS_AUM },
               { title: "AUM TOTAL", value: dynamicData?.IW_AUM },
               { title: "EXTRA AUM", value: dynamicData?.EXTRA_AUM },
@@ -288,19 +308,23 @@ const ProfileDashboard = () => {
               },
             ].map((card, index) => (
               <Card key={index} className="border p-1 rounded-none">
-                <div className="flex justify-between font-semibold text-[#9bae58] border-b px-5 pb-1">
+                <div className="flex justify-between font-semibold text-[#9bae58] border-b px-5 pb-1 text-center">
                   <span>{card.heading[0]}</span>
                 </div>
                 <CardContent className="text-sm p-0">
                   {card.data.map((item, idx) => (
                     <div key={idx} className="flex justify-between px-5 py-1">
-                      <span>{item.label}</span>
+                      <span className="text-orange-500">{item.label}</span>
                       <span className="font-medium text-gray-700">
                         {item.value || "N/A"}
                       </span>
                     </div>
                   ))}
                 </CardContent>
+
+                <div className="bg-gray-200 p-2 text-lg font-semibold rounded-xl text-gray-800 text-center">
+                  SIP STATUS - {dynamicData.SIP_STATUS}
+                </div>
               </Card>
             ))}
           </div>
@@ -316,12 +340,19 @@ const ProfileDashboard = () => {
                   },
                   { label: "REDEMPTION", value: dynamicData?.REDEMPTION },
                   {
-                    label: "PURCHASE VALUE",
+                    label: "PURCHASE",
                     value: dynamicData?.PURCHASE_VALUE,
                   },
                   { label: "SWITCH IN", value: dynamicData?.SWITCH_IN },
                   { label: "SWITCH OUT", value: dynamicData?.SWITCH_OUT },
-                  { label: "NET SWITCH", value: dynamicData?.NET_SWITCH },
+                  {
+                    label: "DIVIDENT PAYOUT",
+                    value: dynamicData?.DIVIDENT_PAYOUT,
+                  },
+                  {
+                    label: "NET SWITCH",
+                    value: dynamicData?.NET_SWITCH,
+                  },
                 ],
               },
               {
@@ -332,12 +363,13 @@ const ProfileDashboard = () => {
                     value: dynamicData?.PURCHASE_VALUE,
                   },
                   { label: "CURRENT VALUE", value: dynamicData?.CURRENT_VALUE },
+                  { label: "GAIN", value: dynamicData?.GAIN },
+                  { label: "ABS. RETURN", value: dynamicData?.ABSOLUTE_RETURN },
+                  { label: "CAGR", value: dynamicData?.CAGR },
                   {
                     label: "AVG HOLDING DAY",
                     value: dynamicData?.AVG_HOLDING_DAY,
                   },
-                  { label: "CAGR", value: dynamicData?.CAGR },
-                  { label: "ABS. RETURN", value: dynamicData?.ABSOLUTE_RETURN },
                 ],
               },
               {
@@ -349,8 +381,6 @@ const ProfileDashboard = () => {
                   { label: "HYBRID %", value: dynamicData?.HYBRID_PERCENTAGE },
                   { label: "DEBT", value: dynamicData?.DEBT },
                   { label: "DEBT %", value: dynamicData?.DEBT_PERCENTAGE },
-                  { label: "CAGR", value: dynamicData?.CAGR },
-                  { label: "ABS. RETURN", value: dynamicData?.ABSOLUTE_RETURN },
                 ],
               },
             ].map((card, index) => (
@@ -377,7 +407,7 @@ const ProfileDashboard = () => {
             {[
               { text: "FOLIO MASTER", setOpen: setFolioOpen },
               { text: "TR. 90 DAYS", setOpen: setFolioOpen },
-              { text: "LONG TERM", setOpen: () => { } }, // Handle separately if needed
+              { text: "LONG TERM", setOpen: () => {} },
             ].map(({ text, setOpen }, index) => (
               <Button
                 key={index}
