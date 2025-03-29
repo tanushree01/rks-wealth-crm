@@ -193,7 +193,7 @@ const TransactionModal = ({
           ) : (
             <Card className="shadow-md">
               <Table>
-                <TableHeader className="bg-green-700 text-white">
+                <TableHeader className="bg-[#74A82E] text-white">
                   <TableRow>
                     {headers.map((header, index) => (
                       <TableHead key={index} className="py-2 px-4">
