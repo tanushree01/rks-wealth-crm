@@ -66,7 +66,7 @@ const Header = () => {
 
         {/* Dropdown Menu */}
         {isDropdownOpen && (
-          <div className="absolute right-0 mt-2 w-48 bg-[#ffffff] shadow-lg rounded-md border border-[#dbdbdb]">
+          <div className="absolute right-0 mt-2 w-48 bg-[#ffffff] shadow-lg rounded-md border border-[#dbdbdb] z-50">
             <ul className="text-[#34466e]">
               <li className="px-4 py-2 hover:bg-gray-100 flex items-center cursor-pointer">
                 <Link href="/profile" className="flex items-center w-full">
@@ -74,7 +74,7 @@ const Header = () => {
                 </Link>
               </li>
               <li className="px-4 py-2 hover:bg-gray-100 flex items-center cursor-pointer">
-                <Link href="/register" className="flex items-center w-full ">
+                <Link href="/register" className="flex items-center w-full">
                   <User className="w-4 h-4 mr-2" /> Register
                 </Link>
               </li>
