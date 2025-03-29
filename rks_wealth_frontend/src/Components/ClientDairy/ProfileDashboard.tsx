@@ -327,7 +327,10 @@ const ProfileDashboard = () => {
                 </CardContent>
 
                 <div className="bg-gray-200 p-2 text-lg font-semibold rounded-xl text-gray-800 text-center">
-                  SIP STATUS - {dynamicData.SIP_STATUS}
+                  SIP STATUS -{" "}
+                  {card.heading[0] === "SIP RKS"
+                    ? dynamicData?.SIP_STATUS
+                    : dynamicData?.OTHER_SIP_STATUS}
                 </div>
               </Card>
             ))}
