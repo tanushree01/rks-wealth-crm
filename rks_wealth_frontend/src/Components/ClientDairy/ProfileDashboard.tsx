@@ -132,6 +132,8 @@ import { useRouter } from "next/router";
 import { Button } from "../ui/button";
 import FolioModal from "./Tabs/FolioModal";
 import { Dialog, DialogContent, DialogTrigger } from "@radix-ui/react-dialog";
+import LongTermModal from "./Tabs/LongTermModal";
+import TransactionModal from "./Tabs/TransactionModal";
 
 const ProfileDashboard = () => {
   const router = useRouter();
@@ -147,6 +149,8 @@ const ProfileDashboard = () => {
   const [error, setError] = useState<string | null>(null);
   const [selectedModal, setSelectedModal] = useState<string | null>(null);
   const [folioOpen, setFolioOpen] = useState(false);
+  const [transactionOpen, setTransactionOpen] = useState(false);
+  const [longTermOpen, setLongTermOpen] = useState(false);
   const [trOpen, setTrOpen] = useState(false);
 
   const token =
@@ -406,8 +410,8 @@ const ProfileDashboard = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4 p-2">
             {[
               { text: "FOLIO MASTER", setOpen: setFolioOpen },
-              { text: "TR. 90 DAYS", setOpen: setFolioOpen },
-              { text: "LONG TERM", setOpen: () => {} },
+              { text: "TR. 90 DAYS", setOpen: setTransactionOpen },
+              { text: "LONG TERM", setOpen: setLongTermOpen },
             ].map(({ text, setOpen }, index) => (
               <Button
                 key={index}
@@ -421,6 +425,11 @@ const ProfileDashboard = () => {
           </div>
 
           <FolioModal open={folioOpen} setOpen={setFolioOpen} />
+          <TransactionModal
+            open={transactionOpen}
+            setOpen={setTransactionOpen}
+          />
+          <LongTermModal open={longTermOpen} setOpen={setLongTermOpen} />
         </div>
       </div>
     </div>
