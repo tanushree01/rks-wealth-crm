@@ -168,7 +168,7 @@ export default function Register() {
                   >
                     <option value="">Select {formatLabel(name)}</option>
                     {options.map((option) => (
-                      <option key={option} value={option}>{option}</option>
+                      <option key={option} value={option}>{option.replace("_"," ")}</option>
                     ))}
                   </select>
                 </div>

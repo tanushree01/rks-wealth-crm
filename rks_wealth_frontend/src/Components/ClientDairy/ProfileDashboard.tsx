@@ -1,139 +1,10 @@
-// import React, { useEffect, useMemo, useState } from "react";
-// import { useRouter } from "next/router";
-// import { Card, CardContent } from "@/Components/ui/card";
-// import { Separator } from "@/Components/ui/separator";
-// import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/Components/ui/tabs";
-// import Transaction from "@/Components/ClientDairy/Tabs/Transaction";
-// import Folios from "./Tabs/Folios";
-// import Longterm from "./Tabs/Longterm";
-
-// interface DynamicData {
-//   [key: string]: any;
-// }
-
-// const ProfileDashboard = () => {
-//   const router = useRouter();
-// const {
-//   data,
-//   PAN,
-//   FAMILY_HEAD,
-//   page = "1",
-//   limit = "100",
-// } = useMemo(() => router.query, [router.query]);
-
-//   const [dynamicData, setDynamicData] = useState<DynamicData | null>(null);
-//   const [loading, setLoading] = useState<boolean>(true);
-//   const [error, setError] = useState<string | null>(null);
-
-//   useEffect(() => {
-//     if (!FAMILY_HEAD) return;
-
-//     let isMounted = true;
-
-//     const fetchData = async () => {
-//       try {
-//         setLoading(true);
-//         const response = await fetch(
-//           `/api/client/diary/one?PAN=${PAN}&page=${page}&limit=${limit}`
-//         );
-
-//         if (!response.ok) throw new Error("Failed to fetch data");
-
-//         const result = await response.json();
-//         if (isMounted) {
-//           setDynamicData(result || null);
-//           setLoading(false);
-//         }
-//       } catch (error: any) {
-//         if (isMounted) setError(error.message);
-//       }
-//     };
-
-//     fetchData();
-
-//     return () => {
-//       isMounted = false;
-//     };
-//   }, [FAMILY_HEAD, page, limit]);
-
-//   let userData;
-//   try {
-//     userData = data ? JSON.parse(decodeURIComponent(data as string)) : {};
-//   } catch (e) {
-//     userData = {};
-//   }
-
-//   const mergedData = { ...userData, ...dynamicData };
-
-//   // Filter out null/undefined/empty values
-//   const filteredData = Object.entries(mergedData || {}).filter(
-//     ([, value]) => value !== null && value !== undefined && value !== ""
-//   );
-
-//   return (
-//     <div className="w-full min-h-screen p-6">
-//       <Card className="w-full p-6">
-//         <h2 className="text-3xl font-semibold mb-6 text-left">
-//           Welcome {dynamicData?.NAME}
-//         </h2>
-//         <Separator className="mb-6" />
-//         <CardContent className="grid grid-cols-1 md:grid-cols-4 gap-4">
-//           {loading ? (
-//             <p className="text-center">Loading...</p>
-//           ) : error ? (
-//             <p className="text-red-500 text-center">Error: {error}</p>
-//           ) : (
-//             filteredData.length > 0 &&
-//             filteredData.map(([key, value]: any) => (
-//               <div key={key} className=" rounded-lg shadow-sm p-2">
-//                 <strong className="capitalize block text-gray-700">
-//                   {key.replace(/_/g, " ")}:
-//                 </strong>
-//                 <span className="text-gray-900">{value}</span>
-//               </div>
-//             ))
-//           )}
-//         </CardContent>
-//       </Card>
-//       <Card className="w-full p-6 mt-4">
-//         <Tabs defaultValue="foliomaster">
-//           <TabsList className="flex justify-center mb-6">
-//             <TabsTrigger value="foliomaster">Folio Master</TabsTrigger>
-//             <TabsTrigger value="longterm">Long Term</TabsTrigger>
-//             <TabsTrigger value="transaction">90 Days Transaction</TabsTrigger>
-//           </TabsList>
-//           <TabsContent value="foliomaster">
-//             <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
-//               <Folios isHeader={false} />
-//             </CardContent>
-//           </TabsContent>
-//           <TabsContent value="longterm">
-//             <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
-//               <Longterm />
-//             </CardContent>
-//           </TabsContent>
-//           <TabsContent value="transaction">
-//             <CardContent>
-//               <Transaction />
-//             </CardContent>
-//           </TabsContent>
-//         </Tabs>
-//       </Card>
-//     </div>
-//   );
-// };
-
-// export default ProfileDashboard;
-
 import { ArrowLeft, User } from "lucide-react";
 import { Card, CardContent } from "../ui/card";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import { Button } from "../ui/button";
-import FolioModal from "./Tabs/FolioModal";
-import { Dialog, DialogContent, DialogTrigger } from "@radix-ui/react-dialog";
-import LongTermModal from "./Tabs/LongTermModal";
-import TransactionModal from "./Tabs/TransactionModal";
+import ProfileModal from "./Modal/ProfileModal";
+import { url } from "inspector";
 
 const ProfileDashboard = () => {
   const router = useRouter();
@@ -147,12 +18,14 @@ const ProfileDashboard = () => {
   const [dynamicData, setDynamicData] = useState<any | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedModal, setSelectedModal] = useState<string | null>(null);
-  const [folioOpen, setFolioOpen] = useState(false);
-  const [transactionOpen, setTransactionOpen] = useState(false);
-  const [longTermOpen, setLongTermOpen] = useState(false);
-  const [trOpen, setTrOpen] = useState(false);
 
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [modalConfig, setModalConfig] = useState({
+    url: "",
+    title: "",
+    condition:{},
+    onRowClick:(row?:any) => {},
+  })
   const token =
     typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
@@ -246,7 +119,7 @@ const ProfileDashboard = () => {
               {
                 label: "KYC STATUS",
                 value: dynamicData?.KYC_STATUS || "",
-                isInput: "text",
+                // isInput: "text",
               },
               { label: "RM", value: dynamicData?.RM },
               { label: "SUB BROKER", value: dynamicData?.SUB_BROKER || "N/A" },
@@ -262,6 +135,7 @@ const ProfileDashboard = () => {
                     type={item.isInput}
                     className="ml-2 border border-gray-300 px-2 py-1 rounded"
                     value={item.value || ""}
+                    disabled
                     onChange={(e) =>
                       console.log(`${item.label} changed:`, e.target.value)
                     }
@@ -327,7 +201,10 @@ const ProfileDashboard = () => {
                 </CardContent>
 
                 <div className="bg-gray-200 p-2 text-lg font-semibold rounded-xl text-gray-800 text-center">
-                  SIP STATUS - {dynamicData.SIP_STATUS}
+                  SIP STATUS -{" "}
+                  {card.heading[0] === "SIP RKS"
+                    ? dynamicData?.SIP_STATUS
+                    : dynamicData?.OTHER_SIP_STATUS}
                 </div>
               </Card>
             ))}
@@ -372,7 +249,7 @@ const ProfileDashboard = () => {
                   { label: "CAGR", value: dynamicData?.CAGR },
                   {
                     label: "AVG HOLDING DAY",
-                    value: dynamicData?.AVG_HOLDING_DAY,
+                    value: dynamicData?.AVG_HOLDING_DAYS,
                   },
                 ],
               },
@@ -409,27 +286,40 @@ const ProfileDashboard = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4 p-2">
             {[
-              { text: "FOLIO MASTER", setOpen: setFolioOpen },
-              { text: "TR. 90 DAYS", setOpen: setTransactionOpen },
-              { text: "LONG TERM", setOpen: setLongTermOpen },
-            ].map(({ text, setOpen }, index) => (
+              {
+                title: "FOLIO MASTER",
+                condition: {IWELL_CODE: IWELL_CODE},
+                url:"foliomaster",
+                onRowClick: (row:any) => {
+                  setModalOpen(true)
+                  setModalConfig({url:"transaction", title:`FOLIO NO. ${row?.FOLIO_NO} TR. 90 DAYS`, condition:{FOLIO_NO: row.FOLIO_NO},onRowClick:() => {}})
+                } 
+              },{
+                title: "LONG TERM",
+                condition: {IWELL_CODE: IWELL_CODE},
+                url:"longterm",
+                onRowClick: () => {} 
+              },{
+                title: "TR. 90 DAYS",
+                condition: {IWELL_CODE: IWELL_CODE},
+                url:"transaction",
+                onRowClick: () => {} 
+              },
+            ].map((config, index) => (
               <Button
                 key={index}
                 variant="outline"
                 className="w-full p-7 bg-gray-100"
-                onClick={() => setOpen(true)}
+                onClick={() => {
+                  setModalOpen(true)
+                  setModalConfig(config)
+                }}
               >
-                {text}
+                {config?.title}
               </Button>
             ))}
           </div>
-
-          <FolioModal open={folioOpen} setOpen={setFolioOpen} />
-          <TransactionModal
-            open={transactionOpen}
-            setOpen={setTransactionOpen}
-          />
-          <LongTermModal open={longTermOpen} setOpen={setLongTermOpen} />
+          <ProfileModal onRowClick={modalConfig.onRowClick} open={isModalOpen} setOpen={setModalOpen} title={modalConfig.title} condition={modalConfig.condition}  url={modalConfig.url}/>
         </div>
       </div>
     </div>

@@ -15,5 +15,5 @@ exports.registerValidation = [
   body('gender').isIn(['Male', 'Female', 'Other']).withMessage('Invalid gender selection'),
   body('address').notEmpty().withMessage('Address is required'),
   body('maritalStatus').isIn(['Single', 'Married', 'Divorced', 'Widowed']).withMessage('Invalid marital status'),
-  body('userType').isIn(['Admin', 'User', 'Manager']).withMessage('Invalid user type'),
+  body('userType').isIn(['Admin', 'RM', 'SERVICE_RM']).withMessage('Invalid user type'),
 ];

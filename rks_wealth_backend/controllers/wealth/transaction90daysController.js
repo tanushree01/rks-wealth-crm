@@ -1,7 +1,9 @@
 const { getModel } = require("../../models");
 const { getAll } = require("../utiles/getAll");
+const generateExcelFile = require("../../service/generateExcelFile");
+const { Op } = require("sequelize");
 
-const table = 'tr_90dayes';
+const table = "tr_90dayes";
 
 exports.get90DaysTransaction = async (req, res) => {
   return getAll(req, res, table);
@@ -10,7 +12,13 @@ exports.get90DaysTransaction = async (req, res) => {
 exports.get90DaysTransactionRecords = async (req, res) => {
   try {
     const Model = await getModel(table);
-    const { page = 1, limit = 10, orderBy, order = "ASC", ...filters } = req.query;
+    const {
+      page = 1,
+      limit = 10,
+      orderBy,
+      order = "ASC",
+      ...filters
+    } = req.query;
 
     // Convert pagination params to integers
     const pageNum = parseInt(page, 10) || 1;
@@ -22,7 +30,7 @@ exports.get90DaysTransactionRecords = async (req, res) => {
 
     // Add role-based filtering
     const userType = req.user.userType;
-    if (userType === 'RM') {
+    if (userType === "RM") {
       whereConditions[userType] = req.user.userName;
     }
 
@@ -30,7 +38,7 @@ exports.get90DaysTransactionRecords = async (req, res) => {
       attributes: { exclude: ["id"] }, // Exclude id field if not needed
       where: whereConditions,
       limit: limitNum,
-      offset,
+      offset
     };
 
     // Add sorting dynamically if orderBy exists
@@ -43,7 +51,9 @@ exports.get90DaysTransactionRecords = async (req, res) => {
 
     // Check if records exist
     if (count === 0) {
-      return res.status(404).json({ message: "No 90 Days Transaction records found" });
+      return res
+        .status(404)
+        .json({ message: "No 90 Days Transaction records found" });
     }
 
     return res.status(200).json({
@@ -52,10 +62,11 @@ exports.get90DaysTransactionRecords = async (req, res) => {
       currentPage: pageNum,
       totalPages: Math.ceil(count / limitNum)
     });
-
   } catch (error) {
     console.error("Error fetching 90 Days Transaction records:", error);
-    return res.status(500).json({ message: "Internal Server Error", error: error.message });
+    return res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
   }
 };
 
@@ -65,7 +76,17 @@ exports.download90DaysTransactionRecords = async (req, res) => {
     const { orderBy, order = "ASC", ...filters } = req.query;
 
     // Query conditions
-    const whereConditions = { ...filters };
+    const whereConditions = {};
+
+    Object.keys(filters).forEach(key => {
+      if (filters[key]) {
+        if (isNaN(filters[key])) {
+          whereConditions[key] = { [Op.iLike]: `%${filters[key]}%` };
+        } else {
+          whereConditions[key] = filters[key];
+        }
+      }
+    });
 
     // Add role-based filtering
     const userType = req.user.userType;
@@ -92,8 +113,8 @@ exports.download90DaysTransactionRecords = async (req, res) => {
         .status(404)
         .json({ message: "No 90 Days Transaction records found" });
     }
-    const plainRows = rows.map((row) => row.get({ plain: true }));
-  
+    const plainRows = rows.map(row => row.get({ plain: true }));
+
     const workbook = await generateExcelFile(plainRows);
     // Write to response
     res.setHeader(

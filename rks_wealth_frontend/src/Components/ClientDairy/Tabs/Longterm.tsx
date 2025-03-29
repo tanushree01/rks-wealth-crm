@@ -301,7 +301,7 @@ const Longterm = () => {
                   ))
                 ) : (
                   <>
-                    {sortedData.map((entry: any, index: number) => (
+                    {(sortedData || []).length > 0 ? sortedData.map((entry: any, index: number) => (
                       <TableRow
                         key={index}
                         className={`transition hover:bg-gray-100 cursor-pointer ${index % 2 === 0 ? "bg-gray-50" : "bg-white"
@@ -316,7 +316,13 @@ const Longterm = () => {
                           </TableCell>
                         ))}
                       </TableRow>
-                    ))}
+                    )) : (
+                      <TableRow>
+                        <TableCell colSpan={sortedData.length} className="text-center py-4">
+                          No data available
+                        </TableCell>
+                      </TableRow>
+                    )}
                   </>
                 )}
               </TableBody>

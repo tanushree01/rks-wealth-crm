@@ -1,0 +1,1 @@
+export const DOWNLOAD_ALLOWED_USER_TYPES = ["Admin", "RM"];

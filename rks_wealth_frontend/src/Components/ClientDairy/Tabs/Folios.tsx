@@ -2,21 +2,15 @@ import React, { useEffect, useState } from "react";
 import {
   ChevronDown,
   ChevronUp,
-  Search,
   SortAsc,
   SortDesc,
   X,
 } from "lucide-react";
-import { Button } from "@/Components/ui/button";
 import { Input } from "@/Components/ui/input";
 import {
-  Pagination,
-  PaginationContent,
   PaginationEllipsis,
   PaginationItem,
   PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
 } from "@/Components/ui/pagination";
 import axios from "axios";
 import { Skeleton } from "@/Components/ui/skeleton";
@@ -106,8 +100,8 @@ const Folios = () => {
     columns.length > 0
       ? columns
       : topSchemeData.length > 0
-      ? Object.keys(topSchemeData[0])
-      : [];
+        ? Object.keys(topSchemeData[0])
+        : [];
   const displayedHeaders = allHeaders.filter((header) =>
     visibleColumns.includes(header)
   );
@@ -116,8 +110,8 @@ const Folios = () => {
     displayedHeaders.every((header) =>
       searchParams[header]
         ? String(entry[header] || "")
-            .toLowerCase()
-            .includes(searchParams[header].toLowerCase())
+          .toLowerCase()
+          .includes(searchParams[header].toLowerCase())
         : true
     )
   );
@@ -299,12 +293,12 @@ const Folios = () => {
                   ))
                 ) : (
                   <>
-                    {sortedData.map((entry: any, index: number) => (
+                    {(sortedData || []).length > 0 ? sortedData.map((entry: any, index: number) => (
                       <TableRow
                         key={index}
-                        className={`transition hover:bg-gray-100 cursor-pointer ${
-                          index % 2 === 0 ? "bg-gray-50" : "bg-white"
-                        }`}
+                        className={`transition hover:bg-gray-100 cursor-pointer ${index % 2 === 0 ? "bg-gray-50" : "bg-white"
+                          }`}
+                        onClick={() => { }}
                       >
                         {displayedHeaders.map((header, idx) => (
                           <TableCell
@@ -315,7 +309,13 @@ const Folios = () => {
                           </TableCell>
                         ))}
                       </TableRow>
-                    ))}
+                    )) : (
+                      <TableRow>
+                        <TableCell colSpan={displayedHeaders.length} className="text-center py-4">
+                          No data available
+                        </TableCell>
+                      </TableRow>
+                    )}
                   </>
                 )}
               </TableBody>

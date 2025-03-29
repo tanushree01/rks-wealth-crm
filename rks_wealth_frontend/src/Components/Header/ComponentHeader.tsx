@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Menu,
   ArrowLeft,
@@ -6,6 +6,7 @@ import {
   FileSpreadsheet,
 } from "lucide-react";
 import { Button } from "../ui/button";
+import { DOWNLOAD_ALLOWED_USER_TYPES } from "@/Constraints/constraints";
 
 interface ComponentsHeaderProps {
   isSidebarOpen: boolean;
@@ -27,6 +28,16 @@ const ComponentsHeader: React.FC<ComponentsHeaderProps> = ({
   onDownload,
 }) => {
   const [manageColumnsOpen, setManageColumnsOpen] = useState(false);
+  const [user, setUser] = useState<any | null>(null);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("userData");
+    if (storedUser) {
+      const parsedData = JSON.parse(storedUser);
+      setUser(parsedData.user); // Extract the user object
+    }
+  }, []);
+
 
   return (
     <div className="bg-[#f7f7f7] p-4 px-6 flex justify-between items-center shadow-md text-[#34466e]">
@@ -56,9 +67,6 @@ const ComponentsHeader: React.FC<ComponentsHeaderProps> = ({
           </Button>
           {manageColumnsOpen && (
             <div className="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-md shadow-lg z-10">
-              <h3 className="text-l font-bold text-center bg-gray-50 rounded-lg border border-gray-300 p-3 m-4 text-[#34466e]">
-                Manage Columns
-              </h3>
               <ul className="p-2 bg-white shadow-lg rounded-md border border-gray-200 max-h-[250px] overflow-y-auto">
                 {allHeaders.map((header, idx) => (
                   <li
@@ -109,9 +117,9 @@ const ComponentsHeader: React.FC<ComponentsHeaderProps> = ({
           )}
         </div>
 
-        <Button variant="outline" className="p-2" onClick={onDownload}>
+        {DOWNLOAD_ALLOWED_USER_TYPES.includes(user?.userType) && <Button variant="outline" className="p-2" onClick={onDownload}>
           <FileSpreadsheet size={20} className="text-gray-600" />
-        </Button>
+        </Button>}
       </div>
     </div>
   );

@@ -17,17 +17,21 @@ exports.getAll = async (req, res, table, orderByDefalut = "FAMILY HEAD") => {
     const offset = (pageNum - 1) * limitNum;
 
     // Prepare filtering conditions
-    let whereCondition = {};
+    let whereConditions = {};
     Object.keys(filters).forEach(key => {
       if (filters[key]) {
-        whereCondition[key] = { [Op.iLike]: `%${filters[key]}%` }; // Case-insensitive search
+        if (isNaN(filters[key])) {
+          whereConditions[key] = { [Op.iLike]: `%${filters[key]}%` };
+        } else {
+          whereConditions[key] = filters[key];
+        }
       }
     });
 
     // Fetch data with pagination, filtering, and sorting
     const { count, rows } = await Model.findAndCountAll({
       attributes: { exclude: ["id"] },
-      where: whereCondition,
+      where: whereConditions,
       order: [[orderBy, order.toUpperCase()]], // Sorting dynamically
       limit: limitNum,
       offset: offset

@@ -1,13 +1,35 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import Sidebar from "../Sidebar/Sidebar";
 import Header from "../Header/Header";
 
+interface User {
+  id: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  gender: string;
+  address: string;
+  maritalStatus: string;
+  userName: string;
+  userType: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 const Profile = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const user = useSelector((state: RootState) => state.auth.user);
-
+  const [user, setUser] = useState<User | null>(null);
+  // const user = useSelector((state: RootState) => state.auth.user);
+  useEffect(() => {
+    const storedUser = localStorage.getItem("userData");
+    if (storedUser) {
+      const parsedData = JSON.parse(storedUser);
+      setUser(parsedData.user); // Extract the user object
+    }
+  }, []);
   return (
     <div className="flex h-screen w-screen bg-white text-black">
       {/* Sidebar */}
@@ -16,7 +38,7 @@ const Profile = () => {
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
         {/* Top Navbar */}
-        <Header/>
+        <Header />
 
         {/* Profile Section */}
         <div className="flex flex-col justify-center items-center flex-1 px-4">

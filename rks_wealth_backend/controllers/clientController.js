@@ -94,6 +94,11 @@ exports.getClientDiary = async (req, res) => {
       // Create filtering conditions dynamically
       let whereConditions = {};
       if (IWELL_CODE) whereConditions.IWELL_CODE = { [Op.iLike]: `%${IWELL_CODE}%` };
+      
+      const userType = req.user.userType;
+      if (userType === "RM" || userType === "SRM") {
+        whereConditions[userType] = req.user.userName;
+      }
 
       // Fetch the first matching client diary
       const clientDiary = await Model.findOne({
@@ -125,6 +130,11 @@ exports.downloadClientDiary = async (req, res) => {
       // Create filtering conditions dynamically
       let whereConditions = {};
       if (IWELL_CODE) whereConditions.IWELL_CODE = { [Op.iLike]: `%${IWELL_CODE}%` };
+
+      const userType = req.user.userType;
+      if (userType === "RM" || userType === "SRM") {
+        whereConditions[userType] = req.user.userName;
+      }
 
       // Fetch the first matching client diary
       const clientDiary = await Model.findOne({

@@ -1,3 +1,4 @@
+const { Op } = require("sequelize");
 const { getModel } = require("../../models");
 const generateExcelFile = require("../../service/generateExcelFile");
 const { getAll } = require("../utiles/getAll");
@@ -26,11 +27,15 @@ exports.getFolioMasterRecords = async (req, res) => {
 
     // Build where conditions from filters
     const whereConditions = {};
-    for (const [key, value] of Object.entries(filters)) {
-      if (value) {
-        whereConditions[key] = value;
+    Object.keys(filters).forEach(key => {
+      if (filters[key]) {
+        if (isNaN(filters[key])) {
+          whereConditions[key] = { [Op.iLike]: `%${filters[key]}%` };
+        } else {
+          whereConditions[key] = filters[key];
+        }
       }
-    }
+    });
 
     const userType = req.user.userType;
     if (userType === "RM" || userType === "SRM") {
@@ -80,11 +85,15 @@ exports.downloadFolioMasterRecords = async (req, res) => {
 
     // Build where conditions from filters
     const whereConditions = {};
-    for (const [key, value] of Object.entries(filters)) {
-      if (value) {
-        whereConditions[key] = value;
+    Object.keys(filters).forEach(key => {
+      if (filters[key]) {
+        if (isNaN(filters[key])) {
+          whereConditions[key] = { [Op.iLike]: `%${filters[key]}%` };
+        } else {
+          whereConditions[key] = filters[key];
+        }
       }
-    }
+    });
 
     const userType = req.user.userType;
     if (userType === "RM" || userType === "SRM") {

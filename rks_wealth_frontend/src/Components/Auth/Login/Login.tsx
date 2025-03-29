@@ -20,6 +20,7 @@ import { Eye, EyeOff } from "lucide-react"; // Import icons
 import { loginSuccess } from "@/store/slices/authSlice";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/store";
+import logo from "@/assets/logo.jpg"; // Adjust the path to your logo
 
 export default function Login() {
   const [loading, setLoading] = useState(false);
@@ -38,6 +39,7 @@ export default function Login() {
     try {
       const { data } = await axios.post(`/api/auth/login`, { email, password });
       localStorage.setItem("token", data.token);
+      localStorage.setItem("userData", JSON.stringify(data));
       dispatch(loginSuccess(data));
       router.push("/dashboard");
     } catch (error: any) {
@@ -50,7 +52,7 @@ export default function Login() {
   return (
     <div className="flex min-h-screen flex-col items-center mt-20 bg-white dark:bg-[#1D3E6F]">
       <Image
-        src="/logo.jpg"
+        src={logo}
         alt="Company Logo"
         width={150}
         height={150}

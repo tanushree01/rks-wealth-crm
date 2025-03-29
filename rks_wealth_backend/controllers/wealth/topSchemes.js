@@ -1,3 +1,4 @@
+const { Op } = require("sequelize");
 const { getModel } = require("../../models");
 const generateExcelFile = require("../../service/generateExcelFile");
 const { getAll } = require("../utiles/getAll");
@@ -23,7 +24,11 @@ exports.downloadTopSchemes = async (req, res) => {
     let whereConditions = {};
     Object.keys(filters).forEach(key => {
       if (filters[key]) {
-        whereConditions[key] = { [Op.iLike]: `%${filters[key]}%` }; // Case-insensitive search
+        if (isNaN(filters[key])) {
+          whereConditions[key] = { [Op.iLike]: `%${filters[key]}%` };
+        } else {
+          whereConditions[key] = filters[key];
+        }
       }
     });
 

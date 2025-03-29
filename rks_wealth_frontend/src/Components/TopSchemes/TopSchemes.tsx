@@ -97,8 +97,8 @@ const TopSchemes = () => {
     columns.length > 0
       ? columns
       : topSchemeData.length > 0
-      ? Object.keys(topSchemeData[0])
-      : [];
+        ? Object.keys(topSchemeData[0])
+        : [];
   const displayedHeaders = allHeaders.filter((header) =>
     visibleColumns.includes(header)
   );
@@ -107,8 +107,8 @@ const TopSchemes = () => {
     displayedHeaders.every((header) =>
       searchParams[header]
         ? String(entry[header] || "")
-            .toLowerCase()
-            .includes(searchParams[header].toLowerCase())
+          .toLowerCase()
+          .includes(searchParams[header].toLowerCase())
         : true
     )
   );
@@ -290,12 +290,11 @@ const TopSchemes = () => {
                   ))
                 ) : (
                   <>
-                    {sortedData.map((entry: any, index: number) => (
+                    {(sortedData || []).length > 0 ? sortedData.map((entry: any, index: number) => (
                       <TableRow
                         key={index}
-                        className={`transition hover:bg-gray-100 cursor-pointer ${
-                          index % 2 === 0 ? "bg-gray-50" : "bg-white"
-                        }`}
+                        className={`transition hover:bg-gray-100 cursor-pointer ${index % 2 === 0 ? "bg-gray-50" : "bg-white"
+                          }`}
                       >
                         {displayedHeaders.map((header, idx) => (
                           <TableCell
@@ -306,7 +305,13 @@ const TopSchemes = () => {
                           </TableCell>
                         ))}
                       </TableRow>
-                    ))}
+                    )) : (
+                      <TableRow>
+                        <TableCell colSpan={sortedData.length} className="text-center py-4">
+                          No data available
+                        </TableCell>
+                      </TableRow>
+                    )}
                   </>
                 )}
               </TableBody>

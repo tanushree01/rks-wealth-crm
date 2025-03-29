@@ -1,3 +1,4 @@
+const { Op } = require("sequelize");
 const { getModel } = require("../../models");
 const generateExcelFile = require("../../service/generateExcelFile");
 const { getAll } = require("../utiles/getAll");
@@ -19,7 +20,17 @@ exports.getLongTermRecords = async (req, res) => {
     const offset = (pageNum - 1) * limitNum;
 
     // Query conditions
-    const whereConditions = { ...filters };
+    const whereConditions = {};
+
+        Object.keys(filters).forEach(key => {
+          if (filters[key]) {
+            if (isNaN(filters[key])) {
+              whereConditions[key] = { [Op.iLike]: `%${filters[key]}%` };
+            } else {
+              whereConditions[key] = filters[key];
+            }
+          }
+        });
 
     // Add role-based filtering
     const userType = req.user.userType;

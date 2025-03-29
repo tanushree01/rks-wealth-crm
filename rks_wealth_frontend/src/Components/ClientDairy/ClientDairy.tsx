@@ -10,21 +10,12 @@ import {
   ChevronUp,
   SortAsc,
   SortDesc,
-  FileSpreadsheet,
-  Settings,
-  SlidersHorizontal,
-  Download,
 } from "lucide-react";
-import { Button } from "@/Components/ui/button";
 import { Input } from "@/Components/ui/input";
 import {
-  Pagination,
-  PaginationContent,
   PaginationEllipsis,
   PaginationItem,
   PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
 } from "@/Components/ui/pagination";
 import axios from "axios";
 import { Skeleton } from "@/Components/ui/skeleton";
@@ -38,8 +29,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/Components/ui/table";
-import Header from "../Header/Header";
-import PaginationComponent from "../PaginationComponent/PaginationComponent";
 import DownloadFile from "@/utils/Filedownload";
 import { useDispatch } from "react-redux";
 import { logout } from "@/store/slices/authSlice";
@@ -68,7 +57,6 @@ const ClientDairy = () => {
   } | null>(null);
   const [visibleColumns, setVisibleColumns] = useState<string[]>([]);
 
-  const [manageColumnsOpen, setManageColumnsOpen] = useState<boolean>(false);
   const token =
     typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
@@ -233,6 +221,7 @@ const ClientDairy = () => {
       }
     });
   };
+  const headers = diaryData.length > 0 ? Object.keys(diaryData[0]) : [];
 
   return (
     <PageLayout
@@ -323,21 +312,18 @@ const ClientDairy = () => {
                     </TableRow>
                   )) : (
                     <>
-                      {sortedData.map((entry: any, index: number) => (
+                      {(diaryData || []).length > 0 ? sortedData.map((entry: any, index: number) => (
                         <TableRow
                           key={index}
                           className={`transition hover:bg-gray-100 cursor-pointer ${index % 2 === 0 ? "bg-gray-50" : "bg-white"
                             }`}
-                          onClick={() => {
+                          onClick={() => {   
                             const query = {
-                              PAN: entry.PAN,
-                              FAMILY_HEAD: entry.FAMILY_HEAD,
-                              IWELL_CODE: entry.IWELL_CODE,
-                              page: 1,
-                              limit: 10,
-                            };
-                            router.push({ pathname: "/client/diary", query });
-                          }}
+                            IWELL_CODE: entry.IWELL_CODE,
+                            page: 1,
+                            limit: 10,
+                          };
+                          router.push({ pathname: "/client/diary", query });}}
                         >
                           {displayedHeaders.map((header, idx) => (
                             <TableCell
@@ -348,8 +334,14 @@ const ClientDairy = () => {
                             </TableCell>
                           ))}
                         </TableRow>
-                      ))}
-                    </>)}
+                      )) : (
+                        <TableRow>
+                          <TableCell colSpan={headers.length} className="text-center py-4">
+                            No data available
+                          </TableCell>
+                        </TableRow>
+                      )}
+                      </>)}
               </TableBody>
             </Table>
           </Card>
