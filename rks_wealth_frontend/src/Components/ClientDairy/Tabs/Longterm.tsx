@@ -1,10 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { ChevronDown, ChevronUp, CloudCog, SortAsc, SortDesc } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronUp,
+  Search,
+  SortAsc,
+  SortDesc,
+  X,
+} from "lucide-react";
+import { Button } from "@/Components/ui/button";
 import { Input } from "@/Components/ui/input";
 import {
+  Pagination,
+  PaginationContent,
   PaginationEllipsis,
   PaginationItem,
   PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
 } from "@/Components/ui/pagination";
 import axios from "axios";
 import { Skeleton } from "@/Components/ui/skeleton";
@@ -17,14 +29,14 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/Components/ui/table";
+} from "@/Components//ui/table";
 import DownloadFile from "@/utils/Filedownload";
 import PageLayout from "@/Components/PageLayout/PageLayout";
 
 const Longterm = () => {
   const router = useRouter();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [longTerm, setLongTerm] = useState<any>([]);
+  const [topSchemeData, setTopScheme] = useState<any>([]);
   const [columns, setColumns] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -42,11 +54,11 @@ const Longterm = () => {
   } | null>(null);
   const [visibleColumns, setVisibleColumns] = useState<string[]>([]);
 
+  const [manageColumnsOpen, setManageColumnsOpen] = useState<boolean>(false);
   const token =
     typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
   const fetchData = async () => {
-    setLoading(true);
     try {
       const params: any = {
         page: currentPage,
@@ -54,17 +66,29 @@ const Longterm = () => {
         ...searchParams,
         ...router.query,
       };
-      delete params.IWELL_CODE;
 
       const response = await axios.get(`/api/client/longterm`, {
-        params, headers: {
+        params,
+        headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-
+      const data = response.data?.data || [];
       setLoading(false);
-      setLongTerm(response.data?.data);
-      setTotalPages(response.data?.totalPages);
+      setTopScheme(data);
+      setTotalPages(response.data?.totalPages || 1);
+      if (data.length) {
+        const newHeaders = Object.keys(data[0]);
+        if (JSON.stringify(newHeaders) !== JSON.stringify(columns)) {
+          setColumns(newHeaders);
+          setVisibleColumns(newHeaders);
+          const initialToggles = newHeaders.reduce((acc: any, header) => {
+            acc[header] = false;
+            return acc;
+          }, {});
+          setSearchToggles(initialToggles);
+        }
+      }
     } catch (err: any) {
       setError(err.message);
       setLoading(false);
@@ -83,14 +107,14 @@ const Longterm = () => {
   const allHeaders =
     columns.length > 0
       ? columns
-      : longTerm.length > 0
-        ? Object.keys(longTerm[0])
+      : topSchemeData.length > 0
+        ? Object.keys(topSchemeData[0])
         : [];
   const displayedHeaders = allHeaders.filter((header) =>
     visibleColumns.includes(header)
   );
 
-  const filteredData = longTerm.filter((entry: any) =>
+  const filteredData = topSchemeData.filter((entry: any) =>
     displayedHeaders.every((header) =>
       searchParams[header]
         ? String(entry[header] || "")
@@ -129,13 +153,6 @@ const Longterm = () => {
     setCurrentPage(1);
   };
 
-
-  const handlePageChange = (page: number) => {
-    if (page >= 1 && page <= totalPages) {
-      setCurrentPage(page);
-    }
-  };
-
   const handleSort = (header: string) => {
     setSortConfig((prev) => {
       if (prev && prev.key === header) {
@@ -144,6 +161,12 @@ const Longterm = () => {
       }
       return { key: header, direction: "asc" };
     });
+  };
+
+  const handlePageChange = (page: number) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
   };
 
   const renderPagination = () => {
@@ -183,7 +206,6 @@ const Longterm = () => {
       </PaginationItem>
     ));
   };
-
   const handleColumnVisibilityChange = (header: string) => {
     setVisibleColumns((prev) => {
       if (prev.includes(header)) {
