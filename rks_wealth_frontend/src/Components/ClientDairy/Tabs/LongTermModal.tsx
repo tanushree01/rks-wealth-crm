@@ -18,7 +18,7 @@ import {
   TableRow,
 } from "@/Components/ui/table";
 import axios from "axios";
-import { ArrowLeft, Search, X } from "lucide-react";
+import { ArrowLeft, CloudCog, Search, X } from "lucide-react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
@@ -53,8 +53,10 @@ const LongTermModal = ({
           ...searchParams,
           ...router.query,
         };
+        console.log("paramsssssssss",params)
         delete params.IWELL_CODE;
         params.PAN = params.PAN;
+        params.FAMILY_HEAD = params.FAMILY_HEAD;
         delete params.PAN;
 
         const response = await axios.get(`/api/client/longterm`, { params,headers: {
@@ -139,7 +141,7 @@ const LongTermModal = ({
               <ArrowLeft className="w-6 h-6" />
             </Button>
             <h2 className="text-xl font-bold text-center flex-1">
-              FOLIO MASTER
+Long Term
             </h2>
             <div className="w-6"></div>
           </div>
@@ -184,13 +186,13 @@ const LongTermModal = ({
         </div>
 
         {/* Table */}
-        <div className="overflow-auto max-h-[calc(100%-150px)]">
+        <div className="overflow-auto max-h-[calc(100vh-100px)]">
           {loading ? (
             <Skeleton className="w-full h-10 mb-2" />
           ) : (
             <Card className="shadow-md">
               <Table>
-                <TableHeader className="bg-green-700 text-white">
+                <TableHeader className="bg-[#74A82E] text-white">
                   <TableRow>
                     {headers.map((header, index) => (
                       <TableHead key={index} className="py-2 px-4">
