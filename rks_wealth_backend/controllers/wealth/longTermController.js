@@ -2,7 +2,7 @@ const { getModel } = require("../../models");
 const generateExcelFile = require("../../service/generateExcelFile");
 const { getAll } = require("../utiles/getAll");
 
-const table = 'long_term';
+const table = 'Long_Term';
 
 exports.getLongTerm = async (req, res) => {
   return getAll(req, res, table);

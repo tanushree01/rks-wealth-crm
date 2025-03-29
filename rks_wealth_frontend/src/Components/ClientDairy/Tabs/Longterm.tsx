@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ChevronDown, ChevronUp, SortAsc, SortDesc } from "lucide-react";
+import { ChevronDown, ChevronUp, CloudCog, SortAsc, SortDesc } from "lucide-react";
 import { Input } from "@/Components/ui/input";
 import {
   PaginationEllipsis,
@@ -114,7 +114,6 @@ const Longterm = () => {
     return filteredData;
   }, [filteredData, sortConfig]);
 
-
   const toggleColumnSearch = (header: string) => {
     setSearchToggles((prev) => ({
       ...prev,
@@ -130,6 +129,13 @@ const Longterm = () => {
     setCurrentPage(1);
   };
 
+
+  const handlePageChange = (page: number) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
   const handleSort = (header: string) => {
     setSortConfig((prev) => {
       if (prev && prev.key === header) {
@@ -138,12 +144,6 @@ const Longterm = () => {
       }
       return { key: header, direction: "asc" };
     });
-  };
-
-  const handlePageChange = (page: number) => {
-    if (page >= 1 && page <= totalPages) {
-      setCurrentPage(page);
-    }
   };
 
   const renderPagination = () => {
