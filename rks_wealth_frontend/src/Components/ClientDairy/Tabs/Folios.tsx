@@ -53,8 +53,6 @@ const Folios = () => {
     direction: "asc" | "desc";
   } | null>(null);
   const [visibleColumns, setVisibleColumns] = useState<string[]>([]);
-
-  const [manageColumnsOpen, setManageColumnsOpen] = useState<boolean>(false);
   const token =
     typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
