@@ -10,6 +10,7 @@ import { useState } from "react";
 import axios from "axios";
 
 interface FormData {
+  username: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -31,6 +32,7 @@ const formatLabel = (label: string) => {
 
 export default function Register() {
   const [formData, setFormData] = useState<FormData>({
+    username: "Admin",
     firstName: "",
     lastName: "",
     email: "",
@@ -44,7 +46,8 @@ export default function Register() {
   });
 
   const [loading, setLoading] = useState(false);
-
+  const token =
+    typeof window !== "undefined" ? localStorage.getItem("token") : null;
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -60,13 +63,15 @@ export default function Register() {
     setLoading(true);
 
     try {
-      const { data } = await axios.post(
-        `/api/auth/register`,
-        formData
-      );
-
+      const { data } = await axios.post(`/api/auth/register`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log("data================", data);
       alert("Registration successful!");
       setFormData({
+        username: "",
         firstName: "",
         lastName: "",
         email: "",
@@ -157,7 +162,7 @@ export default function Register() {
                   name: "maritalStatus",
                   options: ["Single", "Married", "Divorced", "Widowed"],
                 },
-                { name: "userType", options: ['Admin', 'RM', 'SERVICE_RM'] },
+                { name: "userType", options: ["Admin", "RM", "SERVICE_RM"] },
               ].map(({ name, options }) => (
                 <div key={name}>
                   <Label

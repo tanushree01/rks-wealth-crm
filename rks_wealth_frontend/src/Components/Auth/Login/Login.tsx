@@ -146,7 +146,7 @@ export default function Login() {
           </CardContent>
 
           {/* Signup Link */}
-          <CardFooter className="text-center">
+          {/* <CardFooter className="text-center">
             <p className="text-sm text-gray-500 dark:text-gray-400">
               Don't have an account?{" "}
               <Link
@@ -156,7 +156,7 @@ export default function Login() {
                 Sign up
               </Link>
             </p>
-          </CardFooter>
+          </CardFooter> */}
         </Card>
       </motion.div>
     </div>

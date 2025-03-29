@@ -74,6 +74,11 @@ const Header = () => {
                 </Link>
               </li>
               <li className="px-4 py-2 hover:bg-gray-100 flex items-center cursor-pointer">
+                <Link href="/register" className="flex items-center w-full ">
+                  <User className="w-4 h-4 mr-2" /> Register
+                </Link>
+              </li>
+              <li className="px-4 py-2 hover:bg-gray-100 flex items-center cursor-pointer">
                 <Settings className="w-4 h-4 mr-2" /> Admin
               </li>
               <li className="px-4 py-2 hover:bg-gray-100 flex items-center cursor-pointer">
