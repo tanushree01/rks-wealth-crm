@@ -8,7 +8,7 @@ const {
   getLongTermRecords,
   downloadLongTermRecords
 } = require("../controllers/wealth/longTermController.js");
-const { getTopSchemes } = require("../controllers/wealth/topSchemes.js");
+const { getTopSchemes, downloadTopSchemes } = require("../controllers/wealth/topSchemes.js");
 const {
   get90DaysTransactionRecords,
   download90DaysTransactionRecords
@@ -27,7 +27,6 @@ router.get(
 );
 router.get("/diary/one", authMiddleware, clientController.getClientDiary);
 
-
 router.get(
   "/diary/download",
   authMiddleware,
@@ -35,8 +34,6 @@ router.get(
   clientController.downloadClientDiaries
 );
 router.get("/diary", authMiddleware, clientController.getClientDiaries);
-
-
 
 router.get(
   "/foliomaster/download",
@@ -54,7 +51,6 @@ router.get(
 );
 router.get("/longterm", authMiddleware, getLongTermRecords);
 
-
 router.get(
   "/transaction/download",
   authMiddleware,
@@ -62,9 +58,14 @@ router.get(
   download90DaysTransactionRecords
 );
 
-
 router.get("/transaction", authMiddleware, get90DaysTransactionRecords);
 
+router.get(
+  "/topschemes/download",
+  authMiddleware,
+  roleMiddleware(["Admin", "RM"]),
+  downloadTopSchemes
+);
 router.get("/topschemes", authMiddleware, getTopSchemes);
 
 module.exports = router;
