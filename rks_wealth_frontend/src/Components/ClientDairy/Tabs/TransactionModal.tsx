@@ -187,13 +187,13 @@ const TransactionModal = ({
         </div>
 
         {/* Table */}
-        <div className="overflow-auto max-h-[calc(100%-150px)]">
+        <div className="overflow-auto max-h-[calc(100vh-100px)]">
           {loading ? (
             <Skeleton className="w-full h-10 mb-2" />
           ) : (
             <Card className="shadow-md">
               <Table>
-                <TableHeader className="bg-green-700 text-white">
+                <TableHeader className="bg-[#74A82E] text-white">
                   <TableRow>
                     {headers.map((header, index) => (
                       <TableHead key={index} className="py-2 px-4">

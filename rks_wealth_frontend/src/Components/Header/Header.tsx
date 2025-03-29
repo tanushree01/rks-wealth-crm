@@ -7,14 +7,42 @@ import {
   HelpCircle,
 } from "lucide-react";
 import { RootState } from "@/store";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { logout } from "@/store/slices/authSlice";
+import { useRouter } from "next/router";
+
+interface User {
+  firstName: string;
+  lastName: string;
+  email?: string;
+}
 
 const Header = () => {
-  const user = useSelector((state: RootState) => state.auth.user);
+  // const user = useSelector((state: RootState) => state.auth.user);
+  const [user, setUser] = useState<User | null>(null);
+  const router = useRouter();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  console.log(user);
+  useEffect(() => {
+    const storedUser = localStorage.getItem("userData");
+    if (storedUser) {
+      const parsedData = JSON.parse(storedUser);
+      setUser(parsedData.user); // Extract the user object
+    }
+  }, []);
+
+  const dispatch = useDispatch();
+
+  const handleLogout = () => {
+    dispatch(logout());
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("token");
+    }
+    router.replace("/login");
+  };
 
   return (
     <header className="bg-[#34466e] p-4 px-6 flex justify-between items-center shadow-md w-full">
@@ -74,7 +102,7 @@ const Header = () => {
                 </Link>
               </li>
               <li className="px-4 py-2 hover:bg-gray-100 flex items-center cursor-pointer">
-                <Link href="/register" className="flex items-center w-full ">
+                <Link href="/register" className="flex items-center w-full">
                   <User className="w-4 h-4 mr-2" /> Register
                 </Link>
               </li>
@@ -85,7 +113,10 @@ const Header = () => {
                 <HelpCircle className="w-4 h-4 mr-2" /> Support
               </li>
               <hr className="border-[#dbdbdb]" />
-              <li className="px-4 py-2 hover:bg-gray-100 flex items-center cursor-pointer text-[#ff3131]">
+              <li
+                onClick={handleLogout}
+                className="px-4 py-2 hover:bg-gray-100 flex items-center cursor-pointer text-[#ff3131]"
+              >
                 <LogOut className="w-4 h-4 mr-2" /> Logout
               </li>
             </ul>
