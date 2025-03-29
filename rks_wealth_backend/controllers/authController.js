@@ -10,7 +10,7 @@ exports.register = async (req, res) => {
   }
 
   try {
-    const { firstName, lastName, email, phone, password, confirmPassword, gender, address, maritalStatus, userType } = req.body;
+    const { firstName, lastName, email, phone, password, confirmPassword, gender,userName, address, maritalStatus, userType } = req.body;
 
     // Check if passwords match
     if (password !== confirmPassword) {
@@ -35,6 +35,7 @@ exports.register = async (req, res) => {
       password: hashedPassword,
       gender,
       address,
+      userName,
       maritalStatus,
       userType,
     });
@@ -78,6 +79,7 @@ exports.login = async (req, res) => {
         gender: user.gender,
         address: user.address,
         maritalStatus: user.maritalStatus,
+        userName: user.userName,
         userType: user.userType,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt
