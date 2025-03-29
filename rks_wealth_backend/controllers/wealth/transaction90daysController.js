@@ -23,7 +23,7 @@ exports.get90DaysTransactionRecords = async (req, res) => {
     // Add role-based filtering
     const userType = req.user.userType;
     if (userType === 'RM') {
-      whereConditions[userType] = req.user.username;
+      whereConditions[userType] = req.user.userName;
     }
 
     const options = {
@@ -70,7 +70,7 @@ exports.download90DaysTransactionRecords = async (req, res) => {
     // Add role-based filtering
     const userType = req.user.userType;
     if (userType === "RM") {
-      whereConditions[userType] = req.user.username;
+      whereConditions[userType] = req.user.userName;
     }
 
     const options = {

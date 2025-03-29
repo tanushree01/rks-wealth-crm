@@ -30,7 +30,7 @@ exports.getClientDiaries = async (req, res) => {
 
         const userType = req.user.userType;
         if (userType === "RM" || userType === "SRM") {
-          whereConditions[userType] = req.user.username;
+          whereConditions[userType] = req.user.userName;
         }
 
         let options = {
@@ -180,7 +180,7 @@ exports.downloadClientDiaries = async (req, res) => {
 
       const userType = req.user.userType;
       if (userType === "RM" || userType === "SRM") {
-        whereConditions[userType] = req.user.username;
+        whereConditions[userType] = req.user.userName;
       }
 
       let options = {

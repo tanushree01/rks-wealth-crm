@@ -34,7 +34,7 @@ exports.getFolioMasterRecords = async (req, res) => {
 
     const userType = req.user.userType;
     if (userType === "RM" || userType === "SRM") {
-      whereConditions[userType] = req.user.username;
+      whereConditions[userType] = req.user.userName;
     }
 
     const options = {
@@ -88,7 +88,7 @@ exports.downloadFolioMasterRecords = async (req, res) => {
 
     const userType = req.user.userType;
     if (userType === "RM" || userType === "SRM") {
-      whereConditions[userType] = req.user.username;
+      whereConditions[userType] = req.user.userName;
     }
 
     const options = {

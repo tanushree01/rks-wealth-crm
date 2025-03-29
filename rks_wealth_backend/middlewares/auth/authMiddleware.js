@@ -11,7 +11,7 @@ const authMiddleware = async (req, res, next) => {
   try {
     const decoded = jwt.verify(token.replace('Bearer ', ''), process.env.JWT_SECRET);
     req.user = await User.findByPk(decoded.id, {
-      attributes: ['id', 'firstName', 'lastName', 'email', 'phone','userType', 'username']
+      attributes: ['id', 'firstName', 'lastName', 'email', 'phone','userType', 'userName']
     });
     
     if (!req.user) {

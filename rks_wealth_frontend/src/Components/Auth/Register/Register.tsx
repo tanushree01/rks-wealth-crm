@@ -10,7 +10,7 @@ import { useState } from "react";
 import axios from "axios";
 
 interface FormData {
-  username: string;
+  userName: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -32,7 +32,7 @@ const formatLabel = (label: string) => {
 
 export default function Register() {
   const [formData, setFormData] = useState<FormData>({
-    username: "Admin",
+    userName: "Admin",
     firstName: "",
     lastName: "",
     email: "",
@@ -71,7 +71,7 @@ export default function Register() {
       console.log("data================", data);
       alert("Registration successful!");
       setFormData({
-        username: "",
+        userName: "",
         firstName: "",
         lastName: "",
         email: "",
