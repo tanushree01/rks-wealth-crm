@@ -76,10 +76,9 @@ const ProfileModal = ({
     typeof window !== "undefined" ? localStorage.getItem("token") : null;
   useEffect(() => {
     const fetchData = async () => {
+      if(!url) return
       setLoading(true);
       try {
-
-        console.log(condition, "condition")
         const params: any = {
           page: currentPage,
           limit: 10,
@@ -112,7 +111,7 @@ const ProfileModal = ({
       } catch (err: any) {
         setApiData([]);
         setError(err.message);
-        toast.error(err.message);
+        toast.error(err.response?.data?.message || "An error occurred.");
       } finally {
         setLoading(false);
       }
@@ -198,7 +197,8 @@ const ProfileModal = ({
 
   const onDownload = async () => {
     if (token)
-      DownloadFile(`/api/client/${url}/download`, token, searchParams);
+      DownloadFile(`/api/client/${url}/download`, token, { ...condition,
+        ...searchParams});
   }
 
 

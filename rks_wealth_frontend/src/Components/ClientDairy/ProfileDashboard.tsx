@@ -5,12 +5,14 @@ import { useRouter } from "next/router";
 import { Button } from "../ui/button";
 import ProfileModal from "./Modal/ProfileModal";
 import { url } from "inspector";
+import { toast } from "react-toastify";
 
 const ProfileDashboard = () => {
   const router = useRouter();
   const {
     data,
     IWELL_CODE,
+    PAN,
     page = "1",
     limit = "100",
   } = useMemo(() => router.query, [router.query]);
@@ -55,6 +57,7 @@ const ProfileDashboard = () => {
         }
       } catch (error: any) {
         if (isMounted) setError(error.message);
+        toast.error(error.response?.data?.message || "An error occurred.");
       }
     };
 
@@ -72,7 +75,6 @@ const ProfileDashboard = () => {
     userData = {};
   }
 
-  console.log(dynamicData);
   if (!dynamicData) {
     return <div className="text-center text-gray-500">Loading...</div>;
   }
@@ -288,7 +290,10 @@ const ProfileDashboard = () => {
             {[
               {
                 title: "FOLIO MASTER",
-                condition: {IWELL_CODE: IWELL_CODE},
+                condition: {
+                  FOLIOPAN: PAN,
+                  MINTPAN : PAN
+                },
                 url:"foliomaster",
                 onRowClick: (row:any) => {
                   setModalOpen(true)
@@ -296,12 +301,12 @@ const ProfileDashboard = () => {
                 } 
               },{
                 title: "LONG TERM",
-                condition: {IWELL_CODE: IWELL_CODE},
+                condition: {PAN},
                 url:"longterm",
                 onRowClick: () => {} 
               },{
                 title: "TR. 90 DAYS",
-                condition: {IWELL_CODE: IWELL_CODE},
+                condition: {PAN},
                 url:"transaction",
                 onRowClick: () => {} 
               },

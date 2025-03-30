@@ -89,7 +89,7 @@ const ClientDairy = () => {
     } catch (err: any) {
       setLoading(false)
       setError(err.message);
-      toast.error(err.message);
+      toast.error(err.response?.data?.message || "An error occurred.");
       if (err.status === 401) {
         dispatch(logout());
         if (typeof window !== "undefined") {
@@ -320,7 +320,9 @@ const ClientDairy = () => {
                           className={`transition hover:bg-gray-100 cursor-pointer ${index % 2 === 0 ? "bg-gray-50" : "bg-white"
                             }`}
                           onClick={() => {   
-                            const query = {
+                            const query = { 
+                            PAN: entry.PAN,
+                            FAMILY_HEAD: entry.FAMILY_HEAD,
                             IWELL_CODE: entry.IWELL_CODE,
                             page: 1,
                             limit: 10,

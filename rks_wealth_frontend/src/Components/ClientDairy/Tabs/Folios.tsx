@@ -85,7 +85,7 @@ const Folios = () => {
     } catch (err: any) {
       setError(err.message);
       setLoading(false);
-      toast.error(err.message);
+      toast.error(err.response?.data?.message || "An error occurred.");
     }
   };
 

@@ -67,7 +67,7 @@ const LongTermModal = ({
         setTotalPages(response.data?.totalPages || 1);
       } catch (err: any) {
         setError(err.message);
-        toast.error(err.message);
+        toast.error(err.response?.data?.message || "An error occurred.");
       } finally {
         setLoading(false);
       }
