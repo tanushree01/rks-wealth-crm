@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { logout } from "@/store/slices/authSlice";
 import { useRouter } from "next/router";
-import logo from "@/assets/logo.jpg";
+import logo from "@/Assets/logo.jpg";
 
 interface User {
   firstName: string;

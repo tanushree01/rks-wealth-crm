@@ -20,7 +20,7 @@ import { Eye, EyeOff } from "lucide-react"; // Import icons
 import { loginSuccess } from "@/store/slices/authSlice";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/store";
-import logo from "@/assets/logo.jpg"; // Adjust the path to your logo
+import logo from "@/Assets/logo.jpg"; // Adjust the path to your logo
 import { toast } from "react-toastify";
 
 export default function Login() {
