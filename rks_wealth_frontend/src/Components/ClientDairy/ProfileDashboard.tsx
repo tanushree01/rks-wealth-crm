@@ -6,6 +6,7 @@ import { Button } from "../ui/button";
 import ProfileModal from "./Modal/ProfileModal";
 import { url } from "inspector";
 import { toast } from "react-toastify";
+import { Skeleton } from "../ui/skeleton";
 
 const ProfileDashboard = () => {
   const router = useRouter();
@@ -75,8 +76,33 @@ const ProfileDashboard = () => {
     userData = {};
   }
 
+
+  function LoadingSkeleton() {
+    return (
+      <div className="p-4 space-y-4">
+        <div className="flex items-center space-x-4">
+          <Skeleton className="h-12 w-12 rounded-full" />
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-32" />
+            <Skeleton className="h-4 w-24" />
+          </div>
+        </div>
+        <Skeleton className="h-6 w-full" />
+        <Skeleton className="h-6 w-3/4" />
+        <div className="grid grid-cols-3 gap-4">
+          <Skeleton className="h-50 w-full" />
+          <Skeleton className="h-50 w-full" />
+          <Skeleton className="h-50 w-full" />
+          <Skeleton className="h-50 w-full" />
+          <Skeleton className="h-50 w-full" />
+          <Skeleton className="h-50 w-full" />
+        </div>
+      </div>
+    );
+  }
+
   if (!dynamicData) {
-    return <div className="text-center text-gray-500">Loading...</div>;
+    return <LoadingSkeleton />;
   }
 
   return (
@@ -290,10 +316,7 @@ const ProfileDashboard = () => {
             {[
               {
                 title: "FOLIO MASTER",
-                condition: {
-                  FOLIOPAN: PAN,
-                  MINTPAN : PAN
-                },
+                condition: {IWELL_CODE: IWELL_CODE},
                 url:"foliomaster",
                 onRowClick: (row:any) => {
                   setModalOpen(true)
@@ -301,12 +324,12 @@ const ProfileDashboard = () => {
                 } 
               },{
                 title: "LONG TERM",
-                condition: {PAN},
+                condition: {IWELL_CODE: IWELL_CODE},
                 url:"longterm",
                 onRowClick: () => {} 
               },{
                 title: "TR. 90 DAYS",
-                condition: {PAN},
+                condition: {IWELL_CODE: IWELL_CODE},
                 url:"transaction",
                 onRowClick: () => {} 
               },

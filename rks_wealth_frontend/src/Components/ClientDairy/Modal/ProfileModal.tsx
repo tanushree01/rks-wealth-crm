@@ -242,10 +242,11 @@ const ProfileModal = ({
     }
     return filteredData;
   }, [filteredData, sortConfig]);
+  
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="max-w-5xl w-full mx-auto p-6 rounded-2xl shadow-lg bg-white overflow-hidden">
+      <DialogContent className="max-w-5xl w-full mx-auto p-6 rounded-2xl shadow-lg bg-white overflow-hidden ">
         {/* Header */}
         <DialogHeader className="border-b pb-4">
           <div className="flex items-center justify-between">
@@ -267,7 +268,7 @@ const ProfileModal = ({
             >
               <SlidersHorizontal size={20} className="text-gray-600" />
             </Button>
-            {manageColumnsOpen && (
+            {manageColumnsOpen && ApiData.length > 0 && (
               <div className="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-md shadow-lg z-10">
                 <ul className="p-2 bg-white shadow-lg rounded-md border border-gray-200 max-h-[250px] overflow-y-auto">
                   {allHeaders.map((header, idx) => (
@@ -318,14 +319,14 @@ const ProfileModal = ({
             )}
           </div>
 
-          {DOWNLOAD_ALLOWED_USER_TYPES.includes(user?.userType) && <Button variant="outline" className="p-2" onClick={onDownload}>
+          {DOWNLOAD_ALLOWED_USER_TYPES.includes(user?.userType) && ApiData.length > 0 && <Button variant="outline" className="p-2" onClick={onDownload}>
             <FileSpreadsheet size={20} className="text-gray-600" />
           </Button>}
         </div>
         {/* Table */}
         <div className="overflow-auto">
-          <Card className="shadow-md">
-            <Table>
+          <Card className="shadow-md max-h-[50vh] overflow-y-auto">
+            <Table className="">
               <TableHeader className="bg-[#9bae58] text-white">
                 <TableRow className="hover:bg-[#74A82E]">
                   {displayedHeaders.map((header, index) => (
@@ -378,7 +379,7 @@ const ProfileModal = ({
                   ))}
                 </TableRow>
               </TableHeader>
-              <TableBody>
+              <TableBody className="">
                 {loading
                   ? Array.from({ length: 5 }).map((_, index) => (
                     <TableRow key={index}>
