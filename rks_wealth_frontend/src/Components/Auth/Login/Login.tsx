@@ -140,14 +140,14 @@ export default function Login() {
             </form>
 
             {/* Forgot Password Link */}
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-2 text-center">
+            {/* <p className="text-sm text-gray-500 dark:text-gray-400 mt-2 text-center">
               <Link
                 href="/forgot-password"
                 className="text-[#34466e] dark:text-[#74A82E] hover:underline"
               >
                 Forgot Password?
               </Link>
-            </p>
+            </p> */}
           </CardContent>
 
           {/* Signup Link */}
