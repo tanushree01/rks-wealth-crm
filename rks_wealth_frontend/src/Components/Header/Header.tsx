@@ -69,7 +69,7 @@ const Header = () => {
         <div className="relative bg-white px-4 mx-10 py-2 rounded-full shadow-md w-96">
           <input
             type="text"
-            placeholder="Global Search"
+            placeholder="Search"
             className="w-full outline-none text-[#34466e] pr-10" // Add right padding to prevent overlap with the icon
           />
           {/* Custom Search Icon inside the search bar */}
