@@ -52,6 +52,7 @@ const PageLayout: React.FC<PageLayoutProps> = ({
             pageName={pageName}
             onDownload={onDownload}
           />
+
           <main className="p-0 bg-gray-50 dark:bg-gray-900 min-h-screen">
             {children}
             <div className="mt-4">

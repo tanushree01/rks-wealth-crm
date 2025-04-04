@@ -3,7 +3,7 @@ import {
   Menu,
   ArrowLeft,
   SlidersHorizontal,
-  FileSpreadsheet,
+  UploadCloud,
 } from "lucide-react";
 import { Button } from "../ui/button";
 import { DOWNLOAD_ALLOWED_USER_TYPES } from "@/Constraints/constraints";
@@ -34,10 +34,9 @@ const ComponentsHeader: React.FC<ComponentsHeaderProps> = ({
     const storedUser = localStorage.getItem("userData");
     if (storedUser) {
       const parsedData = JSON.parse(storedUser);
-      setUser(parsedData.user); // Extract the user object
+      setUser(parsedData.user);
     }
   }, []);
-
 
   return (
     <div className="bg-[#f7f7f7] p-4 px-6 flex justify-between items-center shadow-md text-[#34466e]">
@@ -54,20 +53,22 @@ const ComponentsHeader: React.FC<ComponentsHeaderProps> = ({
         )}
       </Button>
 
-      {/* Portfolio Overview (Centered) */}
+      {/* Page Title */}
       <h3 className="text-xl font-bold text-center flex-1">{pageName}</h3>
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3">
+        {/* Filter/Column Visibility */}
         <div className="relative">
-          <Button
-            variant="outline"
+          <button
             onClick={() => setManageColumnsOpen(!manageColumnsOpen)}
+            className="p-2 rounded-md hover:bg-gray-200"
           >
-            <SlidersHorizontal size={20} className="text-gray-600" />
-          </Button>
+            <SlidersHorizontal size={23} className="text-[#34466e]" />
+          </button>
+
           {manageColumnsOpen && (
             <div className="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-md shadow-lg z-10">
-              <ul className="p-2 bg-white shadow-lg rounded-md border border-gray-200 max-h-[250px] overflow-y-auto">
+              <ul className="p-2 max-h-[250px] overflow-y-auto">
                 {allHeaders.map((header, idx) => (
                   <li
                     key={idx}
@@ -117,9 +118,63 @@ const ComponentsHeader: React.FC<ComponentsHeaderProps> = ({
           )}
         </div>
 
-        {DOWNLOAD_ALLOWED_USER_TYPES.includes(user?.userType) && <Button variant="outline" className="p-2" onClick={onDownload}>
-          <FileSpreadsheet size={20} className="text-gray-600" />
-        </Button>}
+        {/* XLS Download Icon Only */}
+        {DOWNLOAD_ALLOWED_USER_TYPES.includes(user?.userType) && (
+          <button
+            onClick={onDownload}
+            title="Download XLS"
+            className="p-0 m-0 border-none bg-transparent hover:opacity-80"
+            style={{ outline: "none" }}
+          >
+            <img
+              src="/xls-download.svg"
+              alt="Download XLS"
+              className="w-15 h-15 object-contain"
+            />
+          </button>
+        )}
+
+        {/* Upload Button */}
+        <label className="cursor-pointer">
+          <input
+            type="file"
+            accept=".xlsx,.csv"
+            className="hidden"
+            onChange={(e) =>
+              console.log("Selected file:", e.target.files?.[0])
+            }
+          />
+          <div
+            className="flex items-center gap-2 px-4 py-2 rounded-md border group transition-all duration-300"
+            style={{
+              backgroundColor: "#dbdbdb",
+              color: "#34466e",
+              borderColor: "#959595",
+              borderWidth: "1px",
+              borderStyle: "solid",
+            }}
+          >
+            <span className="text-sm font-medium group-hover:text-white transition-all duration-300">
+              Upload
+            </span>
+            <UploadCloud
+              size={18}
+              className="group-hover:text-white transition-all duration-300"
+            />
+          </div>
+          <style jsx>{`
+            label:hover div {
+              background-color: #9bae58 !important;
+              color: white !important;
+            }
+            label:hover div span {
+              color: white !important;
+            }
+            label:hover div svg {
+              color: white !important;
+            }
+          `}</style>
+        </label>
       </div>
     </div>
   );

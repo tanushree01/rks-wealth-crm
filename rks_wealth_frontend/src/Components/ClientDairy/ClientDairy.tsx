@@ -36,6 +36,7 @@ import PageLayout from "../PageLayout/PageLayout";
 import { toast } from "react-toastify";
 
 const ClientDairy = () => {
+  const [showFamilyHeadsOnly, setShowFamilyHeadsOnly] = useState<boolean>(false);
   const router = useRouter();
   const dispatch = useDispatch();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -240,7 +241,7 @@ const ClientDairy = () => {
       onDownload={onDownload}
     >
       <div
-        className="flex-1 p-6"
+        className="flex-1 p-3"
         style={{
           width: isSidebarOpen
             ? "calc(100vw - 300px)"
@@ -249,6 +250,35 @@ const ClientDairy = () => {
       >
         <div className="overflow-x-auto">
           <Card className="shadow-lg rounded-2xl overflow-hidden border border-gray-200">
+            {/* Toggle: Show Family Heads Only / All Clients */}
+<div className="px-6 mt-4 flex items-center gap-6 text-[#34466e]">
+  <span className={`text-sm font-medium ${showFamilyHeadsOnly ? "text-[#34466e]" : "text-[#34466e]"}`}>
+    Show Family Heads Only
+  </span>
+
+  {/* Toggle Switch */}
+  <label className="relative inline-flex items-center cursor-pointer w-12 h-6">
+    <input
+      type="checkbox"
+      className="sr-only peer"
+      checked={showFamilyHeadsOnly}
+      onChange={() => setShowFamilyHeadsOnly(!showFamilyHeadsOnly)}
+    />
+
+    {/* ✅ Always dark green track */}
+    <div className="w-full h-full bg-[#9bae58] rounded-full transition-all duration-300"></div>
+
+    {/* ✅ White dot moves */}
+    <div
+      className="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform duration-300 transform peer-checked:translate-x-6"
+    />
+  </label>
+
+  <span className={`text-sm font-medium ${!showFamilyHeadsOnly ? "text-[#34466e]" : "text-[#34466e]"}`}>
+    Show All Clients
+  </span>
+</div>
+            
             <Table className="w-full">
               <TableHeader className="bg-[#9bae58] text-white">
                 <TableRow className="hover:bg-[#74A82E]">
