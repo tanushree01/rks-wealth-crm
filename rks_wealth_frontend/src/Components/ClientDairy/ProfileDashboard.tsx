@@ -26,9 +26,9 @@ const ProfileDashboard = () => {
   const [modalConfig, setModalConfig] = useState({
     url: "",
     title: "",
-    condition:{},
-    onRowClick:(row?:any) => {},
-  })
+    condition: {},
+    onRowClick: (row?: any) => {},
+  });
   const token =
     typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
@@ -76,18 +76,18 @@ const ProfileDashboard = () => {
     userData = {};
   }
 
-  const formatDate = (dateString:any) => {
+  const formatDate = (dateString: any) => {
     if (!dateString) return "N/A";
     const date = new Date(dateString);
     if (isNaN(date.getTime())) return "Invalid Date";
-  
+
     const day = String(date.getDate()).padStart(2, "0");
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const year = date.getFullYear();
-  
+
     return `${day}/${month}/${year}`;
   };
-  
+
   function LoadingSkeleton() {
     return (
       <div className="p-4 space-y-4">
@@ -148,7 +148,11 @@ const ProfileDashboard = () => {
           <div className="mt-6 text-[16px] font-medium space-y-3">
             {[
               { label: "AGE", value: dynamicData?.AGE },
-              { label: "KYC DOB", value: dynamicData?.DATE_OF_BIRTH },
+              {
+                label: "KYC DOB",
+                value: formatDate(dynamicData?.DATE_OF_BIRTH),
+              },
+
               {
                 label: "BIRTHDAY DOB",
                 value: dynamicData?.DATE_OF_BIRTH,
@@ -327,22 +331,29 @@ const ProfileDashboard = () => {
             {[
               {
                 title: "FOLIO MASTER",
-                condition: {IWELL_CODE: IWELL_CODE},
-                url:"foliomaster",
-                onRowClick: (row:any) => {
-                  setModalOpen(true)
-                  setModalConfig({url:"transaction", title:`FOLIO NO. ${row?.FOLIO_NO} TR. 90 DAYS`, condition:{FOLIO_NO: row.FOLIO_NO},onRowClick:() => {}})
-                } 
-              },{
+                condition: { IWELL_CODE: IWELL_CODE },
+                url: "foliomaster",
+                onRowClick: (row: any) => {
+                  setModalOpen(true);
+                  setModalConfig({
+                    url: "transaction",
+                    title: `FOLIO NO. ${row?.FOLIO_NO} TR. 90 DAYS`,
+                    condition: { FOLIO_NO: row.FOLIO_NO },
+                    onRowClick: () => {},
+                  });
+                },
+              },
+              {
                 title: "LONG TERM",
-                condition: {IWELL_CODE: IWELL_CODE},
-                url:"longterm",
-                onRowClick: () => {} 
-              },{
+                condition: { IWELL_CODE: IWELL_CODE },
+                url: "longterm",
+                onRowClick: () => {},
+              },
+              {
                 title: "TR. 90 DAYS",
-                condition: {IWELL_CODE: IWELL_CODE},
-                url:"transaction",
-                onRowClick: () => {} 
+                condition: { IWELL_CODE: IWELL_CODE },
+                url: "transaction",
+                onRowClick: () => {},
               },
             ].map((config, index) => (
               <Button
@@ -350,15 +361,22 @@ const ProfileDashboard = () => {
                 variant="outline"
                 className="w-full p-7 bg-gray-100"
                 onClick={() => {
-                  setModalOpen(true)
-                  setModalConfig(config)
+                  setModalOpen(true);
+                  setModalConfig(config);
                 }}
               >
                 {config?.title}
               </Button>
             ))}
           </div>
-          <ProfileModal onRowClick={modalConfig.onRowClick} open={isModalOpen} setOpen={setModalOpen} title={modalConfig.title} condition={modalConfig.condition}  url={modalConfig.url}/>
+          <ProfileModal
+            onRowClick={modalConfig.onRowClick}
+            open={isModalOpen}
+            setOpen={setModalOpen}
+            title={modalConfig.title}
+            condition={modalConfig.condition}
+            url={modalConfig.url}
+          />
         </div>
       </div>
     </div>
